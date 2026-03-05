@@ -1,0 +1,15 @@
+{
+  "name": "nevermiss",
+  "private": true,
+  "scripts": {
+    "dev:voice": "pnpm --filter @nevermiss/voice dev",
+    "dev:web": "pnpm --filter @nevermiss/web dev",
+    "dev": "pnpm run dev:voice & pnpm run dev:web",
+    "build:voice": "pnpm --filter @nevermiss/voice build",
+    "build:web": "pnpm --filter @nevermiss/web build",
+    "build": "pnpm run build:voice && pnpm run build:web"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
