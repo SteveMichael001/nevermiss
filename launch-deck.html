@@ -14,35 +14,35 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font
 #deck{position:relative;width:100%;height:100%}
 .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;padding:1.5rem 1.5rem 5rem}
 .slide.active{pointer-events:all}
-#prog{position:fixed;top:0;left:0;height:2px;background:#22C55E;z-index:200;box-shadow:0 0 12px rgba(34,197,94,0.6);transition:width .45s cubic-bezier(.4,0,.2,1)}
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,rgba(180,185,205,0.6),rgba(255,255,255,0.5));z-index:200;box-shadow:0 0 12px rgba(200,210,220,0.3);transition:width .45s cubic-bezier(.4,0,.2,1)}
 #snum{position:fixed;top:1.2rem;right:1.5rem;font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.2);z-index:200}
 #nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:1rem}
 .nb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);padding:9px 20px;border-radius:100px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;transition:all .2s;backdrop-filter:blur(10px);white-space:nowrap}
-.nb:hover,.nb.p{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:#22C55E}
+.nb:hover,.nb.p{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.35);color:rgba(220,225,235,0.9)}
 .ndot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);cursor:pointer;transition:all .3s}
-.ndot.on{background:#22C55E;box-shadow:0 0 8px rgba(34,197,94,.8);transform:scale(1.4)}
-.slabel{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(34,197,94,.7);margin-bottom:.85rem}
-.glowtx{text-shadow:0 0 30px rgba(34,197,94,.6),0 0 70px rgba(34,197,94,.25)}
-.glowbx{box-shadow:0 0 30px rgba(34,197,94,.25),0 0 60px rgba(34,197,94,.1)}
-.holo{background:linear-gradient(135deg,rgba(34,197,94,.07) 0%,rgba(0,0,0,0) 60%,rgba(34,197,94,.04) 100%);border:1px solid rgba(34,197,94,.18);border-radius:16px}
-.pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#22C55E;box-shadow:0 0 10px #22C55E;animation:pdp 2s ease-in-out infinite}
+.ndot.on{background:rgba(220,225,235,0.85);box-shadow:0 0 8px rgba(200,210,220,0.5);transform:scale(1.4)}
+.slabel{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,210,220,0.6);margin-bottom:.85rem}
+.glowtx{text-shadow:0 0 30px rgba(200,210,220,.4),0 0 70px rgba(200,210,220,.15)}
+.glowbx{box-shadow:0 4px 24px rgba(0,0,0,0.3),0 0 30px rgba(200,210,220,.15),inset 0 1px 0 rgba(255,255,255,0.2)}
+.holo{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.15);border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2),inset 0 -1px 0 rgba(255,255,255,0.05)}
+.pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:rgba(200,210,220,0.8);box-shadow:0 0 10px rgba(200,210,220,0.4);animation:pdp 2s ease-in-out infinite}
 @keyframes pdp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
-.pring{position:absolute;border-radius:50%;border:1.5px solid rgba(34,197,94,.35);animation:prp 3.5s ease-in-out infinite}
+.pring{position:absolute;border-radius:50%;border:1.5px solid rgba(200,210,220,0.25);animation:prp 3.5s ease-in-out infinite}
 @keyframes prp{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.35}50%{transform:translate(-50%,-50%) scale(1.06);opacity:.75}}
 canvas{position:absolute;inset:0;pointer-events:none}
-#sms{position:fixed;top:-135px;right:16px;width:min(295px,calc(100vw - 32px));background:rgba(6,6,6,.97);border:1px solid rgba(34,197,94,.4);border-radius:16px;padding:12px 14px;z-index:300;backdrop-filter:blur(16px);box-shadow:0 20px 60px rgba(0,0,0,.9),0 0 30px rgba(34,197,94,.18)}
-.phone{width:min(265px,78vw);background:#080808;border-radius:36px;border:1.5px solid rgba(255,255,255,.1);padding:18px 13px 14px;box-shadow:0 40px 80px rgba(0,0,0,.9),0 0 50px rgba(34,197,94,.1)}
+#sms{position:fixed;top:-135px;right:16px;width:min(295px,calc(100vw - 32px));background:rgba(8,8,12,.97);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:12px 14px;z-index:300;backdrop-filter:blur(16px) saturate(180%);box-shadow:0 20px 60px rgba(0,0,0,.9),0 4px 24px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.15)}
+.phone{width:min(265px,78vw);background:#080808;border-radius:36px;border:1.5px solid rgba(255,255,255,.1);padding:18px 13px 14px;box-shadow:0 40px 80px rgba(0,0,0,.9),0 0 50px rgba(200,210,220,.06)}
 .pnotch{width:68px;height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin:0 auto 13px}
 .bubble{max-width:88%;padding:8px 12px;border-radius:16px;font-size:12px;line-height:1.45;margin-bottom:6px;opacity:0;transform:translateY(8px)}
-.bubble.ai{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);align-self:flex-start;border-bottom-left-radius:3px}
+.bubble.ai{background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);align-self:flex-start;border-bottom-left-radius:3px}
 .bubble.caller{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);align-self:flex-end;border-bottom-right-radius:3px}
-.tdot{width:5px;height:5px;border-radius:50%;background:rgba(34,197,94,.7);animation:tdb 1.1s ease-in-out infinite}
+.tdot{width:5px;height:5px;border-radius:50%;background:rgba(200,210,220,0.6);animation:tdb 1.1s ease-in-out infinite}
 .tdot:nth-child(2){animation-delay:.18s}.tdot:nth-child(3){animation-delay:.36s}
 @keyframes tdb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.sicon{width:74px;height:74px;border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;font-size:1.85rem;background:rgba(34,197,94,.08);border:2px solid rgba(34,197,94,.28)}
-.wbar{width:3px;border-radius:2px;background:rgba(34,197,94,.45);height:8px;flex-shrink:0}
-#cta-btn{padding:14px 36px;border-radius:100px;font-size:1rem;font-weight:700;font-family:inherit;background:#22C55E;color:#000;border:none;cursor:pointer;letter-spacing:.03em;box-shadow:0 0 40px rgba(34,197,94,.5),0 0 80px rgba(34,197,94,.2);transition:transform .2s,box-shadow .2s}
-#cta-btn:hover{transform:scale(1.06);box-shadow:0 0 60px rgba(34,197,94,.6),0 0 120px rgba(34,197,94,.3)}
+.sicon{width:74px;height:74px;border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;font-size:1.85rem;background:rgba(255,255,255,0.07);backdrop-filter:blur(16px);border:2px solid rgba(255,255,255,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)}
+.wbar{width:3px;border-radius:2px;background:rgba(200,210,220,0.4);height:8px;flex-shrink:0}
+#cta-btn{padding:14px 36px;border-radius:100px;font-size:1rem;font-weight:700;font-family:inherit;background:rgba(255,255,255,0.1);color:rgba(220,225,235,0.95);border:1.5px solid rgba(255,255,255,0.3);cursor:pointer;letter-spacing:.03em;backdrop-filter:blur(16px) saturate(180%);box-shadow:0 4px 24px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.25),0 0 30px rgba(200,210,220,0.15);transition:transform .2s,box-shadow .2s,border-color .2s}
+#cta-btn:hover{transform:scale(1.06);border-color:rgba(255,255,255,0.5);box-shadow:0 4px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.3),0 0 40px rgba(200,210,220,0.25)}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;background:repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px)}
 @media(max-width:640px){
   .slide{padding:1rem 1rem 4.5rem}
@@ -59,14 +59,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
 <!-- SMS Notification -->
 <div id="sms">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-    <div style="width:34px;height:34px;border-radius:50%;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.35);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🔔</div>
+    <div style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🔔</div>
     <div>
       <div style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.12em;font-weight:700">NEVERMISS AI · NOW</div>
-      <div style="font-size:13px;font-weight:800;color:#22C55E">New Lead Captured</div>
+      <div style="font-size:13px;font-weight:800;color:rgba(220,225,235,0.9)">New Lead Captured</div>
     </div>
   </div>
-  <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5"><span style="font-weight:700;color:#fff">John D.</span> — Burst water heater — <span style="color:#22C55E;font-weight:800">URGENT</span></div>
-  <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:#22C55E;font-weight:700;cursor:pointer">📞 Tap to call back →</div>
+  <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5"><span style="font-weight:700;color:#fff">John D.</span> — Burst water heater — <span style="color:rgba(220,225,235,0.85);font-weight:800">URGENT</span></div>
+  <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:rgba(200,210,220,0.8);font-weight:700;cursor:pointer">📞 Tap to call back →</div>
 </div>
 
 <div id="deck">
@@ -81,7 +81,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
     </div>
     <div id="s1b" style="margin-top:3.5rem;opacity:0">
       <div style="font-size:clamp(2.8rem,9vw,6.5rem);font-weight:800;letter-spacing:-.04em;line-height:1" class="glowtx">
-        <span style="color:#fff">Never</span><span style="color:#22C55E">Miss</span><span style="color:#fff"> AI</span>
+        <span style="color:#fff">Never</span><span style="color:rgba(200,210,220,0.9)">Miss</span><span style="color:#fff"> AI</span>
       </div>
       <div style="font-size:clamp(.65rem,1.6vw,.9rem);color:rgba(255,255,255,.3);margin-top:1rem;letter-spacing:.18em;font-weight:600">EVERY CALL ANSWERED · EVERY LEAD CAPTURED</div>
     </div>
@@ -118,20 +118,20 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
           <line x1="154" y1="148" x2="220" y2="220" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="5,5"/>
           <!-- Phone ringing -->
           <g id="phone-grp" transform="translate(220,228)">
-            <rect x="-18" y="-18" width="36" height="36" rx="10" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.35)" stroke-width="1.2"/>
+            <rect x="-18" y="-18" width="36" height="36" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(200,210,220,.25)" stroke-width="1.2"/>
             <text x="0" y="8" text-anchor="middle" font-size="18">📱</text>
-            <circle id="rw1" cx="0" cy="0" r="26" fill="none" stroke="rgba(34,197,94,.3)" stroke-width="1.2"/>
-            <circle id="rw2" cx="0" cy="0" r="42" fill="none" stroke="rgba(34,197,94,.15)" stroke-width="1"/>
+            <circle id="rw1" cx="0" cy="0" r="26" fill="none" stroke="rgba(200,210,220,.25)" stroke-width="1.2"/>
+            <circle id="rw2" cx="0" cy="0" r="42" fill="none" stroke="rgba(200,210,220,.12)" stroke-width="1"/>
           </g>
-          <rect x="170" y="270" width="100" height="22" rx="11" fill="rgba(255,50,50,.1)" stroke="rgba(255,50,50,.3)" stroke-width="1"/>
-          <text x="220" y="285" text-anchor="middle" font-size="10" fill="rgba(255,90,90,.85)" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">MISSED CALL</text>
+          <rect x="170" y="270" width="100" height="22" rx="11" fill="rgba(255,255,255,.05)" stroke="rgba(200,210,220,.25)" stroke-width="1"/>
+          <text x="220" y="285" text-anchor="middle" font-size="10" fill="rgba(200,210,220,.75)" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">MISSED CALL</text>
         </svg>
         <div style="text-align:center;font-size:.78rem;color:rgba(255,255,255,.28);margin-top:.3rem">Mike. On the job. Unreachable.</div>
       </div>
       <!-- Stats -->
       <div id="s2R" style="opacity:0;transform:translateX(35px)">
         <div style="margin-bottom:1.75rem">
-          <div style="font-size:clamp(3rem,9vw,5.5rem);font-weight:800;color:#22C55E;line-height:1" class="glowtx">1 in 4</div>
+          <div style="font-size:clamp(3rem,9vw,5.5rem);font-weight:800;color:rgba(220,225,235,0.9);line-height:1" class="glowtx">1 in 4</div>
           <div style="font-size:clamp(.95rem,2.5vw,1.3rem);color:rgba(255,255,255,.65);font-weight:600;margin-top:.4rem">calls go unanswered.</div>
           <div style="font-size:.83rem;color:rgba(255,255,255,.3);margin-top:.35rem;line-height:1.6">They don't leave voicemails.<br>They call your competitor.</div>
         </div>
@@ -141,13 +141,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
             <div style="font-size:.7rem;color:rgba(255,255,255,.38);margin-top:.2rem">avg job value</div>
           </div>
           <div class="holo" id="s2c2" style="padding:1rem;opacity:0">
-            <div style="font-size:1.75rem;font-weight:800;color:rgba(255,90,90,.9)">×4/day</div>
+            <div style="font-size:1.75rem;font-weight:800;color:rgba(200,210,220,0.85)">×4/day</div>
             <div style="font-size:.7rem;color:rgba(255,255,255,.38);margin-top:.2rem">missed calls avg</div>
           </div>
         </div>
-        <div id="s2ls" style="padding:1rem 1.2rem;border-radius:13px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.2);opacity:0">
-          <div style="font-size:.67rem;color:rgba(255,80,80,.55);letter-spacing:.13em;font-weight:800;text-transform:uppercase;margin-bottom:.4rem">Monthly Revenue Bleeding Out</div>
-          <div style="font-size:2.1rem;font-weight:800;color:rgba(255,80,80,.9)">$16,000+</div>
+        <div id="s2ls" style="padding:1rem 1.2rem;border-radius:13px;background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.15);opacity:0;box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)">
+          <div style="font-size:.67rem;color:rgba(200,210,220,0.55);letter-spacing:.13em;font-weight:800;text-transform:uppercase;margin-bottom:.4rem">Monthly Revenue Bleeding Out</div>
+          <div style="font-size:2.1rem;font-weight:800;color:rgba(220,225,235,0.9)">$16,000+</div>
         </div>
       </div>
     </div>
@@ -162,7 +162,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
       <div class="phone glowbx">
         <div class="pnotch"></div>
         <div style="background:linear-gradient(180deg,#0c1015 0%,#000 100%);border-radius:22px;padding:18px 13px 14px">
-          <div style="font-size:10px;color:#22C55E;letter-spacing:.15em;font-weight:800;text-align:center;margin-bottom:4px">● LIVE CALL</div>
+          <div style="font-size:10px;color:rgba(200,210,220,0.8);letter-spacing:.15em;font-weight:800;text-align:center;margin-bottom:4px">● LIVE CALL</div>
           <div style="font-size:.88rem;font-weight:800;color:#fff;text-align:center;margin-bottom:2px">Mike's Plumbing</div>
           <div style="font-size:10px;color:rgba(255,255,255,.35);text-align:center;margin-bottom:11px">(619) 555-0142</div>
           <div id="wf" style="display:flex;align-items:center;justify-content:center;gap:3px;height:22px;margin-bottom:13px"></div>
@@ -174,13 +174,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
     <div id="s3tx" style="opacity:0;transform:translateX(25px);max-width:380px">
       <div class="slabel">Live Demo</div>
       <h2 style="font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;line-height:1.2;margin-bottom:.85rem">
-        Your AI picks up.<br><span style="color:#22C55E">Every. Single. Time.</span>
+        Your AI picks up.<br><span style="color:rgba(200,210,220,0.9)">Every. Single. Time.</span>
       </h2>
       <p style="color:rgba(255,255,255,.42);font-size:.88rem;line-height:1.75;margin-bottom:1.3rem">Sounds human. Captures leads. Texts you in under 60 seconds. No menus. No hold music. No lost jobs.</p>
-      <div style="display:flex;align-items:center;gap:.7rem;padding:.85rem 1.1rem;border-radius:12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22)">
+      <div style="display:flex;align-items:center;gap:.7rem;padding:.85rem 1.1rem;border-radius:12px;background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15)">
         <div class="pdot"></div>
         <div>
-          <div style="font-size:.77rem;font-weight:800;color:#22C55E">AI Active 24/7</div>
+          <div style="font-size:.77rem;font-weight:800;color:rgba(200,210,220,0.85)">AI Active 24/7</div>
           <div style="font-size:.7rem;color:rgba(255,255,255,.35);margin-top:1px">Mike's on a job. AI has the phone.</div>
         </div>
       </div>
@@ -193,43 +193,43 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
   <div style="position:relative;z-index:2;width:100%;max-width:900px">
     <div class="slabel text-center" id="s4lb" style="opacity:0">How It Works</div>
     <h2 id="s4ti" style="font-size:clamp(1.7rem,4vw,2.9rem);font-weight:800;text-align:center;margin-bottom:.5rem;opacity:0">
-      Zero to answered in <span style="color:#22C55E">under 60 seconds.</span>
+      Zero to answered in <span style="color:rgba(200,210,220,0.9)">under 60 seconds.</span>
     </h2>
     <!-- Steps -->
     <div style="display:flex;gap:1rem;margin-top:2.5rem;align-items:flex-start;justify-content:center;flex-wrap:wrap">
       <div id="s4s1" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
         <div class="sicon" id="si1">📞</div>
-        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 01</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(200,210,220,0.6);font-weight:800;margin-bottom:.4rem">STEP 01</div>
         <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">Call Comes In</div>
         <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Customer calls. You're on the job. NeverMiss AI answers instantly — sounds just like your business.</div>
       </div>
       <!-- Arrow 1 -->
       <div id="s4a1" style="opacity:0;display:flex;align-items:center;padding-top:37px;flex-shrink:0">
-        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(34,197,94,.5),rgba(34,197,94,.2))"></div>
-        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(34,197,94,.4)"></div>
+        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(200,210,220,0.4),rgba(200,210,220,0.15))"></div>
+        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(200,210,220,0.35)"></div>
       </div>
       <div id="s4s2" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
         <div class="sicon" id="si2">🤖</div>
-        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 02</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(200,210,220,0.6);font-weight:800;margin-bottom:.4rem">STEP 02</div>
         <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">AI Captures Lead</div>
         <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Conversation feels human. Gets their name, number, and what they need. No menus. Just results.</div>
       </div>
       <!-- Arrow 2 -->
       <div id="s4a2" style="opacity:0;display:flex;align-items:center;padding-top:37px;flex-shrink:0">
-        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(34,197,94,.5),rgba(34,197,94,.2))"></div>
-        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(34,197,94,.4)"></div>
+        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(200,210,220,0.4),rgba(200,210,220,0.15))"></div>
+        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(200,210,220,0.35)"></div>
       </div>
       <div id="s4s3" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
         <div class="sicon" id="si3">⚡</div>
-        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 03</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(200,210,220,0.6);font-weight:800;margin-bottom:.4rem">STEP 03</div>
         <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">You Get Texted</div>
         <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Within 60 seconds: who called, why, how urgent. One tap to call back. Job secured.</div>
       </div>
     </div>
     <div id="s4bg" style="text-align:center;margin-top:2.5rem;opacity:0">
-      <div style="display:inline-flex;align-items:center;gap:.7rem;padding:.7rem 1.5rem;border-radius:100px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.28)">
+      <div style="display:inline-flex;align-items:center;gap:.7rem;padding:.7rem 1.5rem;border-radius:100px;background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15)">
         <div class="pdot"></div>
-        <span style="font-size:.82rem;font-weight:700;color:#22C55E">Complete in under 60 seconds — guaranteed</span>
+        <span style="font-size:.82rem;font-weight:700;color:rgba(200,210,220,0.85)">Complete in under 60 seconds — guaranteed</span>
       </div>
     </div>
   </div>
@@ -246,35 +246,35 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
         <div id="mdg" style="display:grid;grid-template-columns:repeat(25,1fr);gap:5px;max-width:340px"></div>
         <div style="margin-top:.85rem;display:flex;gap:1.25rem;font-size:.72rem;color:rgba(255,255,255,.38)">
           <div style="display:flex;align-items:center;gap:.4rem"><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15)"></div>Untapped</div>
-          <div style="display:flex;align-items:center;gap:.4rem"><div style="width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 6px #22C55E"></div>NeverMiss customer</div>
+          <div style="display:flex;align-items:center;gap:.4rem"><div style="width:7px;height:7px;border-radius:50%;background:rgba(200,210,220,0.8);box-shadow:0 0 6px rgba(200,210,220,0.5)"></div>NeverMiss customer</div>
         </div>
       </div>
       <!-- Comparison -->
       <div id="s5R" style="opacity:0;transform:translateX(30px)">
         <h2 style="font-size:clamp(1.7rem,4vw,2.5rem);font-weight:800;line-height:1.2;margin-bottom:1.75rem">
-          The gap nobody<br>filled. <span style="color:#22C55E">Until now.</span>
+          The gap nobody<br>filled. <span style="color:rgba(200,210,220,0.9)">Until now.</span>
         </h2>
         <div style="display:flex;flex-direction:column;gap:.7rem">
-          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
-            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">SameDay AI</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Priced out small contractors</div></div>
-            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">$449/mo</div>
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">SameDay AI</div><div style="font-size:.72rem;color:rgba(180,185,200,0.55);margin-top:2px">Priced out small contractors</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(180,185,200,0.7)">$449/mo</div>
           </div>
-          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
-            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Generic AI</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Not built for trades. Fails.</div></div>
-            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">Fails</div>
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Generic AI</div><div style="font-size:.72rem;color:rgba(180,185,200,0.55);margin-top:2px">Not built for trades. Fails.</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(180,185,200,0.7)">Fails</div>
           </div>
-          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
-            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Answering Service</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Slow, scripted, expensive</div></div>
-            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">$400+</div>
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,255,255,0.05);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Answering Service</div><div style="font-size:.72rem;color:rgba(180,185,200,0.55);margin-top:2px">Slow, scripted, expensive</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(180,185,200,0.7)">$400+</div>
           </div>
-          <div style="padding:.9rem 1.1rem;border-radius:13px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.4);display:flex;justify-content:space-between;align-items:center;box-shadow:0 0 25px rgba(34,197,94,.15)">
+          <div style="padding:.9rem 1.1rem;border-radius:13px;background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%,rgba(180,180,200,0.06) 40%,rgba(255,255,255,0.10) 100%);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.25);display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2),0 0 25px rgba(200,210,220,0.1)">
             <div>
-              <div style="font-size:.88rem;font-weight:800;color:#22C55E">NeverMiss AI</div>
+              <div style="font-size:.88rem;font-weight:800;color:rgba(220,225,235,0.95)">NeverMiss AI</div>
               <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Built for contractors. Flat rate.</div>
             </div>
             <div style="text-align:right">
-              <div style="font-size:1.2rem;font-weight:800;color:#22C55E" class="glowtx">$250/mo</div>
-              <div style="font-size:.65rem;color:rgba(34,197,94,.6);font-weight:800">UNCONTESTED</div>
+              <div style="font-size:1.2rem;font-weight:800;color:rgba(220,225,235,0.95)" class="glowtx">$250/mo</div>
+              <div style="font-size:.65rem;color:rgba(200,210,220,0.6);font-weight:800">UNCONTESTED</div>
             </div>
           </div>
         </div>
@@ -288,14 +288,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
   <div style="position:relative;z-index:2;width:100%;max-width:860px">
     <div class="slabel text-center" id="s6lb" style="opacity:0">The Math</div>
     <h2 id="s6ti" style="font-size:clamp(1.7rem,4vw,2.9rem);font-weight:800;text-align:center;margin-bottom:.4rem;opacity:0">
-      This is a <span style="color:#22C55E">90% margin</span> business.
+      This is a <span style="color:rgba(200,210,220,0.9)">90% margin</span> business.
     </h2>
     <p id="s6su" style="text-align:center;color:rgba(255,255,255,.38);font-size:.88rem;margin-bottom:2.5rem;opacity:0">Simple unit economics. Clear path to profitability.</p>
     <!-- Unit economics cards -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem">
       <div class="holo" id="s6c1" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
         <div style="font-size:.67rem;letter-spacing:.14em;color:rgba(255,255,255,.38);text-transform:uppercase;margin-bottom:.45rem">Revenue / Customer</div>
-        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#22C55E;font-variant-numeric:tabular-nums" class="glowtx" id="cr1">$0</div>
+        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:rgba(220,225,235,0.9);font-variant-numeric:tabular-nums" class="glowtx" id="cr1">$0</div>
         <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-top:.2rem">per month</div>
       </div>
       <div class="holo" id="s6c2" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
@@ -305,7 +305,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
       </div>
       <div class="holo" id="s6c3" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
         <div style="font-size:.67rem;letter-spacing:.14em;color:rgba(255,255,255,.38);text-transform:uppercase;margin-bottom:.45rem">Gross Margin</div>
-        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#22C55E;font-variant-numeric:tabular-nums" class="glowtx" id="cr3">0%</div>
+        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:rgba(220,225,235,0.9);font-variant-numeric:tabular-nums" class="glowtx" id="cr3">0%</div>
         <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-top:.2rem">per customer</div>
       </div>
     </div>
@@ -315,14 +315,14 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
         <div style="font-size:.73rem;color:rgba(255,255,255,.38);margin-bottom:.4rem">5 customers → break even</div>
         <div style="font-size:1.9rem;font-weight:800;color:#fff">$1,250 <span style="font-size:.85rem;color:rgba(255,255,255,.38);font-weight:500">MRR</span></div>
         <div style="margin-top:.6rem;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden">
-          <div style="width:25%;height:100%;background:#22C55E;border-radius:2px"></div>
+          <div style="width:25%;height:100%;background:linear-gradient(90deg,rgba(180,185,205,0.5),rgba(255,255,255,0.4));border-radius:2px"></div>
         </div>
       </div>
-      <div id="s6m2" style="padding:1.1rem 1.25rem;border-radius:14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.28);opacity:0">
-        <div style="font-size:.73rem;color:rgba(34,197,94,.6);margin-bottom:.4rem">20 customers → real business</div>
-        <div style="font-size:1.9rem;font-weight:800;color:#22C55E" class="glowtx">$5,000 <span style="font-size:.85rem;color:rgba(34,197,94,.55);font-weight:500">MRR</span></div>
+      <div id="s6m2" style="padding:1.1rem 1.25rem;border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(180,180,200,0.05) 40%,rgba(255,255,255,0.08) 100%);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);opacity:0;box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)">
+        <div style="font-size:.73rem;color:rgba(200,210,220,0.6);margin-bottom:.4rem">20 customers → real business</div>
+        <div style="font-size:1.9rem;font-weight:800;color:rgba(220,225,235,0.9)" class="glowtx">$5,000 <span style="font-size:.85rem;color:rgba(200,210,220,0.5);font-weight:500">MRR</span></div>
         <div style="margin-top:.6rem;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden">
-          <div style="width:100%;height:100%;background:#22C55E;border-radius:2px;box-shadow:0 0 8px rgba(34,197,94,.6)"></div>
+          <div style="width:100%;height:100%;background:linear-gradient(90deg,rgba(180,185,205,0.6),rgba(255,255,255,0.5));border-radius:2px;box-shadow:0 0 8px rgba(200,210,220,0.3)"></div>
         </div>
       </div>
     </div>
@@ -345,20 +345,20 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
       <!-- Sales steps -->
       <div id="s7R" style="opacity:0;transform:translateX(30px)">
         <h2 style="font-size:clamp(1.7rem,4vw,2.7rem);font-weight:800;line-height:1.25;margin-bottom:1.5rem">
-          Show up. <span style="color:#22C55E">Call the number.</span> Close the deal.
+          Show up. <span style="color:rgba(200,210,220,0.9)">Call the number.</span> Close the deal.
         </h2>
         <div style="display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.5rem">
           <div id="ss1" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
-            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">🚶</div>
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.07);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">🚶</div>
             <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem">Show up at their door</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">Target contractors with vans or storefronts. Plumbers, HVAC, roofers — San Diego.</div></div>
           </div>
           <div id="ss2" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
-            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">📞</div>
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.07);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">📞</div>
             <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem">Call the number in front of them</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">They hear the AI answer their own line. Demo sells itself. No pitch deck needed.</div></div>
           </div>
-          <div id="ss3" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.3)">
-            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">✅</div>
-            <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem;color:#22C55E">They sign up on the spot</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">14-day free trial. No contract. Card on file. Live in 20 minutes.</div></div>
+          <div id="ss3" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(180,180,200,0.05) 40%,rgba(255,255,255,0.08) 100%);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);box-shadow:0 4px 24px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2)">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">✅</div>
+            <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem;color:rgba(220,225,235,0.95)">They sign up on the spot</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">14-day free trial. No contract. Card on file. Live in 20 minutes.</div></div>
           </div>
         </div>
         <div style="font-size:.82rem;color:rgba(255,255,255,.28);font-style:italic">"The product demos itself. That's the whole play."</div>
@@ -376,10 +376,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
       <div class="pring" style="width:280px;height:280px;margin-left:-140px;margin-top:-140px"></div>
       <div class="pring" style="width:380px;height:380px;margin-left:-190px;margin-top:-190px;animation-delay:.6s"></div>
       <div class="pring" style="width:500px;height:500px;margin-left:-250px;margin-top:-250px;animation-delay:1.2s"></div>
-      <div class="pring" style="width:640px;height:640px;margin-left:-320px;margin-top:-320px;animation-delay:1.8s;border-color:rgba(34,197,94,.18)"></div>
+      <div class="pring" style="width:640px;height:640px;margin-left:-320px;margin-top:-320px;animation-delay:1.8s;border-color:rgba(200,210,220,0.12)"></div>
     </div>
     <div id="s8ct" style="opacity:0;position:relative;z-index:3">
-      <div style="font-size:.78rem;letter-spacing:.22em;color:rgba(34,197,94,.7);font-weight:800;text-transform:uppercase;margin-bottom:1.5rem">Launch</div>
+      <div style="font-size:.78rem;letter-spacing:.22em;color:rgba(200,210,220,0.6);font-weight:800;text-transform:uppercase;margin-bottom:1.5rem">Launch</div>
       <h1 style="font-size:clamp(3rem,10vw,7rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:1.5rem" class="glowtx">
         Never miss<br>a lead.
       </h1>
@@ -391,7 +391,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;b
       <button id="cta-btn">Start Free Trial →</button>
       <div style="display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:1.5rem">
         <div class="pdot"></div>
-        <div style="font-size:.88rem;color:rgba(255,255,255,.45);font-weight:500">Live in 20 minutes.</div>
+        <div style="font-size:.88rem;color:rgba(200,210,220,0.5);font-weight:500">Live in 20 minutes.</div>
       </div>
       <div style="margin-top:1.75rem;font-size:.72rem;color:rgba(255,255,255,.18)">No contract · Cancel anytime · Works on any number</div>
     </div>
@@ -488,13 +488,13 @@ function a1() {
       for (let i=0;i<trail.length;i++) {
         const t=trail[i], a=(i/trail.length)*0.8, s=(i/trail.length)*5;
         ctx.beginPath(); ctx.arc(t.x,t.y,s,0,Math.PI*2);
-        ctx.fillStyle=`rgba(34,197,94,${a})`; ctx.fill();
+        ctx.fillStyle=`rgba(200,210,220,${a})`; ctx.fill();
       }
       // Head glow
       const g=ctx.createRadialGradient(comet.x,comet.y,0,comet.x,comet.y,16);
       g.addColorStop(0,'rgba(255,255,255,.95)');
-      g.addColorStop(0.3,'rgba(34,197,94,.9)');
-      g.addColorStop(1,'rgba(34,197,94,0)');
+      g.addColorStop(0.3,'rgba(220,225,235,.85)');
+      g.addColorStop(1,'rgba(200,210,220,0)');
       ctx.beginPath(); ctx.arc(comet.x,comet.y,16,0,Math.PI*2);
       ctx.fillStyle=g; ctx.fill();
     },
@@ -547,7 +547,7 @@ function a2() {
     particles=particles.filter(p=>p.alpha>0);
     particles.forEach(p=>{
       ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle=`rgba(255,80,80,${p.alpha})`; ctx.fill();
+      ctx.fillStyle=`rgba(200,210,220,${p.alpha*.7})`; ctx.fill();
       p.x+=p.vx; p.y+=p.vy; p.alpha-=p.decay; p.size*=.99;
     });
     if(running) raf2=requestAnimationFrame(loop);
@@ -627,7 +627,7 @@ function a4() {
     .to('#s4bg',{opacity:1,duration:.5},2.3);
   // pulse icons
   ['si1','si2','si3'].forEach((id,i)=>{
-    gsap.to('#'+id,{boxShadow:'0 0 28px rgba(34,197,94,.55), 0 0 55px rgba(34,197,94,.25)',
+    gsap.to('#'+id,{boxShadow:'0 0 28px rgba(200,210,220,.35), 0 0 55px rgba(200,210,220,.15)',
       duration:.5, repeat:-1, yoyo:true, delay:2.2+i*.5});
   });
 }
@@ -651,7 +651,7 @@ function a5() {
     if(lit>=20){clearInterval(iv);return;}
     const idx=Math.floor(Math.random()*375);
     const d=document.getElementById('md'+idx);
-    if(d){d.style.background='#22C55E';d.style.boxShadow='0 0 8px rgba(34,197,94,.8)';}
+    if(d){d.style.background='rgba(200,210,220,0.8)';d.style.boxShadow='0 0 8px rgba(200,210,220,0.5)';}
     lit++;
   },180);
   cleanupFns[5]=()=>clearInterval(iv);
@@ -713,7 +713,7 @@ function a7() {
   const iv=setInterval(()=>{
     if(ni>=80){clearInterval(iv);return;}
     const nd=document.getElementById('sdn'+ni);
-    if(nd){nd.style.background='#22C55E';nd.style.boxShadow='0 0 10px rgba(34,197,94,.8)';}
+    if(nd){nd.style.background='rgba(200,210,220,0.8)';nd.style.boxShadow='0 0 10px rgba(200,210,220,0.5)';}
     ni++;
   },65);
   cleanupFns[7]=()=>clearInterval(iv);
@@ -732,8 +732,8 @@ function a8() {
     // Central green nebula
     const cx=canvas.width/2, cy=canvas.height/2;
     const g=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(canvas.width,canvas.height)*.45);
-    g.addColorStop(0,`rgba(34,197,94,${alpha})`);
-    g.addColorStop(0.4,`rgba(34,197,94,${alpha*.3})`);
+    g.addColorStop(0,`rgba(200,210,220,${alpha*.7})`);
+    g.addColorStop(0.4,`rgba(200,210,220,${alpha*.2})`);
     g.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
     if(running) raf8=requestAnimationFrame(drawPortal);
