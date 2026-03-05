@@ -75,20 +75,26 @@ export async function POST(request: Request) {
     )
   }
 
-  // Purchase the number — DO NOT set voiceUrl here.
-  // ElevenLabs takes over the webhook configuration when you import the number
-  // via ElevenLabs Dashboard → Telephony → Phone Numbers → Import Number → From Twilio.
+  // Purchase the number and point voiceUrl at OUR routing handler.
+  // NeverMiss owns the webhook for business-hours routing; ElevenLabs is called
+  // downstream by our handler (out-of-hours path).
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL
   const purchased = await client.incomingPhoneNumbers.create({
     phoneNumber: available[0].phoneNumber,
     friendlyName: `NeverMiss — Business ${business.id}`,
+    voiceUrl: `${appUrl}/api/webhook/twilio/voice`,
+    voiceMethod: 'POST',
+    statusCallback: `${appUrl}/api/webhook/twilio/status`,
+    statusCallbackMethod: 'POST',
   })
 
-  // Persist to DB
+  // Persist to DB (include elevenlabs_agent_id if provided in this request)
   await supabase
     .from('businesses')
     .update({
       twilio_phone_number: purchased.phoneNumber,
       twilio_phone_sid: purchased.sid,
+      ...(elevenlabsAgentId ? { elevenlabs_agent_id: elevenlabsAgentId } : {}),
     })
     .eq('id', business.id)
 
@@ -96,6 +102,7 @@ export async function POST(request: Request) {
     phoneNumber: purchased.phoneNumber,
     phoneSid: purchased.sid,
     elevenlabsSetupRequired: true,
+    manualStep: 'Import this number in ElevenLabs dashboard: Telephony → Phone Numbers → Import from Twilio',
     nextStep: [
       'Your Twilio number is ready. To activate AI answering:',
       '1. Go to ElevenLabs Dashboard → Telephony → Phone Numbers',
@@ -103,7 +110,6 @@ export async function POST(request: Request) {
       '3. Enter your Twilio Account SID and Auth Token',
       `4. Select the number: ${purchased.phoneNumber}`,
       '5. Assign it to your NeverMiss AI agent',
-      'ElevenLabs will automatically configure the Twilio webhook.',
     ].join('\n'),
   })
 }

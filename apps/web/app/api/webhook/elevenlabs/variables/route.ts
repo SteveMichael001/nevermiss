@@ -1,72 +1,162 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
 /**
- * Dynamic variables webhook — called by ElevenLabs BEFORE a conversation starts.
+ * POST /api/webhook/elevenlabs/variables
  *
- * ElevenLabs POSTs here with the agent_id and caller metadata.
- * We return per-business variables that get injected into the agent's system prompt,
- * enabling one agent to serve all contractors.
+ * Pre-call dynamic variables endpoint — ElevenLabs calls this BEFORE starting
+ * a conversation to fetch per-business personalization data.
+ *
+ * This is what makes one shared ElevenLabs agent sound like each contractor's
+ * dedicated receptionist: business_name, owner_name, and trade are injected
+ * into the system prompt at call start.
+ *
+ * Flow:
+ *   1. Parse ElevenLabs POST body (JSON)
+ *   2. Look up business in Supabase by elevenlabs_agent_id = agent_id
+ *      Note: The `businesses` table needs an `elevenlabs_agent_id TEXT` column.
+ *      For V1 with one shared agent, all businesses share the same agent_id
+ *      (ELEVENLABS_AGENT_ID env var). Lookup falls through to defaults gracefully.
+ *   3. Return { dynamic_variables: { ... } }
+ *   4. Always return 200 — never crash. ElevenLabs will proceed regardless.
  */
 
+import { createClient } from '@supabase/supabase-js'
+import { NextResponse } from 'next/server'
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+/** Request body ElevenLabs sends to this endpoint before each conversation */
 interface ElevenLabsVariablesRequest {
   agent_id: string
-  caller?: {
-    phone_number?: string
+  caller: {
+    phone_number: string
   }
-  call?: {
-    twilio_call_sid?: string
+  call: {
+    twilio_call_sid: string
   }
 }
 
-export async function POST(request: Request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Supabase env vars not configured')
-  }
+/** Variables returned to ElevenLabs — injected into agent system prompt */
+interface DynamicVariables {
+  business_name: string
+  owner_name: string
+  trade: string
+  business_id: string
+  caller_phone: string
+  twilio_call_sid: string
+}
 
-  let body: ElevenLabsVariablesRequest
+interface VariablesResponse {
+  dynamic_variables: DynamicVariables
+}
+
+/** Subset of the businesses table we need for this endpoint */
+interface BusinessRecord {
+  id: string
+  name: string
+  owner_name: string
+  trade: string
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Supabase admin client — no cookie auth needed for webhook routes */
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error(
+      'Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY'
+    )
+  }
+  return createClient(url, key)
+}
+
+/** Graceful default variables — generic greeting, no business context */
+function defaultVariables(
+  callerPhone: string,
+  twilioCallSid: string
+): DynamicVariables {
+  return {
+    business_name: 'the business',
+    owner_name: 'the owner',
+    trade: 'general',
+    business_id: '',
+    caller_phone: callerPhone,
+    twilio_call_sid: twilioCallSid,
+  }
+}
+
+/** Build a 200 JSON response with dynamic_variables */
+function variablesResponse(variables: DynamicVariables): NextResponse<VariablesResponse> {
+  return NextResponse.json<VariablesResponse>(
+    { dynamic_variables: variables },
+    { status: 200 }
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Route handler
+// ---------------------------------------------------------------------------
+
+export async function POST(req: Request): Promise<NextResponse<VariablesResponse>> {
+  let callerPhone = ''
+  let twilioCallSid = ''
+
   try {
-    body = await request.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
+    // 1. Parse JSON body from ElevenLabs
+    const body = (await req.json()) as ElevenLabsVariablesRequest
 
-  const agentId = body.agent_id
-  const callerPhone = body.caller?.phone_number ?? null
-  const twilioCallSid = body.call?.twilio_call_sid ?? null
+    callerPhone = body?.caller?.phone_number ?? ''
+    twilioCallSid = body?.call?.twilio_call_sid ?? ''
+    const agentId = body?.agent_id ?? ''
 
-  const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    console.log(
+      `[elevenlabs/variables] agentId=${agentId} callerPhone=${callerPhone} callSid=${twilioCallSid}`
+    )
 
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id, name, trade, owner_name')
-    .eq('elevenlabs_agent_id', agentId)
-    .single()
+    if (!agentId) {
+      // No agent_id to look up — return defaults
+      console.warn('[elevenlabs/variables] No agent_id in request — returning defaults')
+      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+    }
 
-  if (!business) {
-    console.warn(`[ElevenLabs Variables] No business found for agent_id: ${agentId} — returning defaults`)
-    return NextResponse.json({
-      dynamic_variables: {
-        business_name: 'the business',
-        owner_name: 'the owner',
-        trade: 'home services',
-        business_id: '',
-        caller_phone: callerPhone ?? '',
-        twilio_call_sid: twilioCallSid ?? '',
-      },
-    })
-  }
+    // 2. Look up business by elevenlabs_agent_id
+    const supabase = getSupabaseAdmin()
+    const { data: business, error } = await supabase
+      .from('businesses')
+      .select('id, name, owner_name, trade')
+      .eq('elevenlabs_agent_id', agentId)
+      .single<BusinessRecord>()
 
-  return NextResponse.json({
-    dynamic_variables: {
+    if (error || !business) {
+      // Business not found — log and return graceful defaults
+      // This is normal in V1 if all businesses share one agent_id and
+      // the elevenlabs_agent_id column isn't populated per-business yet.
+      console.warn(
+        `[elevenlabs/variables] Business not found for agentId=${agentId} — returning defaults`
+      )
+      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+    }
+
+    // 3. Found — return personalized variables
+    console.log(
+      `[elevenlabs/variables] Matched business="${business.name}" id=${business.id} trade=${business.trade}`
+    )
+
+    return variablesResponse({
       business_name: business.name,
       owner_name: business.owner_name,
       trade: business.trade,
       business_id: business.id,
-      caller_phone: callerPhone ?? '',
-      twilio_call_sid: twilioCallSid ?? '',
-    },
-  })
+      caller_phone: callerPhone,
+      twilio_call_sid: twilioCallSid,
+    })
+  } catch (err) {
+    // 4. Never crash — always return 200 so ElevenLabs can proceed with defaults
+    console.error('[elevenlabs/variables] Unhandled error:', err)
+    return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+  }
 }
