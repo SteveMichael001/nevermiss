@@ -20,6 +20,7 @@ import { WebSocketServer } from 'ws';
 import { URL } from 'url';
 import webhookRouter from './twilio/webhook.js';
 import { attachMediaStreamHandler } from './twilio/media-stream.js';
+import { supabase } from './db/supabase.js';
 
 // ─────────────────────────────────────────────────────────────────
 // Config
@@ -68,6 +69,30 @@ app.get('/health', (_req, res) => {
 
 // Twilio webhooks
 app.use('/webhook/twilio', webhookRouter);
+
+// Provision a Twilio phone number to a business — called by the web dashboard during onboarding
+app.post('/provision', async (req: express.Request, res: express.Response) => {
+  const { businessId, phoneNumber } = req.body as { businessId?: string; phoneNumber?: string };
+
+  if (!businessId || !phoneNumber) {
+    res.status(400).json({ error: 'Missing required fields: businessId, phoneNumber' });
+    return;
+  }
+
+  const { error } = await supabase
+    .from('businesses')
+    .update({ twilio_phone_number: phoneNumber })
+    .eq('id', businessId);
+
+  if (error) {
+    console.error('[Provision] Failed to assign phone number:', error);
+    res.status(500).json({ error: 'Failed to provision phone number' });
+    return;
+  }
+
+  console.log(`[Provision] Assigned ${phoneNumber} to business ${businessId}`);
+  res.json({ success: true, phoneNumber });
+});
 
 // 404 handler
 app.use((_req, res) => {

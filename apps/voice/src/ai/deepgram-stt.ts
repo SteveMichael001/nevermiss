@@ -107,9 +107,13 @@ export class DeepgramSTT extends EventEmitter implements STTEvents {
         this.connection.on(LiveTranscriptionEvents.Error, (err) => {
           console.error(`[STT][${this.callSid}] Deepgram error:`, err);
           this.isConnected = false;
-          this.emit('error', err instanceof Error ? err : new Error(String(err)));
-          // Reject the connect() promise if still pending
-          reject(err);
+          const errorObj = err instanceof Error ? err : new Error(String(err));
+          // Reject the connect() promise first so the caller can handle it
+          reject(errorObj);
+          // Only emit if a listener is attached — unhandled 'error' events crash Node
+          if (this.listenerCount('error') > 0) {
+            this.emit('error', errorObj);
+          }
         });
 
         // Metadata event (informational)
@@ -118,7 +122,11 @@ export class DeepgramSTT extends EventEmitter implements STTEvents {
         });
 
       } catch (err) {
-        reject(err);
+        const errorObj = err instanceof Error ? err : new Error(String(err));
+        if (this.listenerCount('error') > 0) {
+          this.emit('error', errorObj);
+        }
+        reject(errorObj);
       }
     });
   }

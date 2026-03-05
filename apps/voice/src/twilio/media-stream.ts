@@ -72,6 +72,9 @@ class MediaStreamHandler {
   private stt: DeepgramSTT | null = null;
   private engine: ConversationEngine | null = null;
 
+  // DB record ID for this call (set as soon as the record is created)
+  private callDbId: string | null = null;
+
   // Track if we're currently sending audio (to avoid sending interleaved)
   private isSpeaking = false;
   // Queue of audio chunks waiting to be sent
@@ -183,17 +186,24 @@ class MediaStreamHandler {
       return;
     }
 
-    // 2. Create call record in DB
-    const callDbId = await createCallRecord({
+    // 2. Create call record in DB immediately so callDbId is always available
+    this.callDbId = await createCallRecord({
       businessId,
       callSid,
       callerPhone: this.callerPhone,
     });
 
-    console.log(`[MediaStream][${callSid}] Call record created: ${callDbId}`);
+    console.log(`[MediaStream][${callSid}] Call record created: ${this.callDbId}`);
 
-    // 3. Set up Deepgram STT
+    // 3. Set up Deepgram STT — attach error listener BEFORE connecting to avoid
+    //    unhandled 'error' event crash if the connection fails during setup
     this.stt = new DeepgramSTT(callSid);
+
+    this.stt.on('error', (err: Error) => {
+      console.error(`[STT][${callSid}] STT error:`, err.message);
+      // Don't crash the call on STT errors — just log
+    });
+
     await this.stt.connect();
 
     // 4. Set up conversation engine
@@ -206,7 +216,7 @@ class MediaStreamHandler {
     });
 
     this.engine.on('end', (session: CallSession) => {
-      void this.handleCallEnd(session, callDbId);
+      void this.handleCallEnd(session, this.callDbId);
     });
 
     this.engine.on('emergency', (session: CallSession) => {
@@ -216,14 +226,13 @@ class MediaStreamHandler {
 
     // 6. Wire up STT events
     this.stt.on('transcript', (text: string, isFinal: boolean) => {
-      if (this.isSpeaking && !isFinal) return; // Ignore interim while AI is speaking
+      // Barge-in: if caller starts talking while AI is playing, clear the audio buffer
+      if (this.isSpeaking) {
+        this.clearAudio();
+      }
+      if (this.isSpeaking && !isFinal) return; // Ignore interim transcripts while AI is speaking
       console.log(`[STT][${callSid}] ${isFinal ? 'FINAL' : 'interim'}: "${text}"`);
       this.engine?.processTranscript(text, isFinal);
-    });
-
-    this.stt.on('error', (err: Error) => {
-      console.error(`[STT][${callSid}] STT error:`, err.message);
-      // Don't crash the call on STT errors — just log
     });
 
     // 7. Start the conversation! Send the greeting.
@@ -287,7 +296,25 @@ class MediaStreamHandler {
     // If engine hasn't signaled end yet, trigger post-call processing now
     if (this.engine && !this.callEnded) {
       const session = this.engine.getSession();
-      void this.handleCallEnd(session, null);
+      // If the call ended before the pipeline finished creating the DB record,
+      // create it now with whatever data is available so no call is lost
+      if (!this.callDbId && this.businessId && this.callSid) {
+        createCallRecord({
+          businessId: this.businessId,
+          callSid: this.callSid,
+          callerPhone: this.callerPhone,
+        })
+          .then((id) => {
+            this.callDbId = id;
+            void this.handleCallEnd(session, this.callDbId);
+          })
+          .catch((err) => {
+            console.error(`[MediaStream][${this.callSid}] createCallRecord in handleStop failed:`, err);
+            void this.handleCallEnd(session, null);
+          });
+      } else {
+        void this.handleCallEnd(session, this.callDbId);
+      }
     }
 
     this.cleanup();
@@ -352,10 +379,6 @@ class MediaStreamHandler {
       };
 
       this.ws.send(JSON.stringify(mediaEvent));
-
-      // Small throttle to avoid flooding Twilio (20ms chunks at 8kHz = 160 bytes per 20ms)
-      // This delay matches the audio duration of each chunk
-      await sleep(20);
     }
   }
 
@@ -431,17 +454,16 @@ class MediaStreamHandler {
       if (session.isEmergency) urgency = 'emergency';
 
       // Update call record with extraction results
-      if (callDbId) {
-        await updateCallRecord(callSid, {
-          callerName,
-          serviceNeeded,
-          urgency,
-          preferredCallback,
-          fullTranscript: transcriptText,
-          extractionJson: extraction,
-          durationSeconds,
-        });
-      }
+      // updateCallRecord looks up by callSid — callDbId guard removed (was wrong)
+      await updateCallRecord(callSid, {
+        callerName,
+        serviceNeeded,
+        urgency,
+        preferredCallback,
+        fullTranscript: transcriptText,
+        extractionJson: extraction,
+        durationSeconds,
+      });
     } catch (err) {
       console.error(`[PostCall][${callSid}] Extraction error:`, err);
       // Still proceed with notifications using session data
@@ -476,12 +498,10 @@ class MediaStreamHandler {
     if (smsResult.success && smsResult.sentAt) {
       console.log(`[PostCall][${callSid}] SMS sent in ${notificationLatencyMs}ms to ${smsResult.recipients.join(', ')}`);
 
-      if (callDbId) {
-        await updateCallRecord(callSid, {
-          smssentAt: smsResult.sentAt.toISOString(),
-          notificationLatencyMs: Date.now() - callStartMs,
-        });
-      }
+      await updateCallRecord(callSid, {
+        smssentAt: smsResult.sentAt.toISOString(),
+        notificationLatencyMs: Date.now() - callStartMs,
+      });
     } else {
       console.error(`[PostCall][${callSid}] SMS failed:`, smsResult.errors);
     }
@@ -491,9 +511,7 @@ class MediaStreamHandler {
       .then((emailResult) => {
         if (emailResult.success) {
           console.log(`[PostCall][${callSid}] Email sent — ID: ${emailResult.emailId}`);
-          if (callDbId) {
-            void updateCallRecord(callSid, { emailSentAt: new Date().toISOString() });
-          }
+          void updateCallRecord(callSid, { emailSentAt: new Date().toISOString() });
         } else {
           console.error(`[PostCall][${callSid}] Email failed:`, emailResult.error);
         }
@@ -542,6 +560,4 @@ function buildTranscriptText(session: CallSession): string {
     .join('\n');
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+

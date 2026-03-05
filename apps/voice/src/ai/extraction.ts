@@ -22,7 +22,7 @@ if (!ANTHROPIC_API_KEY) {
 const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
 // Use Claude 3.5 Haiku — latest, cheapest, fast
-const EXTRACTION_MODEL = 'claude-haiku-4-5';
+const EXTRACTION_MODEL = 'claude-3-5-haiku-20241022';
 
 /**
  * Extract structured lead data from a call transcript.
