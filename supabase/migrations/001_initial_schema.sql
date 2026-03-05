@@ -79,9 +79,16 @@ CREATE TABLE trade_prompts (
   common_services TEXT[] NOT NULL
 );
 
+-- ElevenLabs integration columns
+ALTER TABLE businesses ADD COLUMN IF NOT EXISTS elevenlabs_agent_id TEXT;
+ALTER TABLE businesses ADD COLUMN IF NOT EXISTS elevenlabs_conversation_id TEXT;
+
+ALTER TABLE calls ADD COLUMN IF NOT EXISTS elevenlabs_conversation_id TEXT;
+
 -- Indexes
 CREATE INDEX idx_businesses_owner_id ON businesses(owner_id);
 CREATE INDEX idx_businesses_twilio_phone ON businesses(twilio_phone_number);
+CREATE INDEX idx_businesses_elevenlabs_agent_id ON businesses(elevenlabs_agent_id);
 CREATE INDEX idx_calls_business_id ON calls(business_id);
 CREATE INDEX idx_calls_created_at ON calls(created_at DESC);
 CREATE INDEX idx_calls_lead_status ON calls(lead_status);

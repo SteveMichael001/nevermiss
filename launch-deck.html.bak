@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NeverMiss AI — Launch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:'Plus Jakarta Sans',sans-serif}
+#deck{position:relative;width:100%;height:100%}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;padding:1.5rem 1.5rem 5rem}
+.slide.active{pointer-events:all}
+#prog{position:fixed;top:0;left:0;height:2px;background:#22C55E;z-index:200;box-shadow:0 0 12px rgba(34,197,94,0.6);transition:width .45s cubic-bezier(.4,0,.2,1)}
+#snum{position:fixed;top:1.2rem;right:1.5rem;font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.2);z-index:200}
+#nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:1rem}
+.nb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);padding:9px 20px;border-radius:100px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.08em;transition:all .2s;backdrop-filter:blur(10px);white-space:nowrap}
+.nb:hover,.nb.p{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35);color:#22C55E}
+.ndot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);cursor:pointer;transition:all .3s}
+.ndot.on{background:#22C55E;box-shadow:0 0 8px rgba(34,197,94,.8);transform:scale(1.4)}
+.slabel{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:rgba(34,197,94,.7);margin-bottom:.85rem}
+.glowtx{text-shadow:0 0 30px rgba(34,197,94,.6),0 0 70px rgba(34,197,94,.25)}
+.glowbx{box-shadow:0 0 30px rgba(34,197,94,.25),0 0 60px rgba(34,197,94,.1)}
+.holo{background:linear-gradient(135deg,rgba(34,197,94,.07) 0%,rgba(0,0,0,0) 60%,rgba(34,197,94,.04) 100%);border:1px solid rgba(34,197,94,.18);border-radius:16px}
+.pdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:#22C55E;box-shadow:0 0 10px #22C55E;animation:pdp 2s ease-in-out infinite}
+@keyframes pdp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+.pring{position:absolute;border-radius:50%;border:1.5px solid rgba(34,197,94,.35);animation:prp 3.5s ease-in-out infinite}
+@keyframes prp{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.35}50%{transform:translate(-50%,-50%) scale(1.06);opacity:.75}}
+canvas{position:absolute;inset:0;pointer-events:none}
+#sms{position:fixed;top:-135px;right:16px;width:min(295px,calc(100vw - 32px));background:rgba(6,6,6,.97);border:1px solid rgba(34,197,94,.4);border-radius:16px;padding:12px 14px;z-index:300;backdrop-filter:blur(16px);box-shadow:0 20px 60px rgba(0,0,0,.9),0 0 30px rgba(34,197,94,.18)}
+.phone{width:min(265px,78vw);background:#080808;border-radius:36px;border:1.5px solid rgba(255,255,255,.1);padding:18px 13px 14px;box-shadow:0 40px 80px rgba(0,0,0,.9),0 0 50px rgba(34,197,94,.1)}
+.pnotch{width:68px;height:5px;border-radius:3px;background:rgba(255,255,255,.15);margin:0 auto 13px}
+.bubble{max-width:88%;padding:8px 12px;border-radius:16px;font-size:12px;line-height:1.45;margin-bottom:6px;opacity:0;transform:translateY(8px)}
+.bubble.ai{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.28);align-self:flex-start;border-bottom-left-radius:3px}
+.bubble.caller{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);align-self:flex-end;border-bottom-right-radius:3px}
+.tdot{width:5px;height:5px;border-radius:50%;background:rgba(34,197,94,.7);animation:tdb 1.1s ease-in-out infinite}
+.tdot:nth-child(2){animation-delay:.18s}.tdot:nth-child(3){animation-delay:.36s}
+@keyframes tdb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.sicon{width:74px;height:74px;border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;font-size:1.85rem;background:rgba(34,197,94,.08);border:2px solid rgba(34,197,94,.28)}
+.wbar{width:3px;border-radius:2px;background:rgba(34,197,94,.45);height:8px;flex-shrink:0}
+#cta-btn{padding:14px 36px;border-radius:100px;font-size:1rem;font-weight:700;font-family:inherit;background:#22C55E;color:#000;border:none;cursor:pointer;letter-spacing:.03em;box-shadow:0 0 40px rgba(34,197,94,.5),0 0 80px rgba(34,197,94,.2);transition:transform .2s,box-shadow .2s}
+#cta-btn:hover{transform:scale(1.06);box-shadow:0 0 60px rgba(34,197,94,.6),0 0 120px rgba(34,197,94,.3)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1000;background:repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,.025) 3px,rgba(0,0,0,.025) 4px)}
+@media(max-width:640px){
+  .slide{padding:1rem 1rem 4.5rem}
+  #nav{gap:.65rem}
+  .nb{padding:8px 13px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="snum">01 / 08</div>
+
+<!-- SMS Notification -->
+<div id="sms">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <div style="width:34px;height:34px;border-radius:50%;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.35);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🔔</div>
+    <div>
+      <div style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.12em;font-weight:700">NEVERMISS AI · NOW</div>
+      <div style="font-size:13px;font-weight:800;color:#22C55E">New Lead Captured</div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.5"><span style="font-weight:700;color:#fff">John D.</span> — Burst water heater — <span style="color:#22C55E;font-weight:800">URGENT</span></div>
+  <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);font-size:12px;color:#22C55E;font-weight:700;cursor:pointer">📞 Tap to call back →</div>
+</div>
+
+<div id="deck">
+
+<!-- ══ SLIDE 1: OPENING ══ -->
+<div class="slide" id="s1">
+  <canvas id="c1"></canvas>
+  <div id="s1t" style="position:relative;z-index:2;text-align:center">
+    <div id="s1m" style="font-size:clamp(1.8rem,5.5vw,4rem);font-weight:800;line-height:1.2;letter-spacing:-.025em;opacity:0">
+      That was a $2,000 job.<br>
+      <span style="color:rgba(255,255,255,.32)">Gone.</span>
+    </div>
+    <div id="s1b" style="margin-top:3.5rem;opacity:0">
+      <div style="font-size:clamp(2.8rem,9vw,6.5rem);font-weight:800;letter-spacing:-.04em;line-height:1" class="glowtx">
+        <span style="color:#fff">Never</span><span style="color:#22C55E">Miss</span><span style="color:#fff"> AI</span>
+      </div>
+      <div style="font-size:clamp(.65rem,1.6vw,.9rem);color:rgba(255,255,255,.3);margin-top:1rem;letter-spacing:.18em;font-weight:600">EVERY CALL ANSWERED · EVERY LEAD CAPTURED</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 2: THE PAIN ══ -->
+<div class="slide" id="s2">
+  <canvas id="c2"></canvas>
+  <div style="position:relative;z-index:2;width:100%;max-width:1050px">
+    <div class="slabel text-center" id="s2lb" style="opacity:0">The Problem</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(1.5rem,5vw,4rem);align-items:center">
+      <!-- Roof illustration -->
+      <div id="s2L" style="opacity:0;transform:translateX(-35px)">
+        <svg viewBox="0 0 320 295" width="100%" style="max-width:340px;margin:0 auto;display:block" xmlns="http://www.w3.org/2000/svg">
+          <defs><radialGradient id="sg" cx="75%" cy="15%" r="40%"><stop offset="0%" stop-color="rgba(255,200,50,.12)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>
+          <rect width="320" height="295" fill="url(#sg)"/>
+          <polygon points="25,165 160,78 295,165" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+          <rect x="25" y="165" width="270" height="11" fill="rgba(255,255,255,.06)" rx="2"/>
+          <line x1="65" y1="165" x2="65" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="105" y1="165" x2="105" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="145" y1="165" x2="145" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="185" y1="165" x2="185" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="225" y1="165" x2="225" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <line x1="265" y1="165" x2="265" y2="176" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+          <!-- Worker -->
+          <rect x="146" y="118" width="16" height="28" fill="rgba(255,255,255,.13)" rx="3"/>
+          <circle cx="154" cy="110" r="10" fill="rgba(255,255,255,.18)"/>
+          <ellipse cx="154" cy="103" rx="13" ry="5.5" fill="rgba(255,165,0,.45)"/>
+          <rect x="140" y="102" width="28" height="3.5" fill="rgba(255,165,0,.45)" rx="1.5"/>
+          <rect x="144" y="142" width="20" height="4" fill="rgba(255,255,255,.1)" rx="2"/>
+          <rect x="162" y="126" width="3" height="14" fill="rgba(255,255,255,.2)" rx="1"/>
+          <!-- Dotted line to phone -->
+          <line x1="154" y1="148" x2="220" y2="220" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="5,5"/>
+          <!-- Phone ringing -->
+          <g id="phone-grp" transform="translate(220,228)">
+            <rect x="-18" y="-18" width="36" height="36" rx="10" fill="rgba(34,197,94,.08)" stroke="rgba(34,197,94,.35)" stroke-width="1.2"/>
+            <text x="0" y="8" text-anchor="middle" font-size="18">📱</text>
+            <circle id="rw1" cx="0" cy="0" r="26" fill="none" stroke="rgba(34,197,94,.3)" stroke-width="1.2"/>
+            <circle id="rw2" cx="0" cy="0" r="42" fill="none" stroke="rgba(34,197,94,.15)" stroke-width="1"/>
+          </g>
+          <rect x="170" y="270" width="100" height="22" rx="11" fill="rgba(255,50,50,.1)" stroke="rgba(255,50,50,.3)" stroke-width="1"/>
+          <text x="220" y="285" text-anchor="middle" font-size="10" fill="rgba(255,90,90,.85)" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">MISSED CALL</text>
+        </svg>
+        <div style="text-align:center;font-size:.78rem;color:rgba(255,255,255,.28);margin-top:.3rem">Mike. On the job. Unreachable.</div>
+      </div>
+      <!-- Stats -->
+      <div id="s2R" style="opacity:0;transform:translateX(35px)">
+        <div style="margin-bottom:1.75rem">
+          <div style="font-size:clamp(3rem,9vw,5.5rem);font-weight:800;color:#22C55E;line-height:1" class="glowtx">1 in 4</div>
+          <div style="font-size:clamp(.95rem,2.5vw,1.3rem);color:rgba(255,255,255,.65);font-weight:600;margin-top:.4rem">calls go unanswered.</div>
+          <div style="font-size:.83rem;color:rgba(255,255,255,.3);margin-top:.35rem;line-height:1.6">They don't leave voicemails.<br>They call your competitor.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem">
+          <div class="holo" id="s2c1" style="padding:1rem;opacity:0">
+            <div style="font-size:1.75rem;font-weight:800;color:#fff">$2K</div>
+            <div style="font-size:.7rem;color:rgba(255,255,255,.38);margin-top:.2rem">avg job value</div>
+          </div>
+          <div class="holo" id="s2c2" style="padding:1rem;opacity:0">
+            <div style="font-size:1.75rem;font-weight:800;color:rgba(255,90,90,.9)">×4/day</div>
+            <div style="font-size:.7rem;color:rgba(255,255,255,.38);margin-top:.2rem">missed calls avg</div>
+          </div>
+        </div>
+        <div id="s2ls" style="padding:1rem 1.2rem;border-radius:13px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.2);opacity:0">
+          <div style="font-size:.67rem;color:rgba(255,80,80,.55);letter-spacing:.13em;font-weight:800;text-transform:uppercase;margin-bottom:.4rem">Monthly Revenue Bleeding Out</div>
+          <div style="font-size:2.1rem;font-weight:800;color:rgba(255,80,80,.9)">$16,000+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 3: THE DEMO ══ -->
+<div class="slide" id="s3">
+  <div style="position:relative;z-index:2;width:100%;max-width:950px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(1.5rem,5vw,4rem)">
+    <!-- Phone mockup -->
+    <div id="s3ph" style="opacity:0;transform:scale(.88) translateY(18px);flex-shrink:0">
+      <div class="phone glowbx">
+        <div class="pnotch"></div>
+        <div style="background:linear-gradient(180deg,#0c1015 0%,#000 100%);border-radius:22px;padding:18px 13px 14px">
+          <div style="font-size:10px;color:#22C55E;letter-spacing:.15em;font-weight:800;text-align:center;margin-bottom:4px">● LIVE CALL</div>
+          <div style="font-size:.88rem;font-weight:800;color:#fff;text-align:center;margin-bottom:2px">Mike's Plumbing</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.35);text-align:center;margin-bottom:11px">(619) 555-0142</div>
+          <div id="wf" style="display:flex;align-items:center;justify-content:center;gap:3px;height:22px;margin-bottom:13px"></div>
+          <div id="ca" style="display:flex;flex-direction:column;min-height:190px;gap:0;overflow:hidden"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Text -->
+    <div id="s3tx" style="opacity:0;transform:translateX(25px);max-width:380px">
+      <div class="slabel">Live Demo</div>
+      <h2 style="font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;line-height:1.2;margin-bottom:.85rem">
+        Your AI picks up.<br><span style="color:#22C55E">Every. Single. Time.</span>
+      </h2>
+      <p style="color:rgba(255,255,255,.42);font-size:.88rem;line-height:1.75;margin-bottom:1.3rem">Sounds human. Captures leads. Texts you in under 60 seconds. No menus. No hold music. No lost jobs.</p>
+      <div style="display:flex;align-items:center;gap:.7rem;padding:.85rem 1.1rem;border-radius:12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22)">
+        <div class="pdot"></div>
+        <div>
+          <div style="font-size:.77rem;font-weight:800;color:#22C55E">AI Active 24/7</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.35);margin-top:1px">Mike's on a job. AI has the phone.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 4: HOW IT WORKS ══ -->
+<div class="slide" id="s4">
+  <div style="position:relative;z-index:2;width:100%;max-width:900px">
+    <div class="slabel text-center" id="s4lb" style="opacity:0">How It Works</div>
+    <h2 id="s4ti" style="font-size:clamp(1.7rem,4vw,2.9rem);font-weight:800;text-align:center;margin-bottom:.5rem;opacity:0">
+      Zero to answered in <span style="color:#22C55E">under 60 seconds.</span>
+    </h2>
+    <!-- Steps -->
+    <div style="display:flex;gap:1rem;margin-top:2.5rem;align-items:flex-start;justify-content:center;flex-wrap:wrap">
+      <div id="s4s1" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
+        <div class="sicon" id="si1">📞</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 01</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">Call Comes In</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Customer calls. You're on the job. NeverMiss AI answers instantly — sounds just like your business.</div>
+      </div>
+      <!-- Arrow 1 -->
+      <div id="s4a1" style="opacity:0;display:flex;align-items:center;padding-top:37px;flex-shrink:0">
+        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(34,197,94,.5),rgba(34,197,94,.2))"></div>
+        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(34,197,94,.4)"></div>
+      </div>
+      <div id="s4s2" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
+        <div class="sicon" id="si2">🤖</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 02</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">AI Captures Lead</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Conversation feels human. Gets their name, number, and what they need. No menus. Just results.</div>
+      </div>
+      <!-- Arrow 2 -->
+      <div id="s4a2" style="opacity:0;display:flex;align-items:center;padding-top:37px;flex-shrink:0">
+        <div style="width:35px;height:2px;background:linear-gradient(90deg,rgba(34,197,94,.5),rgba(34,197,94,.2))"></div>
+        <div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid rgba(34,197,94,.4)"></div>
+      </div>
+      <div id="s4s3" style="opacity:0;transform:translateY(28px);text-align:center;flex:1;min-width:180px;max-width:240px">
+        <div class="sicon" id="si3">⚡</div>
+        <div style="font-size:.68rem;letter-spacing:.2em;color:rgba(34,197,94,.7);font-weight:800;margin-bottom:.4rem">STEP 03</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:.45rem">You Get Texted</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65">Within 60 seconds: who called, why, how urgent. One tap to call back. Job secured.</div>
+      </div>
+    </div>
+    <div id="s4bg" style="text-align:center;margin-top:2.5rem;opacity:0">
+      <div style="display:inline-flex;align-items:center;gap:.7rem;padding:.7rem 1.5rem;border-radius:100px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.28)">
+        <div class="pdot"></div>
+        <span style="font-size:.82rem;font-weight:700;color:#22C55E">Complete in under 60 seconds — guaranteed</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 5: THE MARKET ══ -->
+<div class="slide" id="s5">
+  <div style="position:relative;z-index:2;width:100%;max-width:1050px">
+    <div class="slabel text-center" id="s5lb" style="opacity:0">The Market</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(1.5rem,5vw,4rem);align-items:center">
+      <!-- Dot grid -->
+      <div id="s5gw" style="opacity:0">
+        <div style="margin-bottom:.85rem;font-size:.8rem;color:rgba(255,255,255,.35)">400,000+ small contractors · No great solution</div>
+        <div id="mdg" style="display:grid;grid-template-columns:repeat(25,1fr);gap:5px;max-width:340px"></div>
+        <div style="margin-top:.85rem;display:flex;gap:1.25rem;font-size:.72rem;color:rgba(255,255,255,.38)">
+          <div style="display:flex;align-items:center;gap:.4rem"><div style="width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15)"></div>Untapped</div>
+          <div style="display:flex;align-items:center;gap:.4rem"><div style="width:7px;height:7px;border-radius:50%;background:#22C55E;box-shadow:0 0 6px #22C55E"></div>NeverMiss customer</div>
+        </div>
+      </div>
+      <!-- Comparison -->
+      <div id="s5R" style="opacity:0;transform:translateX(30px)">
+        <h2 style="font-size:clamp(1.7rem,4vw,2.5rem);font-weight:800;line-height:1.2;margin-bottom:1.75rem">
+          The gap nobody<br>filled. <span style="color:#22C55E">Until now.</span>
+        </h2>
+        <div style="display:flex;flex-direction:column;gap:.7rem">
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">SameDay AI</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Priced out small contractors</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">$449/mo</div>
+          </div>
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Generic AI</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Not built for trades. Fails.</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">Fails</div>
+          </div>
+          <div style="padding:.9rem 1.1rem;border-radius:12px;background:rgba(255,50,50,.04);border:1px solid rgba(255,50,50,.15);display:flex;justify-content:space-between;align-items:center">
+            <div><div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55)">Answering Service</div><div style="font-size:.72rem;color:rgba(255,80,80,.65);margin-top:2px">Slow, scripted, expensive</div></div>
+            <div style="font-size:1.1rem;font-weight:800;color:rgba(255,80,80,.8)">$400+</div>
+          </div>
+          <div style="padding:.9rem 1.1rem;border-radius:13px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.4);display:flex;justify-content:space-between;align-items:center;box-shadow:0 0 25px rgba(34,197,94,.15)">
+            <div>
+              <div style="font-size:.88rem;font-weight:800;color:#22C55E">NeverMiss AI</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Built for contractors. Flat rate.</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:1.2rem;font-weight:800;color:#22C55E" class="glowtx">$250/mo</div>
+              <div style="font-size:.65rem;color:rgba(34,197,94,.6);font-weight:800">UNCONTESTED</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 6: THE MATH ══ -->
+<div class="slide" id="s6">
+  <div style="position:relative;z-index:2;width:100%;max-width:860px">
+    <div class="slabel text-center" id="s6lb" style="opacity:0">The Math</div>
+    <h2 id="s6ti" style="font-size:clamp(1.7rem,4vw,2.9rem);font-weight:800;text-align:center;margin-bottom:.4rem;opacity:0">
+      This is a <span style="color:#22C55E">90% margin</span> business.
+    </h2>
+    <p id="s6su" style="text-align:center;color:rgba(255,255,255,.38);font-size:.88rem;margin-bottom:2.5rem;opacity:0">Simple unit economics. Clear path to profitability.</p>
+    <!-- Unit economics cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem">
+      <div class="holo" id="s6c1" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
+        <div style="font-size:.67rem;letter-spacing:.14em;color:rgba(255,255,255,.38);text-transform:uppercase;margin-bottom:.45rem">Revenue / Customer</div>
+        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#22C55E;font-variant-numeric:tabular-nums" class="glowtx" id="cr1">$0</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-top:.2rem">per month</div>
+      </div>
+      <div class="holo" id="s6c2" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
+        <div style="font-size:.67rem;letter-spacing:.14em;color:rgba(255,255,255,.38);text-transform:uppercase;margin-bottom:.45rem">Cost / Customer</div>
+        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums" id="cr2">$0</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-top:.2rem">per month</div>
+      </div>
+      <div class="holo" id="s6c3" style="padding:1.25rem;text-align:center;opacity:0;transform:translateY(20px)">
+        <div style="font-size:.67rem;letter-spacing:.14em;color:rgba(255,255,255,.38);text-transform:uppercase;margin-bottom:.45rem">Gross Margin</div>
+        <div style="font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#22C55E;font-variant-numeric:tabular-nums" class="glowtx" id="cr3">0%</div>
+        <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-top:.2rem">per customer</div>
+      </div>
+    </div>
+    <!-- MRR milestones -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+      <div id="s6m1" style="padding:1.1rem 1.25rem;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);opacity:0">
+        <div style="font-size:.73rem;color:rgba(255,255,255,.38);margin-bottom:.4rem">5 customers → break even</div>
+        <div style="font-size:1.9rem;font-weight:800;color:#fff">$1,250 <span style="font-size:.85rem;color:rgba(255,255,255,.38);font-weight:500">MRR</span></div>
+        <div style="margin-top:.6rem;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden">
+          <div style="width:25%;height:100%;background:#22C55E;border-radius:2px"></div>
+        </div>
+      </div>
+      <div id="s6m2" style="padding:1.1rem 1.25rem;border-radius:14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.28);opacity:0">
+        <div style="font-size:.73rem;color:rgba(34,197,94,.6);margin-bottom:.4rem">20 customers → real business</div>
+        <div style="font-size:1.9rem;font-weight:800;color:#22C55E" class="glowtx">$5,000 <span style="font-size:.85rem;color:rgba(34,197,94,.55);font-weight:500">MRR</span></div>
+        <div style="margin-top:.6rem;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden">
+          <div style="width:100%;height:100%;background:#22C55E;border-radius:2px;box-shadow:0 0 8px rgba(34,197,94,.6)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 7: SALES MOTION ══ -->
+<div class="slide" id="s7">
+  <div style="position:relative;z-index:2;width:100%;max-width:1000px">
+    <div class="slabel text-center" id="s7lb" style="opacity:0">The Sales Motion</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(1.5rem,5vw,4rem);align-items:center">
+      <!-- SD map grid -->
+      <div id="s7mp" style="opacity:0;transform:scale(.95)">
+        <div style="font-size:.7rem;color:rgba(255,255,255,.28);margin-bottom:.85rem;letter-spacing:.12em">SAN DIEGO COVERAGE MAP</div>
+        <div style="padding:1.25rem;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
+          <div id="sdg" style="display:grid;grid-template-columns:repeat(10,1fr);gap:8px;margin-bottom:.85rem"></div>
+          <div style="font-size:.68rem;color:rgba(255,255,255,.2)">← Chula Vista · La Mesa · El Cajon · Santee →</div>
+        </div>
+      </div>
+      <!-- Sales steps -->
+      <div id="s7R" style="opacity:0;transform:translateX(30px)">
+        <h2 style="font-size:clamp(1.7rem,4vw,2.7rem);font-weight:800;line-height:1.25;margin-bottom:1.5rem">
+          Show up. <span style="color:#22C55E">Call the number.</span> Close the deal.
+        </h2>
+        <div style="display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.5rem">
+          <div id="ss1" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">🚶</div>
+            <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem">Show up at their door</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">Target contractors with vans or storefronts. Plumbers, HVAC, roofers — San Diego.</div></div>
+          </div>
+          <div id="ss2" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">📞</div>
+            <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem">Call the number in front of them</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">They hear the AI answer their own line. Demo sells itself. No pitch deck needed.</div></div>
+          </div>
+          <div id="ss3" style="opacity:0;transform:translateX(18px);display:flex;gap:.85rem;align-items:flex-start;padding:.9rem 1rem;border-radius:12px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.3)">
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0">✅</div>
+            <div><div style="font-weight:700;font-size:.88rem;margin-bottom:.2rem;color:#22C55E">They sign up on the spot</div><div style="font-size:.78rem;color:rgba(255,255,255,.38);line-height:1.55">14-day free trial. No contract. Card on file. Live in 20 minutes.</div></div>
+          </div>
+        </div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.28);font-style:italic">"The product demos itself. That's the whole play."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 8: LAUNCH CTA ══ -->
+<div class="slide" id="s8">
+  <canvas id="c8"></canvas>
+  <div style="position:relative;z-index:2;text-align:center">
+    <!-- Portal rings -->
+    <div id="prings" style="position:absolute;left:50%;top:50%;pointer-events:none;opacity:0">
+      <div class="pring" style="width:280px;height:280px;margin-left:-140px;margin-top:-140px"></div>
+      <div class="pring" style="width:380px;height:380px;margin-left:-190px;margin-top:-190px;animation-delay:.6s"></div>
+      <div class="pring" style="width:500px;height:500px;margin-left:-250px;margin-top:-250px;animation-delay:1.2s"></div>
+      <div class="pring" style="width:640px;height:640px;margin-left:-320px;margin-top:-320px;animation-delay:1.8s;border-color:rgba(34,197,94,.18)"></div>
+    </div>
+    <div id="s8ct" style="opacity:0;position:relative;z-index:3">
+      <div style="font-size:.78rem;letter-spacing:.22em;color:rgba(34,197,94,.7);font-weight:800;text-transform:uppercase;margin-bottom:1.5rem">Launch</div>
+      <h1 style="font-size:clamp(3rem,10vw,7rem);font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:1.5rem" class="glowtx">
+        Never miss<br>a lead.
+      </h1>
+      <div style="display:flex;align-items:center;justify-content:center;gap:.85rem;margin-bottom:2.5rem">
+        <span style="font-size:clamp(.95rem,2.5vw,1.25rem);color:rgba(255,255,255,.65);font-weight:500">$250/month</span>
+        <div style="width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.25)"></div>
+        <span style="font-size:clamp(.95rem,2.5vw,1.25rem);color:rgba(255,255,255,.65);font-weight:500">14-day free trial</span>
+      </div>
+      <button id="cta-btn">Start Free Trial →</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:1.5rem">
+        <div class="pdot"></div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.45);font-weight:500">Live in 20 minutes.</div>
+      </div>
+      <div style="margin-top:1.75rem;font-size:.72rem;color:rgba(255,255,255,.18)">No contract · Cancel anytime · Works on any number</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#deck -->
+
+<!-- Nav -->
+<nav id="nav">
+  <button class="nb" id="btnP" onclick="nav(-1)">← PREV</button>
+  <div id="dots" style="display:flex;gap:6px;align-items:center"></div>
+  <button class="nb p" id="btnN" onclick="nav(1)">NEXT →</button>
+</nav>
+
+<script>
+gsap.registerPlugin(TextPlugin);
+
+const TOTAL = 8;
+let cur = 1, animating = false;
+let cleanupFns = {};
+
+// ── Init dots ──
+const dotsEl = document.getElementById('dots');
+for (let i = 1; i <= TOTAL; i++) {
+  const d = document.createElement('div');
+  d.className = 'ndot'; d.id = 'dot'+i;
+  d.onclick = () => go(i);
+  dotsEl.appendChild(d);
+}
+
+function updateUI() {
+  document.getElementById('prog').style.width = (cur/TOTAL*100)+'%';
+  document.getElementById('snum').textContent = (cur<10?'0'+cur:cur)+' / 0'+TOTAL;
+  document.getElementById('btnP').style.opacity = cur===1?'0.3':'1';
+  document.getElementById('btnN').textContent = cur===TOTAL?'RESTART ↺':'NEXT →';
+  for (let i=1; i<=TOTAL; i++) {
+    const d = document.getElementById('dot'+i);
+    d.classList.toggle('on', i===cur);
+  }
+}
+
+function nav(dir) {
+  const n = cur+dir;
+  if (n<1) return;
+  if (n>TOTAL) { go(1); return; }
+  go(n);
+}
+
+function go(n) {
+  if (n===cur || animating) return;
+  animating = true;
+  const from = cur;
+  // cleanup previous slide
+  if (cleanupFns[from]) { cleanupFns[from](); cleanupFns[from]=null; }
+  gsap.to('#s'+from, {opacity:0, duration:.45, ease:'power2.inOut', onComplete:()=>{
+    document.getElementById('s'+from).classList.remove('active');
+  }});
+  cur = n; updateUI();
+  const el = document.getElementById('s'+n);
+  el.classList.add('active');
+  gsap.fromTo('#s'+n, {opacity:0},{opacity:1, duration:.45, delay:.2, ease:'power2.inOut', onComplete:()=>{
+    animating = false;
+    anim(n);
+  }});
+}
+
+document.addEventListener('keydown', e=>{
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') nav(1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') nav(-1);
+});
+
+// ── Per-slide animations ──
+function anim(n) { [,a1,a2,a3,a4,a5,a6,a7,a8][n](); }
+
+// ─── SLIDE 1: OPENING ───
+function a1() {
+  const canvas = document.getElementById('c1');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  gsap.set(canvas, {opacity:1});
+  gsap.set('#s1m', {opacity:0});
+  gsap.set('#s1b', {opacity:0});
+
+  const comet = {x:-120, y: canvas.height*0.38};
+  const trail = [];
+  let raf;
+
+  gsap.to(comet, {x: canvas.width+200, y: canvas.height*0.18, duration:1.6, ease:'power2.in',
+    onUpdate:()=>{
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      trail.push({x:comet.x, y:comet.y});
+      if (trail.length>45) trail.shift();
+      for (let i=0;i<trail.length;i++) {
+        const t=trail[i], a=(i/trail.length)*0.8, s=(i/trail.length)*5;
+        ctx.beginPath(); ctx.arc(t.x,t.y,s,0,Math.PI*2);
+        ctx.fillStyle=`rgba(34,197,94,${a})`; ctx.fill();
+      }
+      // Head glow
+      const g=ctx.createRadialGradient(comet.x,comet.y,0,comet.x,comet.y,16);
+      g.addColorStop(0,'rgba(255,255,255,.95)');
+      g.addColorStop(0.3,'rgba(34,197,94,.9)');
+      g.addColorStop(1,'rgba(34,197,94,0)');
+      ctx.beginPath(); ctx.arc(comet.x,comet.y,16,0,Math.PI*2);
+      ctx.fillStyle=g; ctx.fill();
+    },
+    onComplete:()=>{
+      gsap.to(canvas, {opacity:0, duration:0.8, delay:0.15});
+      gsap.to('#s1m', {opacity:1, duration:1, delay:0.4, ease:'power2.out'});
+      gsap.to('#s1b', {opacity:1, duration:1.1, delay:2.5, ease:'power2.out'});
+    }
+  });
+
+  cleanupFns[1] = ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); cancelAnimationFrame(raf); };
+}
+
+// ─── SLIDE 2: THE PAIN ───
+function a2() {
+  gsap.set(['#s2lb','#s2L','#s2R','#s2c1','#s2c2','#s2ls'], {opacity:0});
+  gsap.set('#s2L', {x:-35}); gsap.set('#s2R', {x:35});
+  gsap.to('#s2lb', {opacity:1, duration:.5});
+  gsap.to('#s2L', {opacity:1, x:0, duration:.75, delay:.3, ease:'power3.out'});
+  gsap.to('#s2R', {opacity:1, x:0, duration:.75, delay:.5, ease:'power3.out'});
+  gsap.to('#s2c1', {opacity:1, duration:.5, delay:1.1});
+  gsap.to('#s2c2', {opacity:1, duration:.5, delay:1.3});
+  gsap.to('#s2ls', {opacity:1, duration:.5, delay:1.5});
+
+  // Phone ring waves
+  ['rw1','rw2'].forEach((id,i)=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    gsap.fromTo(el, {attr:{r:i===0?15:25}, opacity:.6},
+      {attr:{r:i===0?38:58}, opacity:0, duration:1.4, repeat:-1, delay:i*0.45, ease:'power1.out'});
+  });
+
+  // Particle system
+  const canvas = document.getElementById('c2');
+  const ctx = canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  let particles=[], raf2, running=true;
+
+  function spawn(){
+    particles.push({
+      x:Math.random()*canvas.width, y:Math.random()*canvas.height*.65+canvas.height*.15,
+      vx:(Math.random()-.5)*.6, vy:-Math.random()*1.4-.4,
+      size:Math.random()*3+1, alpha:Math.random()*.5+.25,
+      decay:Math.random()*.007+.004
+    });
+  }
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(particles.length<55) spawn();
+    particles=particles.filter(p=>p.alpha>0);
+    particles.forEach(p=>{
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,80,80,${p.alpha})`; ctx.fill();
+      p.x+=p.vx; p.y+=p.vy; p.alpha-=p.decay; p.size*=.99;
+    });
+    if(running) raf2=requestAnimationFrame(loop);
+  }
+  loop();
+  cleanupFns[2]=()=>{ running=false; cancelAnimationFrame(raf2); ctx.clearRect(0,0,canvas.width,canvas.height); };
+}
+
+// ─── SLIDE 3: THE DEMO ───
+const msgs = [
+  {r:'ai',   t:"Hi, thanks for calling Mike's Plumbing — how can I help?"},
+  {r:'caller',t:"My water heater burst, I need someone today"},
+  {r:'ai',   t:"I've got you — can I get your name and number?"},
+  {r:'caller',t:"Yeah, it's John. 619-555-0199."},
+  {r:'ai',   t:"Perfect, Mike will call you right back. ✅"},
+];
+let s3Timers=[];
+
+function a3() {
+  s3Timers.forEach(clearTimeout); s3Timers=[];
+  document.getElementById('ca').innerHTML='';
+  gsap.set(['#s3ph','#s3tx'], {opacity:0});
+  gsap.set('#s3ph', {scale:.88, y:18});
+  gsap.set('#s3tx', {x:25});
+
+  // Waveform
+  const wf=document.getElementById('wf'); wf.innerHTML='';
+  for(let i=0;i<20;i++){
+    const b=document.createElement('div'); b.className='wbar'; wf.appendChild(b);
+    gsap.to(b,{height:(Math.random()*18+4)+'px', duration:.3+Math.random()*.4, repeat:-1, yoyo:true, ease:'sine.inOut', delay:i*.05});
+  }
+
+  gsap.to('#s3ph', {opacity:1, scale:1, y:0, duration:.75, delay:.3, ease:'back.out(1.5)'});
+  gsap.to('#s3tx', {opacity:1, x:0, duration:.65, delay:.6, ease:'power3.out'});
+
+  let delay=1.2;
+  msgs.forEach((msg,i)=>{
+    const td=delay, md=delay+0.75;
+    delay=md+0.65;
+    const t1=setTimeout(()=>{
+      const ca=document.getElementById('ca');
+      if(!ca) return;
+      const typ=document.createElement('div');
+      typ.className='bubble '+msg.r;
+      typ.style.cssText='opacity:1;transform:translateY(0)';
+      typ.innerHTML='<div style="display:flex;gap:4px;align-items:center;padding:2px 0"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
+      ca.appendChild(typ); ca.scrollTop=ca.scrollHeight;
+      const t2=setTimeout(()=>{ typ.textContent=msg.t; ca.scrollTop=ca.scrollHeight; }, 700);
+      s3Timers.push(t2);
+    }, td*1000);
+    s3Timers.push(t1);
+  });
+
+  const smsT=setTimeout(()=> showSMS(), (delay+0.5)*1000);
+  s3Timers.push(smsT);
+
+  cleanupFns[3]=()=>{ s3Timers.forEach(clearTimeout); s3Timers=[]; gsap.to('#sms',{y:-135,opacity:0,duration:.4}); };
+}
+
+function showSMS(){
+  gsap.fromTo('#sms',{y:-135,opacity:0},{y:20,opacity:1,duration:.6,ease:'back.out(1.2)'});
+  setTimeout(()=>gsap.to('#sms',{y:-135,opacity:0,duration:.5,ease:'power2.in'}), 5500);
+}
+
+// ─── SLIDE 4: HOW IT WORKS ───
+function a4() {
+  gsap.set(['#s4lb','#s4ti','#s4s1','#s4a1','#s4s2','#s4a2','#s4s3','#s4bg'], {opacity:0});
+  gsap.set(['#s4s1','#s4s2','#s4s3'], {y:28});
+  const tl=gsap.timeline();
+  tl.to('#s4lb',{opacity:1,duration:.4})
+    .to('#s4ti',{opacity:1,duration:.5},.2)
+    .to('#s4s1',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},.5)
+    .to('#s4a1',{opacity:1,duration:.4},.9)
+    .to('#s4s2',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},1.05)
+    .to('#s4a2',{opacity:1,duration:.4},1.5)
+    .to('#s4s3',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},1.6)
+    .to('#s4bg',{opacity:1,duration:.5},2.3);
+  // pulse icons
+  ['si1','si2','si3'].forEach((id,i)=>{
+    gsap.to('#'+id,{boxShadow:'0 0 28px rgba(34,197,94,.55), 0 0 55px rgba(34,197,94,.25)',
+      duration:.5, repeat:-1, yoyo:true, delay:2.2+i*.5});
+  });
+}
+
+// ─── SLIDE 5: THE MARKET ───
+function a5() {
+  gsap.set(['#s5lb','#s5gw','#s5R'], {opacity:0});
+  gsap.set('#s5R', {x:30});
+  // Generate dot grid
+  const grid=document.getElementById('mdg'); grid.innerHTML='';
+  for(let i=0;i<375;i++){
+    const d=document.createElement('div');
+    d.style.cssText='width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);transition:all .5s ease';
+    d.id='md'+i; grid.appendChild(d);
+  }
+  gsap.to('#s5lb',{opacity:1,duration:.5,delay:.2});
+  gsap.to('#s5gw',{opacity:1,duration:.6,delay:.4});
+  gsap.to('#s5R',{opacity:1,x:0,duration:.7,delay:.6,ease:'power3.out'});
+  let lit=0;
+  const iv=setInterval(()=>{
+    if(lit>=20){clearInterval(iv);return;}
+    const idx=Math.floor(Math.random()*375);
+    const d=document.getElementById('md'+idx);
+    if(d){d.style.background='#22C55E';d.style.boxShadow='0 0 8px rgba(34,197,94,.8)';}
+    lit++;
+  },180);
+  cleanupFns[5]=()=>clearInterval(iv);
+}
+
+// ─── SLIDE 6: THE MATH ───
+function a6() {
+  gsap.set(['#s6lb','#s6ti','#s6su','#s6c1','#s6c2','#s6c3','#s6m1','#s6m2'],{opacity:0});
+  gsap.set(['#s6c1','#s6c2','#s6c3'],{y:20});
+  document.getElementById('cr1').textContent='$0';
+  document.getElementById('cr2').textContent='$0';
+  document.getElementById('cr3').textContent='0%';
+  const tl=gsap.timeline();
+  tl.to('#s6lb',{opacity:1,duration:.4})
+    .to('#s6ti',{opacity:1,duration:.5},.2)
+    .to('#s6su',{opacity:1,duration:.4},.5)
+    .to('#s6c1',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},.7)
+    .to('#s6c2',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},.9)
+    .to('#s6c3',{opacity:1,y:0,duration:.6,ease:'back.out(1.4)'},1.1)
+    .to('#s6m1',{opacity:1,duration:.5},1.7)
+    .to('#s6m2',{opacity:1,duration:.5},2.0);
+  setTimeout(()=>{
+    counter('cr1',0,250,'$','',900);
+    setTimeout(()=>counter('cr2',0,25,'$','',750),350);
+    setTimeout(()=>counter('cr3',0,90,'','%',750),700);
+  },900);
+}
+
+function counter(id,from,to,pre,suf,ms){
+  const el=document.getElementById(id), start=performance.now();
+  function upd(now){
+    const p=Math.min((now-start)/ms,1), e=1-Math.pow(1-p,3);
+    el.textContent=pre+Math.round(from+(to-from)*e)+suf;
+    if(p<1) requestAnimationFrame(upd);
+  }
+  requestAnimationFrame(upd);
+}
+
+// ─── SLIDE 7: SALES MOTION ───
+function a7() {
+  gsap.set(['#s7lb','#s7mp','#s7R','#ss1','#ss2','#ss3'],{opacity:0});
+  gsap.set('#s7mp',{scale:.95}); gsap.set('#s7R',{x:30});
+  gsap.set(['#ss1','#ss2','#ss3'],{x:18});
+  // SD map grid
+  const g=document.getElementById('sdg'); g.innerHTML='';
+  for(let i=0;i<80;i++){
+    const n=document.createElement('div');
+    n.style.cssText='width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);transition:all .4s ease';
+    n.id='sdn'+i; g.appendChild(n);
+  }
+  const tl=gsap.timeline();
+  tl.to('#s7lb',{opacity:1,duration:.4})
+    .to('#s7mp',{opacity:1,scale:1,duration:.7,ease:'power3.out'},.3)
+    .to('#s7R',{opacity:1,x:0,duration:.65,ease:'power3.out'},.5)
+    .to('#ss1',{opacity:1,x:0,duration:.5,ease:'power3.out'},.95)
+    .to('#ss2',{opacity:1,x:0,duration:.5,ease:'power3.out'},1.25)
+    .to('#ss3',{opacity:1,x:0,duration:.5,ease:'power3.out'},1.55);
+  let ni=0;
+  const iv=setInterval(()=>{
+    if(ni>=80){clearInterval(iv);return;}
+    const nd=document.getElementById('sdn'+ni);
+    if(nd){nd.style.background='#22C55E';nd.style.boxShadow='0 0 10px rgba(34,197,94,.8)';}
+    ni++;
+  },65);
+  cleanupFns[7]=()=>clearInterval(iv);
+}
+
+// ─── SLIDE 8: LAUNCH CTA ───
+function a8() {
+  // Portal canvas background
+  const canvas=document.getElementById('c8');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  let raf8, alpha=0, running=true;
+  function drawPortal(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    alpha=Math.min(alpha+0.005,.35);
+    // Central green nebula
+    const cx=canvas.width/2, cy=canvas.height/2;
+    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(canvas.width,canvas.height)*.45);
+    g.addColorStop(0,`rgba(34,197,94,${alpha})`);
+    g.addColorStop(0.4,`rgba(34,197,94,${alpha*.3})`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height);
+    if(running) raf8=requestAnimationFrame(drawPortal);
+  }
+  drawPortal();
+
+  gsap.set(['#prings','#s8ct'],{opacity:0});
+  gsap.set('#prings',{scale:.4});
+  gsap.to('#prings',{opacity:1,scale:1,duration:1.4,ease:'power3.out'});
+  gsap.to('#s8ct',{opacity:1,duration:.85,delay:.6,ease:'back.out(1.2)'});
+
+  cleanupFns[8]=()=>{ running=false; cancelAnimationFrame(raf8); ctx.clearRect(0,0,canvas.width,canvas.height); };
+}
+
+// ── BOOT ──
+(function init(){
+  const s1=document.getElementById('s1');
+  s1.classList.add('active');
+  gsap.to('#s1',{opacity:1,duration:.6,delay:.2});
+  updateUI();
+  setTimeout(()=>anim(1),500);
+})();
+
+// Resize
+window.addEventListener('resize',()=>{
+  ['c1','c2','c8'].forEach(id=>{const c=document.getElementById(id);if(c){c.width=window.innerWidth;c.height=window.innerHeight;}});
+});
+</script>
+</body>
+</html>
