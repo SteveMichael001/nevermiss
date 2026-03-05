@@ -373,7 +373,7 @@ export async function POST(req: Request): Promise<Response> {
     }).catch((err: unknown) => console.error('[email] Fire-and-forget send failed:', err))
 
     // ------------------------------------------------------------------
-    // 10. Update call record: sms_sent_at + notification_latency_ms
+    // 10. Update call record: sms_sent_at + email_sent_at + notification_latency_ms
     // ------------------------------------------------------------------
     const notificationLatencyMs = Date.now() - callStartMs
 
@@ -381,6 +381,7 @@ export async function POST(req: Request): Promise<Response> {
       .from('calls')
       .update({
         sms_sent_at: new Date().toISOString(),
+        email_sent_at: new Date().toISOString(),
         notification_latency_ms: notificationLatencyMs,
       })
       .eq('id', callId)
