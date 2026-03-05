@@ -18,6 +18,7 @@ import express from 'express';
 import http from 'http';
 import { WebSocketServer } from 'ws';
 import { URL } from 'url';
+import twilio from 'twilio';
 import webhookRouter from './twilio/webhook.js';
 import { attachMediaStreamHandler } from './twilio/media-stream.js';
 import { supabase } from './db/supabase.js';
@@ -28,6 +29,17 @@ import { supabase } from './db/supabase.js';
 
 const PORT = parseInt(process.env.PORT ?? '3001', 10);
 const NODE_ENV = process.env.NODE_ENV ?? 'development';
+
+// Twilio client — shared across routes (same pattern as twilio/sms.ts)
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const VOICE_SERVER_URL = process.env.VOICE_SERVER_URL ?? '';
+
+if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
+  throw new Error('Missing TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN environment variables');
+}
+
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 // ─────────────────────────────────────────────────────────────────
 // Express app
@@ -72,26 +84,60 @@ app.use('/webhook/twilio', webhookRouter);
 
 // Provision a Twilio phone number to a business — called by the web dashboard during onboarding
 app.post('/provision', async (req: express.Request, res: express.Response) => {
-  const { businessId, phoneNumber } = req.body as { businessId?: string; phoneNumber?: string };
+  const { businessId, areaCode } = req.body as { businessId?: string; areaCode?: string };
 
-  if (!businessId || !phoneNumber) {
-    res.status(400).json({ error: 'Missing required fields: businessId, phoneNumber' });
+  if (!businessId || !areaCode) {
+    res.status(400).json({ error: 'Missing required fields: businessId, areaCode' });
     return;
   }
 
-  const { error } = await supabase
+  // 1. Search for an available local number in the given area code
+  let available: { phoneNumber: string }[];
+  try {
+    available = await twilioClient.availablePhoneNumbers('US').local.list({ areaCode: parseInt(areaCode, 10), limit: 1 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[Provision] Twilio search failed for area code ${areaCode}:`, msg);
+    res.status(500).json({ error: `Twilio number search failed: ${msg}` });
+    return;
+  }
+
+  if (!available || available.length === 0) {
+    console.warn(`[Provision] No numbers available in area code ${areaCode}`);
+    res.status(404).json({ error: `No phone numbers available in area code ${areaCode}` });
+    return;
+  }
+
+  // 2. Purchase the first available number and configure the voice webhook
+  let purchasedNumber: string;
+  try {
+    const purchased = await twilioClient.incomingPhoneNumbers.create({
+      phoneNumber: available[0].phoneNumber,
+      voiceUrl: `${VOICE_SERVER_URL}/twilio/voice`,
+      voiceMethod: 'POST',
+    });
+    purchasedNumber = purchased.phoneNumber;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[Provision] Twilio purchase failed for ${available[0].phoneNumber}:`, msg);
+    res.status(500).json({ error: `Twilio number purchase failed: ${msg}` });
+    return;
+  }
+
+  // 3. Store the purchased number in Supabase
+  const { error: dbError } = await supabase
     .from('businesses')
-    .update({ twilio_phone_number: phoneNumber })
+    .update({ twilio_phone_number: purchasedNumber })
     .eq('id', businessId);
 
-  if (error) {
-    console.error('[Provision] Failed to assign phone number:', error);
-    res.status(500).json({ error: 'Failed to provision phone number' });
+  if (dbError) {
+    console.error('[Provision] Failed to save phone number to DB:', dbError);
+    res.status(500).json({ error: 'Number purchased from Twilio but failed to save to database' });
     return;
   }
 
-  console.log(`[Provision] Assigned ${phoneNumber} to business ${businessId}`);
-  res.json({ success: true, phoneNumber });
+  console.log(`[Provision] Purchased ${purchasedNumber} (area code ${areaCode}) for business ${businessId}`);
+  res.json({ success: true, phoneNumber: purchasedNumber });
 });
 
 // 404 handler

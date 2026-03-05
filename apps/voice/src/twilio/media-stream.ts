@@ -74,6 +74,8 @@ class MediaStreamHandler {
 
   // DB record ID for this call (set as soon as the record is created)
   private callDbId: string | null = null;
+  // True while createCallRecord() is in-flight — prevents handleStop() from creating a duplicate
+  private isCreatingRecord = false;
 
   // Track if we're currently sending audio (to avoid sending interleaved)
   private isSpeaking = false;
@@ -187,11 +189,13 @@ class MediaStreamHandler {
     }
 
     // 2. Create call record in DB immediately so callDbId is always available
+    this.isCreatingRecord = true;
     this.callDbId = await createCallRecord({
       businessId,
       callSid,
       callerPhone: this.callerPhone,
     });
+    this.isCreatingRecord = false;
 
     console.log(`[MediaStream][${callSid}] Call record created: ${this.callDbId}`);
 
@@ -296,22 +300,48 @@ class MediaStreamHandler {
     // If engine hasn't signaled end yet, trigger post-call processing now
     if (this.engine && !this.callEnded) {
       const session = this.engine.getSession();
-      // If the call ended before the pipeline finished creating the DB record,
-      // create it now with whatever data is available so no call is lost
-      if (!this.callDbId && this.businessId && this.callSid) {
-        createCallRecord({
-          businessId: this.businessId,
-          callSid: this.callSid,
-          callerPhone: this.callerPhone,
-        })
-          .then((id) => {
-            this.callDbId = id;
-            void this.handleCallEnd(session, this.callDbId);
+
+      if (!this.callDbId) {
+        if (this.isCreatingRecord) {
+          // createCallRecord() is in-flight inside initializePipeline() — wait for it
+          // to finish rather than creating a duplicate record.
+          const waitForRecord = (): Promise<void> => {
+            return new Promise((resolve) => {
+              const poll = setInterval(() => {
+                if (!this.isCreatingRecord) {
+                  clearInterval(poll);
+                  resolve();
+                }
+              }, 50);
+            });
+          };
+
+          waitForRecord()
+            .then(() => {
+              void this.handleCallEnd(session, this.callDbId);
+            })
+            .catch((err) => {
+              console.error(`[MediaStream][${this.callSid}] waitForRecord failed:`, err);
+              void this.handleCallEnd(session, null);
+            });
+        } else if (this.businessId && this.callSid) {
+          // No record in-flight and none created — safe to create one now
+          createCallRecord({
+            businessId: this.businessId,
+            callSid: this.callSid,
+            callerPhone: this.callerPhone,
           })
-          .catch((err) => {
-            console.error(`[MediaStream][${this.callSid}] createCallRecord in handleStop failed:`, err);
-            void this.handleCallEnd(session, null);
-          });
+            .then((id) => {
+              this.callDbId = id;
+              void this.handleCallEnd(session, this.callDbId);
+            })
+            .catch((err) => {
+              console.error(`[MediaStream][${this.callSid}] createCallRecord in handleStop failed:`, err);
+              void this.handleCallEnd(session, null);
+            });
+        } else {
+          void this.handleCallEnd(session, null);
+        }
       } else {
         void this.handleCallEnd(session, this.callDbId);
       }
