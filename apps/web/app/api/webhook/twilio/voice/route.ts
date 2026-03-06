@@ -5,7 +5,7 @@
  *
  * Routing logic:
  *   1. Parse Twilio webhook POST (form-encoded: To, From, CallSid)
- *   2. Validate Twilio signature (skip in dev, enforce in prod)
+ *   2. Validate Twilio signature (skip in dev, enforce in prod unless SKIP_TWILIO_VALIDATION=true)
  *   3. Look up business in Supabase by twilio_phone_number = To
  *   4. If not found or is_active = false → TwiML <Hangup/>
  *   5. Determine current time in the business's timezone
@@ -23,7 +23,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import twilio from 'twilio'
+import { createHmac } from 'crypto'
 import { toZonedTime, format } from 'date-fns-tz'
 
 // ---------------------------------------------------------------------------
@@ -54,12 +54,29 @@ interface Business {
 
 /** Supabase admin client — no cookie auth needed for webhook routes */
 function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
   if (!url || !key) {
     throw new Error('Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY')
   }
   return createClient(url, key)
+}
+
+/**
+ * Validate a Twilio webhook signature using Node's built-in crypto (no twilio package needed).
+ * https://www.twilio.com/docs/usage/webhooks/webhooks-security
+ */
+function validateTwilioSignature(
+  authToken: string,
+  signature: string,
+  url: string,
+  params: Record<string, string>
+): boolean {
+  // Sort all POST params alphabetically and concatenate key+value pairs to the URL
+  const sortedKeys = Object.keys(params).sort()
+  const dataToSign = url + sortedKeys.map(k => k + params[k]).join('')
+  const expected = createHmac('sha1', authToken).update(dataToSign).digest('base64')
+  return expected === signature
 }
 
 const DAY_KEYS: DayKey[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
@@ -143,24 +160,24 @@ export async function POST(req: Request): Promise<Response> {
     const from = params.get('From') ?? ''
     const callSid = params.get('CallSid') ?? ''
 
-    // 2. Validate Twilio signature in production
-    if (process.env.NODE_ENV === 'production') {
-      const authToken = process.env.TWILIO_AUTH_TOKEN
+    // 2. Validate Twilio signature in production (skip if SKIP_TWILIO_VALIDATION=true)
+    if (process.env.NODE_ENV === 'production' && process.env.SKIP_TWILIO_VALIDATION?.trim() !== 'true') {
+      const authToken = process.env.TWILIO_AUTH_TOKEN?.trim()
       if (!authToken) {
         console.error('[voice] TWILIO_AUTH_TOKEN not set — cannot validate signature')
         return xmlResponse(twimlError())
       }
 
       const signature = req.headers.get('X-Twilio-Signature') ?? ''
-      const url = process.env.NEXT_PUBLIC_APP_URL
-        ? `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook/twilio/voice`
+      const url = process.env.NEXT_PUBLIC_APP_URL?.trim()
+        ? `${process.env.NEXT_PUBLIC_APP_URL.trim()}/api/webhook/twilio/voice`
         : `https://${req.headers.get('host')}/api/webhook/twilio/voice`
 
       // Convert URLSearchParams to plain object for validation
       const paramObj: Record<string, string> = {}
       params.forEach((value, key) => { paramObj[key] = value })
 
-      const isValid = twilio.validateRequest(authToken, signature, url, paramObj)
+      const isValid = validateTwilioSignature(authToken, signature, url, paramObj)
       if (!isValid) {
         console.warn('[voice] Invalid Twilio signature — rejecting request')
         return xmlResponse(twimlError())
@@ -172,7 +189,7 @@ export async function POST(req: Request): Promise<Response> {
     const { data: business, error } = await supabase
       .from('businesses')
       .select('id, name, owner_phone, twilio_phone_number, business_hours, is_active')
-      .eq('twilio_phone_number', to)
+      .eq('twilio_phone_number', to.trim())
       .single<Business>()
 
     if (error || !business) {
@@ -199,7 +216,7 @@ export async function POST(req: Request): Promise<Response> {
       return xmlResponse(twimlDial(business.owner_phone))
     } else {
       // Out of hours (or all-day AI): connect to ElevenLabs
-      const agentId = process.env.ELEVENLABS_AGENT_ID
+      const agentId = process.env.ELEVENLABS_AGENT_ID?.trim()
       if (!agentId) {
         console.error('[voice] ELEVENLABS_AGENT_ID not set')
         return xmlResponse(twimlError())
@@ -211,6 +228,11 @@ export async function POST(req: Request): Promise<Response> {
   } catch (err) {
     // Always return 200 to Twilio — non-200 causes retries and duplicate calls
     console.error('[voice] Unhandled error:', err)
+    // In debug mode, speak the error so we can diagnose it
+    if (process.env.SKIP_TWILIO_VALIDATION?.trim() === 'true') {
+      const msg = err instanceof Error ? err.message : String(err)
+      return xmlResponse(`<?xml version="1.0" encoding="UTF-8"?><Response><Say>${msg}</Say><Hangup/></Response>`)
+    }
     return xmlResponse(twimlError())
   }
 }
