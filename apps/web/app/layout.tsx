@@ -1,5 +1,19 @@
 import type { Metadata } from 'next'
+import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  variable: '--font-sans',
+})
+
+const dmSerif = DM_Serif_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+})
 
 export const metadata: Metadata = {
   title: 'NeverMiss AI — AI Answering for Home Service Contractors',
@@ -19,15 +33,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" suppressHydrationWarning className={`${dmSans.variable} ${dmSerif.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )

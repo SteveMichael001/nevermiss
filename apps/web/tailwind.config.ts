@@ -52,9 +52,9 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         brand: {
-          DEFAULT: '#F59E0B',
-          dark: '#D97706',
-          light: '#FCD34D',
+          DEFAULT: '#FFFFFF',
+          dark: '#E4E4E7',
+          light: '#71717A',
         },
         sidebar: {
           DEFAULT: '#0A0A0A',
@@ -87,7 +87,8 @@ const config: Config = {
         'pulse-ring': 'pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
       },
     },
   },
