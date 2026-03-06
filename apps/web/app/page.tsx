@@ -2,10 +2,10 @@ import Link from 'next/link'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white text-black">
       
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16 border-b border-zinc-200 bg-white/90 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16 border-b border-zinc-200 bg-white/95 backdrop-blur-sm">
         <span className="font-sans font-medium text-sm tracking-widest uppercase text-black">
           NeverMiss
         </span>
@@ -15,7 +15,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="text-xs font-medium tracking-widest uppercase bg-black text-white px-5 py-2.5 hover:bg-zinc-800 transition-colors"
+            className="text-xs font-medium tracking-widest uppercase bg-black text-black px-5 py-2.5 hover:bg-zinc-200 transition-colors"
           >
             Free trial
           </Link>
@@ -78,7 +78,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-3 bg-black text-white text-xs font-medium tracking-widest uppercase px-7 py-4 hover:bg-zinc-800 transition-colors"
+              className="inline-flex items-center gap-3 bg-black text-black text-xs font-medium tracking-widest uppercase px-7 py-4 hover:bg-zinc-200 transition-colors"
             >
               Start free trial <span>→</span>
             </Link>
@@ -225,7 +225,7 @@ export default function LandingPage() {
 
             <Link
               href="/signup"
-              className="block w-full text-center bg-black text-white text-xs font-medium tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors font-sans"
+              className="block w-full text-center bg-black text-black text-xs font-medium tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors font-sans"
             >
               Start free trial →
             </Link>
