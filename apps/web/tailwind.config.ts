@@ -52,14 +52,14 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         brand: {
-          DEFAULT: '#22C55E',
-          dark: '#16A34A',
-          light: '#86EFAC',
+          DEFAULT: '#F59E0B',
+          dark: '#D97706',
+          light: '#FCD34D',
         },
         sidebar: {
-          DEFAULT: '#0F172A',
-          foreground: '#94A3B8',
-          active: '#22C55E',
+          DEFAULT: '#0A0A0A',
+          foreground: '#999999',
+          active: '#F59E0B',
         },
       },
       borderRadius: {

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { ArrowRight, CheckCircle } from 'lucide-react'
+import { ArrowRight, Mail } from 'lucide-react'
 import { TRADE_LABELS } from '@/lib/utils'
 
 const TRADES = Object.entries(TRADE_LABELS).map(([value, label]) => ({ value, label }))
@@ -31,7 +31,6 @@ export default function SignupPage() {
     setLoading(true)
     setError('')
 
-    // First create the Supabase auth user with magic link
     const supabase = createClient()
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: formData.email,
@@ -59,143 +58,142 @@ export default function SignupPage() {
   if (sent) {
     return (
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
-          <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-8 h-8 text-brand" />
+        <div className="bg-[#111111] border border-[#1A1A1A] p-8 text-center">
+          <div className="w-12 h-12 border border-[#F59E0B] flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-5 h-5 text-[#F59E0B]" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
-          <p className="text-gray-500 mb-2">
-            We sent a magic link to{' '}
-            <span className="font-medium text-gray-900">{formData.email}</span>.
+          <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-3">Check your inbox</h1>
+          <p className="text-[#666666] text-sm mb-2">
+            Magic link sent to{' '}
+            <span className="font-semibold text-[#FAFAFA]">{formData.email}</span>.
           </p>
-          <p className="text-gray-500 text-sm mb-6">
-            Click the link to verify your email and continue setting up{' '}
-            <span className="font-medium">{formData.businessName}</span>.
+          <p className="text-[#666666] text-sm mb-6">
+            Click it to verify and start setting up{' '}
+            <span className="font-semibold text-[#FAFAFA]">{formData.businessName}</span>.
           </p>
-          <p className="text-sm text-gray-400">
-            Wrong email?{' '}
-            <button
-              onClick={() => setSent(false)}
-              className="text-brand hover:underline font-medium"
-            >
-              Go back
-            </button>
-          </p>
+          <button
+            onClick={() => setSent(false)}
+            className="text-sm text-[#666666] hover:text-[#FAFAFA] transition-colors underline"
+          >
+            Go back
+          </button>
         </div>
       </div>
     )
   }
 
+  const inputClass =
+    'w-full px-4 py-3 bg-[#0A0A0A] border border-[#1A1A1A] text-[#FAFAFA] placeholder-[#666666] text-sm focus:outline-none focus:border-[#F59E0B] transition-colors'
+  const labelClass = 'block text-sm font-semibold text-[#FAFAFA] mb-2'
+
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="bg-[#111111] border border-[#1A1A1A] p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Create your account</h1>
-          <p className="text-gray-500 text-sm">
-            Start your 14-day free trial. No credit card required.
+          <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Create your account</h1>
+          <p className="text-[#666666] text-sm">
+            14-day free trial. No credit card required.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label htmlFor="businessName" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Business name
-              </label>
-              <input
-                id="businessName"
-                name="businessName"
-                type="text"
-                value={formData.businessName}
-                onChange={handleChange}
-                placeholder="Mike's Plumbing Co."
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label htmlFor="businessName" className={labelClass}>
+              Business name
+            </label>
+            <input
+              id="businessName"
+              name="businessName"
+              type="text"
+              value={formData.businessName}
+              onChange={handleChange}
+              placeholder="Mike's Plumbing Co."
+              required
+              className={inputClass}
+            />
+          </div>
 
-            <div className="col-span-2">
-              <label htmlFor="ownerName" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Your name
-              </label>
-              <input
-                id="ownerName"
-                name="ownerName"
-                type="text"
-                value={formData.ownerName}
-                onChange={handleChange}
-                placeholder="Mike Johnson"
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
-              />
-            </div>
+          <div>
+            <label htmlFor="ownerName" className={labelClass}>
+              Your name
+            </label>
+            <input
+              id="ownerName"
+              name="ownerName"
+              type="text"
+              value={formData.ownerName}
+              onChange={handleChange}
+              placeholder="Mike Johnson"
+              required
+              className={inputClass}
+            />
+          </div>
 
-            <div className="col-span-2">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="mike@mikesplumbing.com"
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
-              />
-            </div>
+          <div>
+            <label htmlFor="email" className={labelClass}>
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="mike@mikesplumbing.com"
+              required
+              className={inputClass}
+            />
+          </div>
 
-            <div className="col-span-2">
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Your cell phone
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="(619) 555-1234"
-                required
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
-              />
-              <p className="text-xs text-gray-400 mt-1">
-                We&apos;ll text you new leads here
-              </p>
-            </div>
+          <div>
+            <label htmlFor="phone" className={labelClass}>
+              Your cell phone
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="(619) 555-1234"
+              required
+              className={inputClass}
+            />
+            <p className="text-xs text-[#666666] mt-1.5">
+              We&apos;ll text you new leads here
+            </p>
+          </div>
 
-            <div className="col-span-2">
-              <label htmlFor="trade" className="block text-sm font-medium text-gray-700 mb-1.5">
-                Trade type
-              </label>
-              <select
-                id="trade"
-                name="trade"
-                value={formData.trade}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent bg-white"
-              >
-                {TRADES.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label htmlFor="trade" className={labelClass}>
+              Trade type
+            </label>
+            <select
+              id="trade"
+              name="trade"
+              value={formData.trade}
+              onChange={handleChange}
+              className={`${inputClass} cursor-pointer`}
+            >
+              {TRADES.map((t) => (
+                <option key={t.value} value={t.value} className="bg-[#111111]">
+                  {t.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            <p className="text-sm text-red-400 border border-red-900/50 bg-red-950/30 px-3 py-2">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-brand hover:bg-brand-dark disabled:opacity-60 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 text-[#0A0A0A] font-bold py-3 flex items-center justify-center gap-2 transition-colors text-sm"
           >
             {loading ? (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-[#0A0A0A]/30 border-t-[#0A0A0A] rounded-full animate-spin" />
             ) : (
               <>
                 Continue
@@ -204,14 +202,14 @@ export default function SignupPage() {
             )}
           </button>
 
-          <p className="text-xs text-center text-gray-400">
+          <p className="text-xs text-center text-[#666666]">
             By signing up, you agree to our Terms of Service and Privacy Policy.
           </p>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <p className="text-center text-sm text-[#666666] mt-6">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand font-medium hover:underline">
+          <Link href="/login" className="text-[#F59E0B] font-semibold hover:underline">
             Sign in
           </Link>
         </p>

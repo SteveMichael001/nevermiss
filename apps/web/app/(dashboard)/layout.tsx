@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .single()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0A0A0A]">
       <Sidebar businessName={business?.name} />
       <MobileTopBar businessName={business?.name} />
 

@@ -21,10 +21,10 @@ export default async function SettingsPage() {
   if (!business) redirect('/onboarding/setup')
 
   return (
-    <div className="min-h-screen">
-      <div className="bg-white border-b border-gray-100 px-4 sm:px-8 py-6">
-        <h1 className="text-xl font-bold text-gray-900">Settings</h1>
-        <p className="text-sm text-gray-500 mt-0.5">
+    <div className="min-h-screen bg-[#0A0A0A]">
+      <div className="border-b border-[#1A1A1A] px-4 sm:px-8 py-6">
+        <h1 className="text-xl font-extrabold text-[#FAFAFA]">Settings</h1>
+        <p className="text-sm text-[#666666] mt-0.5">
           Manage your AI answering service settings
         </p>
       </div>

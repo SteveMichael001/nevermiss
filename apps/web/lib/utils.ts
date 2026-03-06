@@ -55,15 +55,15 @@ export const TRADE_LABELS: Record<string, string> = {
 }
 
 export const URGENCY_CONFIG = {
-  emergency: { label: 'Emergency', emoji: '🔴', className: 'bg-red-100 text-red-700 border-red-200' },
-  urgent: { label: 'Urgent', emoji: '🟡', className: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-  routine: { label: 'Routine', emoji: '🟢', className: 'bg-green-100 text-green-700 border-green-200' },
-  unknown: { label: 'Unknown', emoji: '⚪', className: 'bg-gray-100 text-gray-600 border-gray-200' },
+  emergency: { label: 'Emergency', className: 'bg-red-950/50 text-red-400 border-red-900' },
+  urgent: { label: 'Urgent', className: 'bg-yellow-950/50 text-yellow-400 border-yellow-900' },
+  routine: { label: 'Routine', className: 'bg-[#1A1A1A] text-[#666666] border-[#1A1A1A]' },
+  unknown: { label: 'Unknown', className: 'bg-[#1A1A1A] text-[#666666] border-[#1A1A1A]' },
 }
 
 export const LEAD_STATUS_CONFIG = {
-  new: { label: 'New', className: 'bg-blue-100 text-blue-700' },
-  called_back: { label: 'Called Back', className: 'bg-purple-100 text-purple-700' },
-  booked: { label: 'Booked', className: 'bg-green-100 text-green-700' },
-  lost: { label: 'Lost', className: 'bg-gray-100 text-gray-500' },
+  new: { label: 'New', className: 'bg-blue-950/50 text-blue-400 border border-blue-900' },
+  called_back: { label: 'Called Back', className: 'bg-purple-950/50 text-purple-400 border border-purple-900' },
+  booked: { label: 'Booked', className: 'bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30' },
+  lost: { label: 'Lost', className: 'bg-[#1A1A1A] text-[#666666] border border-[#1A1A1A]' },
 }

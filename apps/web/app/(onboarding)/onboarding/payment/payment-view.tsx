@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle, ArrowRight, Shield } from 'lucide-react'
+import { ArrowRight, Shield } from 'lucide-react'
 import { OnboardingSteps } from '@/components/onboarding-steps'
 import { Button } from '@/components/ui/button'
 
@@ -35,39 +35,54 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
     }
   }
 
+  const FEATURES = [
+    'Unlimited calls — no per-minute fees',
+    'Dedicated AI phone number',
+    'Instant SMS + email alerts',
+    'Full recordings and transcripts',
+    'Lead dashboard',
+    'Cancel anytime',
+  ]
+
   return (
     <div className="space-y-8">
       <OnboardingSteps currentStep={5} />
 
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Start your free trial</h1>
-        <p className="text-gray-500">
-          14 days free. Cancel anytime. First charge on{' '}
-          <strong>{trialEndDate}</strong>.
+        <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Start your free trial</h1>
+        <p className="text-[#666666] text-sm">
+          14 days free. First charge on{' '}
+          <strong className="text-[#FAFAFA]">{trialEndDate}</strong>.
         </p>
       </div>
 
       {/* Plan card */}
-      <div className="bg-[#0F172A] rounded-2xl p-8">
+      <div className="bg-[#111111] border border-[#1A1A1A] p-8">
         <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-4xl font-extrabold text-white">$250</span>
-          <span className="text-slate-400">/month</span>
+          <span className="text-4xl font-extrabold text-[#FAFAFA] tabular-nums">$250</span>
+          <span className="text-[#666666]">/month</span>
         </div>
-        <p className="text-green-400 font-medium text-sm mb-6">
-          14-day free trial · First charge {trialEndDate}
+        <p className="text-[#F59E0B] font-medium text-sm mb-6">
+          14-day free trial — first charge {trialEndDate}
         </p>
 
-        <ul className="space-y-3 mb-6">
-          {[
-            'Unlimited calls — no per-minute fees',
-            'Dedicated AI phone number',
-            'Instant SMS + email alerts',
-            'Full recordings & transcripts',
-            'Lead dashboard',
-            'Cancel anytime',
-          ].map((item) => (
-            <li key={item} className="flex items-center gap-3 text-sm text-slate-300">
-              <CheckCircle className="w-4 h-4 text-brand flex-shrink-0" />
+        <ul className="space-y-3">
+          {FEATURES.map((item) => (
+            <li key={item} className="flex items-center gap-3 text-sm text-[#FAFAFA]">
+              <svg
+                className="w-4 h-4 text-[#F59E0B] flex-shrink-0"
+                viewBox="0 0 16 16"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2.5 8L6.5 12L13.5 4"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
               {item}
             </li>
           ))}
@@ -75,13 +90,13 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
       </div>
 
       {/* Trust signals */}
-      <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+      <div className="flex items-center justify-center gap-2 text-sm text-[#666666]">
         <Shield className="w-4 h-4" />
-        <span>Secured by Stripe · PCI compliant</span>
+        <span>Secured by Stripe — PCI compliant</span>
       </div>
 
       {error && (
-        <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg text-center">
+        <p className="text-sm text-red-400 border border-red-900/50 bg-red-950/30 px-3 py-2 text-center">
           {error}
         </p>
       )}
@@ -89,10 +104,10 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
       <Button
         onClick={handleCheckout}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-4 text-base"
+        className="w-full flex items-center justify-center gap-2 py-4 text-base bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0A0A] font-bold"
       >
         {loading ? (
-          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <span className="w-4 h-4 border-2 border-[#0A0A0A]/30 border-t-[#0A0A0A] rounded-full animate-spin" />
         ) : (
           <>
             Start Free Trial
@@ -101,7 +116,7 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
         )}
       </Button>
 
-      <p className="text-center text-xs text-gray-400">
+      <p className="text-center text-xs text-[#666666]">
         By starting a trial, you agree to our Terms of Service.
         You won&apos;t be charged until {trialEndDate}.
       </p>

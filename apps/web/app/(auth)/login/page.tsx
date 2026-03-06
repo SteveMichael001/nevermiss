@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { Mail, ArrowRight, CheckCircle } from 'lucide-react'
+import { Mail, ArrowRight } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,24 +38,21 @@ export default function LoginPage() {
   if (sent) {
     return (
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
-          <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-8 h-8 text-brand" />
+        <div className="bg-[#111111] border border-[#1A1A1A] p-8 text-center">
+          <div className="w-12 h-12 border border-[#F59E0B] flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-5 h-5 text-[#F59E0B]" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h1>
-          <p className="text-gray-500 mb-6">
-            We sent a magic link to <span className="font-medium text-gray-900">{email}</span>.
-            Click the link to sign in.
+          <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-3">Check your inbox</h1>
+          <p className="text-[#666666] text-sm mb-6">
+            Magic link sent to{' '}
+            <span className="font-semibold text-[#FAFAFA]">{email}</span>.
           </p>
-          <p className="text-sm text-gray-400">
-            Didn&apos;t get it?{' '}
-            <button
-              onClick={() => setSent(false)}
-              className="text-brand hover:underline font-medium"
-            >
-              Resend
-            </button>
-          </p>
+          <button
+            onClick={() => setSent(false)}
+            className="text-sm text-[#666666] hover:text-[#FAFAFA] transition-colors underline"
+          >
+            Resend
+          </button>
         </div>
       </div>
     )
@@ -63,22 +60,22 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="bg-[#111111] border border-[#1A1A1A] p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
-          <p className="text-gray-500 text-sm">
+          <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Welcome back</h1>
+          <p className="text-[#666666] text-sm">
             Enter your email to receive a magic sign-in link.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="email" className="block text-sm font-semibold text-[#FAFAFA] mb-2">
               Email address
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Mail className="w-4 h-4 text-gray-400" />
+                <Mail className="w-4 h-4 text-[#666666]" />
               </div>
               <input
                 id="email"
@@ -87,22 +84,22 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@yourbusiness.com"
                 required
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-[#0A0A0A] border border-[#1A1A1A] text-[#FAFAFA] placeholder-[#666666] text-sm focus:outline-none focus:border-[#F59E0B] transition-colors"
               />
             </div>
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
+            <p className="text-sm text-red-400 border border-red-900/50 bg-red-950/30 px-3 py-2">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading || !email}
-            className="w-full bg-brand hover:bg-brand-dark disabled:opacity-60 text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+            className="w-full bg-[#F59E0B] hover:bg-[#D97706] disabled:opacity-40 text-[#0A0A0A] font-bold py-3 flex items-center justify-center gap-2 transition-colors text-sm"
           >
             {loading ? (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-[#0A0A0A]/30 border-t-[#0A0A0A] rounded-full animate-spin" />
             ) : (
               <>
                 Send magic link
@@ -112,9 +109,9 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Don&apos;t have an account?{' '}
-          <Link href="/signup" className="text-brand font-medium hover:underline">
+        <p className="text-center text-sm text-[#666666] mt-6">
+          No account?{' '}
+          <Link href="/signup" className="text-[#F59E0B] font-semibold hover:underline">
             Sign up free
           </Link>
         </p>

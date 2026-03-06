@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Settings, CreditCard, LogOut, Phone } from 'lucide-react'
+import { LayoutDashboard, Settings, CreditCard, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
@@ -28,22 +28,19 @@ export function Sidebar({ businessName }: SidebarProps) {
   }
 
   return (
-    <aside className="fixed top-0 left-0 h-full w-64 bg-[#0F172A] flex flex-col z-40 hidden lg:flex">
+    <aside className="fixed top-0 left-0 h-full w-64 bg-[#0A0A0A] flex flex-col z-40 hidden lg:flex border-r border-[#1A1A1A]">
       {/* Logo */}
-      <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
-        <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
-          <Phone className="w-4 h-4 text-white" />
-        </div>
+      <div className="h-16 flex items-center px-6 border-b border-[#1A1A1A]">
         <div className="min-w-0">
-          <p className="text-white font-bold text-sm leading-tight">NeverMiss AI</p>
+          <p className="text-[#FAFAFA] font-extrabold tracking-tight">NeverMiss</p>
           {businessName && (
-            <p className="text-slate-500 text-xs truncate">{businessName}</p>
+            <p className="text-[#666666] text-xs truncate mt-0.5">{businessName}</p>
           )}
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -51,10 +48,10 @@ export function Sidebar({ businessName }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
+                'flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all rounded-md',
                 isActive
-                  ? 'bg-slate-800 text-white'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-[#1A1A1A] text-[#F59E0B]'
+                  : 'text-[#666666] hover:bg-[#1A1A1A] hover:text-[#FAFAFA]'
               )}
             >
               <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -65,10 +62,10 @@ export function Sidebar({ businessName }: SidebarProps) {
       </nav>
 
       {/* Sign out */}
-      <div className="p-3 border-t border-slate-800">
+      <div className="p-3 border-t border-[#1A1A1A]">
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-[#666666] hover:bg-[#1A1A1A] hover:text-[#FAFAFA] transition-all rounded-md"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
           Sign out
@@ -92,23 +89,18 @@ export function MobileTopBar({ businessName }: SidebarProps) {
   return (
     <div className="lg:hidden">
       {/* Top header */}
-      <div className="fixed top-0 left-0 right-0 h-14 bg-[#0F172A] flex items-center justify-between px-4 z-40">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-brand rounded-lg flex items-center justify-center">
-            <Phone className="w-3.5 h-3.5 text-white" />
-          </div>
-          <span className="text-white font-bold text-sm">NeverMiss AI</span>
-        </div>
+      <div className="fixed top-0 left-0 right-0 h-14 bg-[#0A0A0A] border-b border-[#1A1A1A] flex items-center justify-between px-4 z-40">
+        <span className="text-[#FAFAFA] font-extrabold tracking-tight text-sm">NeverMiss</span>
         <button
           onClick={handleSignOut}
-          className="text-slate-400 hover:text-white p-1"
+          className="text-[#666666] hover:text-[#FAFAFA] p-1 transition-colors"
         >
           <LogOut className="w-4 h-4" />
         </button>
       </div>
 
       {/* Bottom nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#0F172A] border-t border-slate-800 z-40">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#0A0A0A] border-t border-[#1A1A1A] z-40">
         <div className="flex">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href
@@ -118,7 +110,7 @@ export function MobileTopBar({ businessName }: SidebarProps) {
                 href={item.href}
                 className={cn(
                   'flex-1 flex flex-col items-center gap-1 py-2.5 text-xs font-medium transition-colors',
-                  isActive ? 'text-brand' : 'text-slate-500'
+                  isActive ? 'text-[#F59E0B]' : 'text-[#666666]'
                 )}
               >
                 <item.icon className="w-5 h-5" />

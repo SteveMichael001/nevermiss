@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Phone, Copy, CheckCircle, ArrowRight } from 'lucide-react'
+import { Phone, Copy, Check, ArrowRight } from 'lucide-react'
 import { OnboardingSteps } from '@/components/onboarding-steps'
 import { Button } from '@/components/ui/button'
 import { formatPhone } from '@/lib/utils'
@@ -59,34 +59,34 @@ export function NumberView({ businessId, existingNumber, ownerPhone }: NumberVie
       <OnboardingSteps currentStep={3} />
 
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Your AI phone number</h1>
-        <p className="text-gray-500">
+        <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Your AI phone number</h1>
+        <p className="text-[#666666] text-sm">
           Forward your existing number to this number to activate AI answering.
         </p>
       </div>
 
       {/* Phone number display */}
-      <div className="bg-[#0F172A] rounded-2xl p-8 text-center">
+      <div className="bg-[#111111] border border-[#1A1A1A] p-8 text-center">
         {provisioning ? (
           <div className="space-y-3">
-            <div className="w-12 h-12 border-4 border-brand/30 border-t-brand rounded-full animate-spin mx-auto" />
-            <p className="text-gray-400 text-sm">Provisioning your number...</p>
+            <div className="w-10 h-10 border-2 border-[#1A1A1A] border-t-[#F59E0B] rounded-full animate-spin mx-auto" />
+            <p className="text-[#666666] text-sm">Provisioning your number...</p>
           </div>
         ) : number ? (
           <div className="space-y-3">
-            <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+            <p className="text-[#666666] text-xs font-semibold uppercase tracking-[0.15em]">
               Your AI answering number
             </p>
-            <p className="text-4xl sm:text-5xl font-extrabold text-white">
+            <p className="text-4xl sm:text-5xl font-extrabold text-[#FAFAFA] tabular-nums">
               {formatPhone(number)}
             </p>
             <button
               onClick={copyNumber}
-              className="inline-flex items-center gap-2 text-brand text-sm font-medium hover:underline"
+              className="inline-flex items-center gap-2 text-[#F59E0B] text-sm font-medium hover:underline"
             >
               {copied ? (
                 <>
-                  <CheckCircle className="w-4 h-4" /> Copied!
+                  <Check className="w-4 h-4" /> Copied
                 </>
               ) : (
                 <>
@@ -108,55 +108,54 @@ export function NumberView({ businessId, existingNumber, ownerPhone }: NumberVie
       {/* Instructions */}
       {number && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-gray-900">Set up call forwarding</h3>
-          <p className="text-sm text-gray-500">
-            When your business number doesn&apos;t get answered, calls will forward to your AI number.
-            Here&apos;s how to set it up:
+          <h3 className="font-semibold text-[#FAFAFA] text-sm">Set up call forwarding</h3>
+          <p className="text-sm text-[#666666]">
+            When your business number goes unanswered, calls will forward to your AI number.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-3">
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-[#111111] border border-[#1A1A1A] p-4">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">📱</span>
-                <p className="font-medium text-gray-800 text-sm">iPhone</p>
+                <Phone className="w-4 h-4 text-[#666666]" />
+                <p className="font-semibold text-[#FAFAFA] text-sm">iPhone</p>
               </div>
-              <ol className="text-xs text-gray-500 space-y-1 list-decimal list-inside">
+              <ol className="text-xs text-[#666666] space-y-1 list-decimal list-inside">
                 <li>Open Settings</li>
                 <li>Tap Phone</li>
                 <li>Tap Call Forwarding</li>
-                <li>Enter <strong>{formatPhone(number)}</strong></li>
+                <li>Enter <strong className="text-[#FAFAFA]">{formatPhone(number)}</strong></li>
               </ol>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-[#111111] border border-[#1A1A1A] p-4">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">🤖</span>
-                <p className="font-medium text-gray-800 text-sm">Android</p>
+                <Phone className="w-4 h-4 text-[#666666]" />
+                <p className="font-semibold text-[#FAFAFA] text-sm">Android</p>
               </div>
-              <ol className="text-xs text-gray-500 space-y-1 list-decimal list-inside">
+              <ol className="text-xs text-[#666666] space-y-1 list-decimal list-inside">
                 <li>Open Phone app</li>
-                <li>Tap ⋮ Menu → Settings</li>
+                <li>Tap menu → Settings</li>
                 <li>Tap Call Forwarding</li>
-                <li>Enter <strong>{formatPhone(number)}</strong></li>
+                <li>Enter <strong className="text-[#FAFAFA]">{formatPhone(number)}</strong></li>
               </ol>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-[#111111] border border-[#1A1A1A] p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Phone className="w-4 h-4 text-gray-500" />
-                <p className="font-medium text-gray-800 text-sm">AT&T / T-Mobile</p>
+                <Phone className="w-4 h-4 text-[#666666]" />
+                <p className="font-semibold text-[#FAFAFA] text-sm">AT&T / T-Mobile</p>
               </div>
-              <p className="text-xs text-gray-500">
-                Dial <code className="bg-gray-100 px-1 rounded font-mono">*72{number}</code> from your phone to enable.
-                Dial <code className="bg-gray-100 px-1 rounded font-mono">*73</code> to disable.
+              <p className="text-xs text-[#666666]">
+                Dial <code className="bg-[#0A0A0A] px-1 font-mono text-[#FAFAFA]">*72{number}</code> to enable.{' '}
+                Dial <code className="bg-[#0A0A0A] px-1 font-mono text-[#FAFAFA]">*73</code> to disable.
               </p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-[#111111] border border-[#1A1A1A] p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Phone className="w-4 h-4 text-gray-500" />
-                <p className="font-medium text-gray-800 text-sm">Verizon</p>
+                <Phone className="w-4 h-4 text-[#666666]" />
+                <p className="font-semibold text-[#FAFAFA] text-sm">Verizon</p>
               </div>
-              <p className="text-xs text-gray-500">
-                Dial <code className="bg-gray-100 px-1 rounded font-mono">*72{number}</code> from your phone to enable.
-                Dial <code className="bg-gray-100 px-1 rounded font-mono">*73</code> to disable.
+              <p className="text-xs text-[#666666]">
+                Dial <code className="bg-[#0A0A0A] px-1 font-mono text-[#FAFAFA]">*72{number}</code> to enable.{' '}
+                Dial <code className="bg-[#0A0A0A] px-1 font-mono text-[#FAFAFA]">*73</code> to disable.
               </p>
             </div>
           </div>

@@ -23,7 +23,6 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
   const startTimeRef = useRef<string>(new Date().toISOString())
 
   useEffect(() => {
-    // Poll for new calls
     const supabase = createClient()
 
     pollingRef.current = setInterval(async () => {
@@ -56,30 +55,26 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
     }
   }, [businessId])
 
-  const statusMessages = {
+  const statusMessages: Record<TestStatus, { title: string; description: string; color: string }> = {
     waiting: {
-      emoji: '📞',
       title: 'Waiting for your test call...',
       description: 'Call the number below from your phone right now.',
-      color: 'text-gray-500',
+      color: 'text-[#666666]',
     },
     received: {
-      emoji: '🎉',
-      title: 'Call received!',
-      description: 'Your AI is answering the call...',
-      color: 'text-blue-600',
+      title: 'Call received.',
+      description: 'Your AI is answering...',
+      color: 'text-blue-400',
     },
     captured: {
-      emoji: '✅',
-      title: 'Lead captured!',
+      title: 'Lead captured.',
       description: 'Your AI successfully captured the caller\'s information.',
-      color: 'text-brand',
+      color: 'text-[#F59E0B]',
     },
     done: {
-      emoji: '✅',
-      title: 'It works!',
+      title: 'It works.',
       description: 'Your AI is ready to answer calls.',
-      color: 'text-brand',
+      color: 'text-[#F59E0B]',
     },
   }
 
@@ -90,41 +85,40 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
       <OnboardingSteps currentStep={4} />
 
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Test your AI number</h1>
-        <p className="text-gray-500">Call your AI number from your phone to hear it in action.</p>
+        <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Test your AI number</h1>
+        <p className="text-[#666666] text-sm">Call your AI number from your phone to hear it in action.</p>
       </div>
 
       {/* Call prompt */}
-      <div className="bg-[#0F172A] rounded-2xl p-8 text-center space-y-4">
-        <p className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+      <div className="bg-[#111111] border border-[#1A1A1A] p-8 text-center space-y-4">
+        <p className="text-[#666666] text-xs font-semibold uppercase tracking-[0.15em]">
           Call this number now
         </p>
-        <p className="text-4xl sm:text-5xl font-extrabold text-white">
+        <p className="text-4xl sm:text-5xl font-extrabold text-[#FAFAFA] tabular-nums">
           {formatPhone(aiPhone)}
         </p>
         <a
           href={`tel:${aiPhone}`}
-          className="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0A0A] font-bold px-6 py-3 transition-colors text-sm"
         >
-          <Phone className="w-5 h-5" />
+          <Phone className="w-4 h-4" />
           Tap to call
         </a>
       </div>
 
       {/* Status indicator */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center space-y-3">
-        <div className="text-4xl">{currentStatus.emoji}</div>
-        <p className={`font-semibold text-lg ${currentStatus.color}`}>
+      <div className="bg-[#111111] border border-[#1A1A1A] p-6 text-center space-y-3">
+        <p className={`font-bold text-lg ${currentStatus.color}`}>
           {currentStatus.title}
         </p>
-        <p className="text-sm text-gray-500">{currentStatus.description}</p>
+        <p className="text-sm text-[#666666]">{currentStatus.description}</p>
 
         {status === 'waiting' && (
           <div className="flex justify-center gap-1 mt-2">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                className="w-1.5 h-1.5 bg-[#1A1A1A] rounded-full animate-bounce"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
@@ -132,17 +126,17 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
         )}
 
         {status === 'captured' && latestCall && (
-          <div className="mt-4 bg-green-50 rounded-xl p-4 text-left space-y-2">
+          <div className="mt-4 bg-[#0A0A0A] border border-[#1A1A1A] p-4 text-left space-y-2">
             {latestCall.caller_name && (
               <div className="flex gap-2 text-sm">
-                <span className="text-gray-500 w-20">Caller:</span>
-                <span className="font-medium text-gray-900">{latestCall.caller_name}</span>
+                <span className="text-[#666666] w-20">Caller:</span>
+                <span className="font-medium text-[#FAFAFA]">{latestCall.caller_name}</span>
               </div>
             )}
             {latestCall.service_needed && (
               <div className="flex gap-2 text-sm">
-                <span className="text-gray-500 w-20">Needs:</span>
-                <span className="font-medium text-gray-900">{latestCall.service_needed}</span>
+                <span className="text-[#666666] w-20">Needs:</span>
+                <span className="font-medium text-[#FAFAFA]">{latestCall.service_needed}</span>
               </div>
             )}
           </div>
@@ -156,7 +150,8 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
         >
           {status === 'captured' ? (
             <>
-              <CheckCircle className="w-5 h-5" /> It works! Continue →
+              <CheckCircle className="w-5 h-5" /> It works. Continue
+              <ArrowRight className="w-4 h-4" />
             </>
           ) : (
             <>
@@ -166,7 +161,7 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
           )}
         </Button>
         {status === 'waiting' && (
-          <p className="text-center text-xs text-gray-400">
+          <p className="text-center text-xs text-[#666666]">
             You can always test from your dashboard later.
           </p>
         )}

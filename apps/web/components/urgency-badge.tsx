@@ -11,12 +11,11 @@ export function UrgencyBadge({ urgency, className }: UrgencyBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border',
+        'inline-flex items-center px-2 py-0.5 text-xs font-medium border',
         config.className,
         className
       )}
     >
-      <span>{config.emoji}</span>
       {config.label}
     </span>
   )
