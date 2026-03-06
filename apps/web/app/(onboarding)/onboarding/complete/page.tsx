@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Settings, LayoutDashboard, CheckCircle } from 'lucide-react'
+import { ArrowRight, Settings, LayoutDashboard } from 'lucide-react'
 import { formatPhone } from '@/lib/utils'
 import { OnboardingSteps } from '@/components/onboarding-steps'
 
@@ -28,36 +28,38 @@ export default async function CompletePage() {
       <OnboardingSteps currentStep={6} />
 
       {/* Success */}
-      <div className="text-center space-y-4">
-        <div className="w-16 h-16 border border-[#F59E0B] flex items-center justify-center mx-auto">
-          <CheckCircle className="w-8 h-8 text-[#F59E0B]" />
+      <div className="space-y-4">
+        <div className="w-12 h-12 border border-zinc-200 flex items-center justify-center">
+          <svg className="w-5 h-5 text-black" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2.5 8L6.5 12L13.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
-        <h1 className="text-3xl font-extrabold text-[#FAFAFA]">You&apos;re live.</h1>
-        <p className="text-[#666666] max-w-md mx-auto text-sm leading-relaxed">
-          <strong className="text-[#FAFAFA]">{business.name}</strong> is now powered by AI.
+        <h1 className="font-serif italic text-4xl text-black">You&apos;re live.</h1>
+        <p className="text-zinc-500 max-w-md text-sm leading-relaxed">
+          <strong className="text-black font-medium">{business.name}</strong> is now powered by AI.
           Every call you miss will be captured and texted to you instantly.
         </p>
       </div>
 
       {/* Number */}
       {business.twilio_phone_number && (
-        <div className="bg-[#111111] border border-[#1A1A1A] p-6 text-center">
-          <p className="text-[#666666] text-xs font-semibold uppercase tracking-[0.15em] mb-3">
+        <div className="border border-zinc-200 p-6 md:p-8">
+          <p className="text-zinc-500 text-xs font-medium tracking-widest uppercase mb-3">
             Your AI number
           </p>
-          <p className="text-3xl font-extrabold text-[#FAFAFA] mb-1 tabular-nums">
+          <p className="font-serif text-3xl text-black mb-1 tabular-nums">
             {formatPhone(business.twilio_phone_number)}
           </p>
-          <p className="text-[#666666] text-sm">Missed calls forward here automatically.</p>
+          <p className="text-zinc-500 text-sm">Missed calls forward here automatically.</p>
         </div>
       )}
 
       {/* What happens next */}
       <div className="space-y-3">
-        <h3 className="font-semibold text-[#FAFAFA] text-sm uppercase tracking-wider text-[#666666]">
+        <p className="text-xs font-medium tracking-widest uppercase text-zinc-500">
           What happens next
-        </h3>
-        <div className="space-y-px border border-[#1A1A1A]">
+        </p>
+        <div className="border border-zinc-200">
           {[
             'A customer calls your number.',
             'If you miss it, your AI picks up.',
@@ -65,11 +67,11 @@ export default async function CompletePage() {
             'You get a text within 60 seconds: name, phone, issue.',
             'You call back and win the job.',
           ].map((text, i) => (
-            <div key={text} className="flex items-start gap-4 bg-[#111111] px-4 py-3 border-b border-[#1A1A1A] last:border-0">
-              <span className="text-xs font-bold text-[#666666] tabular-nums mt-0.5 w-4 flex-shrink-0">
+            <div key={text} className="flex items-start gap-4 px-5 py-3.5 border-b border-zinc-200 last:border-0">
+              <span className="text-xs font-medium text-zinc-400 tabular-nums mt-0.5 w-4 flex-shrink-0">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <p className="text-sm text-[#FAFAFA]">{text}</p>
+              <p className="text-sm text-black">{text}</p>
             </div>
           ))}
         </div>
@@ -79,7 +81,7 @@ export default async function CompletePage() {
       <div className="space-y-3">
         <Link
           href="/dashboard"
-          className="flex items-center justify-center gap-2 w-full bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0A0A] font-bold py-3 transition-colors text-sm"
+          className="flex items-center justify-center gap-3 w-full bg-black hover:bg-zinc-800 text-white text-xs font-medium tracking-widest uppercase py-4 transition-colors"
         >
           <LayoutDashboard className="w-4 h-4" />
           Go to Dashboard
@@ -87,7 +89,7 @@ export default async function CompletePage() {
         </Link>
         <Link
           href="/dashboard/settings"
-          className="flex items-center justify-center gap-2 w-full border border-[#1A1A1A] hover:border-[#333] text-[#666666] hover:text-[#FAFAFA] font-medium py-3 transition-colors text-sm"
+          className="flex items-center justify-center gap-3 w-full border border-zinc-200 hover:border-zinc-400 text-zinc-500 hover:text-black text-xs font-medium tracking-widest uppercase py-4 transition-colors"
         >
           <Settings className="w-4 h-4" />
           Manage Settings

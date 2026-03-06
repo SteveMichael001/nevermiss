@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { ArrowRight, Shield } from 'lucide-react'
 import { OnboardingSteps } from '@/components/onboarding-steps'
-import { Button } from '@/components/ui/button'
 
 interface PaymentViewProps {
   businessId: string
@@ -48,75 +47,63 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
     <div className="space-y-8">
       <OnboardingSteps currentStep={5} />
 
-      <div className="text-center">
-        <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Start your free trial</h1>
-        <p className="text-[#666666] text-sm">
+      <div>
+        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 5</p>
+        <h1 className="font-serif italic text-3xl text-black mb-2">Start your free trial</h1>
+        <p className="text-zinc-500 text-sm leading-relaxed">
           14 days free. First charge on{' '}
-          <strong className="text-[#FAFAFA]">{trialEndDate}</strong>.
+          <strong className="text-black font-medium">{trialEndDate}</strong>.
         </p>
       </div>
 
       {/* Plan card */}
-      <div className="bg-[#111111] border border-[#1A1A1A] p-8">
-        <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-4xl font-extrabold text-[#FAFAFA] tabular-nums">$250</span>
-          <span className="text-[#666666]">/month</span>
+      <div className="border border-zinc-200 p-8 md:p-10">
+        <div className="flex items-baseline gap-2 mb-2">
+          <span className="font-serif text-5xl text-black tabular-nums">$250</span>
+          <span className="text-zinc-500 text-sm">/month</span>
         </div>
-        <p className="text-[#F59E0B] font-medium text-sm mb-6">
+        <p className="text-zinc-500 text-sm mb-8">
           14-day free trial — first charge {trialEndDate}
         </p>
 
         <ul className="space-y-3">
           {FEATURES.map((item) => (
-            <li key={item} className="flex items-center gap-3 text-sm text-[#FAFAFA]">
-              <svg
-                className="w-4 h-4 text-[#F59E0B] flex-shrink-0"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M2.5 8L6.5 12L13.5 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+            <li key={item} className="flex items-start gap-3 text-sm text-zinc-600">
+              <span className="text-zinc-300 mt-0.5 flex-shrink-0">—</span>
               {item}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Trust signals */}
-      <div className="flex items-center justify-center gap-2 text-sm text-[#666666]">
+      {/* Trust signal */}
+      <div className="flex items-center justify-center gap-2 text-sm text-zinc-400">
         <Shield className="w-4 h-4" />
         <span>Secured by Stripe — PCI compliant</span>
       </div>
 
       {error && (
-        <p className="text-sm text-red-400 border border-red-900/50 bg-red-950/30 px-3 py-2 text-center">
+        <p className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2 text-center">
           {error}
         </p>
       )}
 
-      <Button
+      <button
         onClick={handleCheckout}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-4 text-base bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0A0A] font-bold"
+        className="w-full bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-xs font-medium tracking-widest uppercase py-4 flex items-center justify-center gap-2 transition-colors"
       >
         {loading ? (
-          <span className="w-4 h-4 border-2 border-[#0A0A0A]/30 border-t-[#0A0A0A] rounded-full animate-spin" />
+          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
           <>
             Start Free Trial
             <ArrowRight className="w-4 h-4" />
           </>
         )}
-      </Button>
+      </button>
 
-      <p className="text-center text-xs text-[#666666]">
+      <p className="text-center text-xs text-zinc-400">
         By starting a trial, you agree to our Terms of Service.
         You won&apos;t be charged until {trialEndDate}.
       </p>

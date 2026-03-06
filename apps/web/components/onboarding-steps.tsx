@@ -19,9 +19,9 @@ export function OnboardingSteps({ currentStep }: OnboardingStepsProps) {
     <div className="w-full">
       <div className="flex items-center justify-between relative">
         {/* Progress line */}
-        <div className="absolute top-4 left-0 right-0 h-px bg-[#1A1A1A] -z-0">
+        <div className="absolute top-4 left-0 right-0 h-px bg-zinc-200 -z-0">
           <div
-            className="h-full bg-[#F59E0B] transition-all duration-500"
+            className="h-full bg-black transition-all duration-500"
             style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
           />
         </div>
@@ -34,12 +34,12 @@ export function OnboardingSteps({ currentStep }: OnboardingStepsProps) {
             <div key={step.id} className="flex flex-col items-center gap-1.5 z-10">
               <div
                 className={cn(
-                  'w-8 h-8 border flex items-center justify-center text-xs font-bold transition-all',
+                  'w-8 h-8 border flex items-center justify-center text-xs font-medium transition-all',
                   isCompleted
-                    ? 'bg-[#F59E0B] border-[#F59E0B] text-[#0A0A0A]'
+                    ? 'bg-black border-black text-white'
                     : isCurrent
-                    ? 'bg-[#0A0A0A] border-[#F59E0B] text-[#F59E0B]'
-                    : 'bg-[#0A0A0A] border-[#1A1A1A] text-[#666666]'
+                    ? 'bg-white border-black text-black'
+                    : 'bg-white border-zinc-200 text-zinc-400'
                 )}
               >
                 {isCompleted ? <Check className="w-4 h-4" /> : step.id}
@@ -47,7 +47,7 @@ export function OnboardingSteps({ currentStep }: OnboardingStepsProps) {
               <span
                 className={cn(
                   'text-xs font-medium hidden sm:block',
-                  isCurrent ? 'text-[#FAFAFA]' : 'text-[#666666]'
+                  isCurrent ? 'text-black' : 'text-zinc-400'
                 )}
               >
                 {step.label}

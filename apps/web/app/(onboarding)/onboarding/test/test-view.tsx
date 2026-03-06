@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Phone, ArrowRight, CheckCircle } from 'lucide-react'
 import { OnboardingSteps } from '@/components/onboarding-steps'
-import { Button } from '@/components/ui/button'
 import { formatPhone } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 
@@ -55,26 +54,22 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
     }
   }, [businessId])
 
-  const statusMessages: Record<TestStatus, { title: string; description: string; color: string }> = {
+  const statusMessages: Record<TestStatus, { title: string; description: string }> = {
     waiting: {
       title: 'Waiting for your test call...',
       description: 'Call the number below from your phone right now.',
-      color: 'text-[#666666]',
     },
     received: {
       title: 'Call received.',
       description: 'Your AI is answering...',
-      color: 'text-blue-400',
     },
     captured: {
       title: 'Lead captured.',
       description: 'Your AI successfully captured the caller\'s information.',
-      color: 'text-[#F59E0B]',
     },
     done: {
       title: 'It works.',
       description: 'Your AI is ready to answer calls.',
-      color: 'text-[#F59E0B]',
     },
   }
 
@@ -84,22 +79,25 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
     <div className="space-y-8">
       <OnboardingSteps currentStep={4} />
 
-      <div className="text-center">
-        <h1 className="text-2xl font-extrabold text-[#FAFAFA] mb-2">Test your AI number</h1>
-        <p className="text-[#666666] text-sm">Call your AI number from your phone to hear it in action.</p>
+      <div>
+        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 4</p>
+        <h1 className="font-serif italic text-3xl text-black mb-2">Test your AI number</h1>
+        <p className="text-zinc-500 text-sm leading-relaxed">
+          Call your AI number from your phone to hear it in action.
+        </p>
       </div>
 
       {/* Call prompt */}
-      <div className="bg-[#111111] border border-[#1A1A1A] p-8 text-center space-y-4">
-        <p className="text-[#666666] text-xs font-semibold uppercase tracking-[0.15em]">
+      <div className="border border-zinc-200 p-8 md:p-10 text-center space-y-4">
+        <p className="text-zinc-500 text-xs font-medium tracking-widest uppercase">
           Call this number now
         </p>
-        <p className="text-4xl sm:text-5xl font-extrabold text-[#FAFAFA] tabular-nums">
+        <p className="text-4xl sm:text-5xl font-serif text-black tabular-nums">
           {formatPhone(aiPhone)}
         </p>
         <a
           href={`tel:${aiPhone}`}
-          className="inline-flex items-center gap-2 bg-[#F59E0B] hover:bg-[#D97706] text-[#0A0A0A] font-bold px-6 py-3 transition-colors text-sm"
+          className="inline-flex items-center gap-2 bg-black hover:bg-zinc-800 text-white text-xs font-medium tracking-widest uppercase px-6 py-3 transition-colors"
         >
           <Phone className="w-4 h-4" />
           Tap to call
@@ -107,18 +105,18 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
       </div>
 
       {/* Status indicator */}
-      <div className="bg-[#111111] border border-[#1A1A1A] p-6 text-center space-y-3">
-        <p className={`font-bold text-lg ${currentStatus.color}`}>
+      <div className="border border-zinc-200 p-6 text-center space-y-3">
+        <p className={`font-medium text-base ${status === 'captured' || status === 'done' ? 'text-black' : 'text-zinc-600'}`}>
           {currentStatus.title}
         </p>
-        <p className="text-sm text-[#666666]">{currentStatus.description}</p>
+        <p className="text-sm text-zinc-500">{currentStatus.description}</p>
 
         {status === 'waiting' && (
           <div className="flex justify-center gap-1 mt-2">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-1.5 h-1.5 bg-[#1A1A1A] rounded-full animate-bounce"
+                className="w-1.5 h-1.5 bg-zinc-300 rounded-full animate-bounce"
                 style={{ animationDelay: `${i * 0.15}s` }}
               />
             ))}
@@ -126,17 +124,17 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
         )}
 
         {status === 'captured' && latestCall && (
-          <div className="mt-4 bg-[#0A0A0A] border border-[#1A1A1A] p-4 text-left space-y-2">
+          <div className="mt-4 bg-zinc-50 border border-zinc-200 p-4 text-left space-y-2">
             {latestCall.caller_name && (
               <div className="flex gap-2 text-sm">
-                <span className="text-[#666666] w-20">Caller:</span>
-                <span className="font-medium text-[#FAFAFA]">{latestCall.caller_name}</span>
+                <span className="text-zinc-500 w-20">Caller:</span>
+                <span className="font-medium text-black">{latestCall.caller_name}</span>
               </div>
             )}
             {latestCall.service_needed && (
               <div className="flex gap-2 text-sm">
-                <span className="text-[#666666] w-20">Needs:</span>
-                <span className="font-medium text-[#FAFAFA]">{latestCall.service_needed}</span>
+                <span className="text-zinc-500 w-20">Needs:</span>
+                <span className="font-medium text-black">{latestCall.service_needed}</span>
               </div>
             )}
           </div>
@@ -144,13 +142,14 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
       </div>
 
       <div className="space-y-3">
-        <Button
+        <button
           onClick={() => router.push('/onboarding/payment')}
-          className="w-full flex items-center justify-center gap-2 py-3 text-base"
+          disabled={false}
+          className="w-full bg-black hover:bg-zinc-800 text-white text-xs font-medium tracking-widest uppercase py-4 flex items-center justify-center gap-2 transition-colors"
         >
           {status === 'captured' ? (
             <>
-              <CheckCircle className="w-5 h-5" /> It works. Continue
+              <CheckCircle className="w-4 h-4" /> It works. Continue
               <ArrowRight className="w-4 h-4" />
             </>
           ) : (
@@ -159,9 +158,9 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
               <ArrowRight className="w-4 h-4" />
             </>
           )}
-        </Button>
+        </button>
         {status === 'waiting' && (
-          <p className="text-center text-xs text-[#666666]">
+          <p className="text-center text-xs text-zinc-400">
             You can always test from your dashboard later.
           </p>
         )}

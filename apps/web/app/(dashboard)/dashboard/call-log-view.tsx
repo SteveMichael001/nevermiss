@@ -72,39 +72,46 @@ export function CallLogView({
   const emergencies = calls.filter((c) => c.urgency === 'emergency' && c.lead_status === 'new').length
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A]">
-      {/* Header */}
-      <div className="border-b border-[#1A1A1A] px-4 sm:px-8 py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="min-h-screen bg-white">
+      {/* Header — with subtle grid texture (AI aesthetic carried from landing) */}
+      <div className="relative border-b border-zinc-200 px-6 sm:px-8 py-8 overflow-hidden">
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="relative flex flex-col sm:flex-row sm:items-end justify-between gap-6">
           <div>
-            <h1 className="text-xl font-extrabold text-[#FAFAFA]">Call Log</h1>
-            <p className="text-sm text-[#666666] mt-0.5">
+            <p className="text-xs tracking-widest uppercase text-zinc-500 mb-2 font-sans">Call Log</p>
+            <h1 className="font-serif italic text-3xl text-black leading-none">
               {totalCount} total calls
-              {businessPhone && (
-                <span className="ml-2">
-                  · AI number:{' '}
-                  <a href={`tel:${businessPhone}`} className="text-[#F59E0B] font-medium">
-                    {formatPhone(businessPhone)}
-                  </a>
-                </span>
-              )}
-            </p>
+            </h1>
+            {businessPhone && (
+              <p className="text-sm text-zinc-500 mt-2">
+                AI number:{' '}
+                <a href={`tel:${businessPhone}`} className="text-black font-medium hover:underline">
+                  {formatPhone(businessPhone)}
+                </a>
+              </p>
+            )}
           </div>
 
           {/* Stats */}
-          <div className="flex items-center gap-3">
-            <div className="text-center px-3 py-1.5 bg-[#111111] border border-[#1A1A1A]">
-              <p className="text-lg font-bold text-[#FAFAFA] tabular-nums">{todayCount}</p>
-              <p className="text-xs text-[#666666]">Today</p>
+          <div className="flex items-center gap-px border border-zinc-200">
+            <div className="text-center px-5 py-3 bg-white">
+              <p className="text-2xl font-serif text-black tabular-nums">{todayCount}</p>
+              <p className="text-xs text-zinc-500 mt-0.5">Today</p>
             </div>
-            <div className="text-center px-3 py-1.5 bg-[#111111] border border-[#1A1A1A]">
-              <p className="text-lg font-bold text-[#F59E0B] tabular-nums">{newLeads}</p>
-              <p className="text-xs text-[#666666]">New</p>
+            <div className="text-center px-5 py-3 bg-zinc-50 border-l border-zinc-200">
+              <p className="text-2xl font-serif text-black tabular-nums">{newLeads}</p>
+              <p className="text-xs text-zinc-500 mt-0.5">New</p>
             </div>
             {emergencies > 0 && (
-              <div className="text-center px-3 py-1.5 bg-red-950/30 border border-red-900">
-                <p className="text-lg font-bold text-red-400 tabular-nums">{emergencies}</p>
-                <p className="text-xs text-red-500">Emergency</p>
+              <div className="text-center px-5 py-3 bg-zinc-50 border-l border-zinc-200">
+                <p className="text-2xl font-serif text-red-600 tabular-nums">{emergencies}</p>
+                <p className="text-xs text-zinc-500 mt-0.5">Emergency</p>
               </div>
             )}
           </div>
@@ -113,11 +120,11 @@ export function CallLogView({
 
       {/* Subscription warning */}
       {subscriptionStatus === 'past_due' && (
-        <div className="mx-4 sm:mx-8 mt-4 flex items-center gap-3 bg-yellow-950/30 border border-yellow-900 px-4 py-3">
-          <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
-          <p className="text-sm text-yellow-400">
+        <div className="mx-6 sm:mx-8 mt-4 flex items-center gap-3 bg-zinc-50 border border-zinc-300 px-4 py-3">
+          <AlertCircle className="w-4 h-4 text-zinc-600 flex-shrink-0" />
+          <p className="text-sm text-zinc-700">
             Your payment is past due. Please update your billing info to keep your service active.{' '}
-            <a href="/dashboard/billing" className="font-semibold underline">
+            <a href="/dashboard/billing" className="font-medium underline text-black">
               Update billing
             </a>
           </p>
@@ -125,11 +132,11 @@ export function CallLogView({
       )}
 
       {subscriptionStatus === 'canceled' && (
-        <div className="mx-4 sm:mx-8 mt-4 flex items-center gap-3 bg-red-950/30 border border-red-900 px-4 py-3">
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-          <p className="text-sm text-red-400">
+        <div className="mx-6 sm:mx-8 mt-4 flex items-center gap-3 bg-zinc-50 border border-zinc-300 px-4 py-3">
+          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+          <p className="text-sm text-zinc-700">
             Your subscription is canceled. AI answering is paused.{' '}
-            <a href="/dashboard/billing" className="font-semibold underline">
+            <a href="/dashboard/billing" className="font-medium underline text-black">
               Reactivate
             </a>
           </p>
@@ -137,15 +144,15 @@ export function CallLogView({
       )}
 
       {/* Filters */}
-      <div className="px-4 sm:px-8 py-4 border-b border-[#1A1A1A]">
+      <div className="px-6 sm:px-8 py-4 border-b border-zinc-100">
         <div className="flex items-center gap-3">
-          <Filter className="w-4 h-4 text-[#666666]" />
-          <span className="text-sm text-[#666666] font-medium">Filter:</span>
+          <Filter className="w-3.5 h-3.5 text-zinc-400" />
+          <span className="text-xs tracking-widest uppercase text-zinc-400 font-medium">Filter</span>
           <Select value={urgencyFilter} onValueChange={setUrgencyFilter}>
-            <SelectTrigger className="h-8 w-[130px] text-xs bg-[#111111] border-[#1A1A1A] text-[#FAFAFA]">
+            <SelectTrigger className="h-8 w-[130px] text-xs bg-white border-zinc-200 text-zinc-700">
               <SelectValue placeholder="Urgency" />
             </SelectTrigger>
-            <SelectContent className="bg-[#111111] border-[#1A1A1A]">
+            <SelectContent className="bg-white border-zinc-200">
               <SelectItem value="all">All urgencies</SelectItem>
               <SelectItem value="emergency">Emergency</SelectItem>
               <SelectItem value="urgent">Urgent</SelectItem>
@@ -153,10 +160,10 @@ export function CallLogView({
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="h-8 w-[130px] text-xs bg-[#111111] border-[#1A1A1A] text-[#FAFAFA]">
+            <SelectTrigger className="h-8 w-[130px] text-xs bg-white border-zinc-200 text-zinc-700">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent className="bg-[#111111] border-[#1A1A1A]">
+            <SelectContent className="bg-white border-zinc-200">
               <SelectItem value="all">All statuses</SelectItem>
               <SelectItem value="new">New</SelectItem>
               <SelectItem value="called_back">Called Back</SelectItem>
@@ -167,7 +174,7 @@ export function CallLogView({
           {(urgencyFilter !== 'all' || statusFilter !== 'all') && (
             <button
               onClick={() => { setUrgencyFilter('all'); setStatusFilter('all') }}
-              className="text-xs text-[#666666] hover:text-[#FAFAFA] underline transition-colors"
+              className="text-xs text-zinc-400 hover:text-black underline transition-colors"
             >
               Clear
             </button>
@@ -176,8 +183,8 @@ export function CallLogView({
       </div>
 
       {/* Table */}
-      <div className="px-4 sm:px-8 py-4">
-        <div className="bg-[#111111] border border-[#1A1A1A] p-4 sm:p-6">
+      <div className="px-6 sm:px-8 py-6">
+        <div className="border border-zinc-200">
           <CallLogTable calls={filteredCalls} onStatusChange={handleStatusChange} />
         </div>
       </div>
