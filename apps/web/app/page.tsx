@@ -1,8 +1,26 @@
 import Link from 'next/link'
 
+const fadeUp = {
+  animation: 'fadeUp 0.8s ease forwards',
+}
+const fadeUpDelay = {
+  animation: 'fadeUp 0.8s ease 0.3s forwards',
+  opacity: 0,
+}
+const fadeUpDelay2 = {
+  animation: 'fadeUp 0.8s ease 0.6s forwards',
+  opacity: 0,
+}
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-black">
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
       
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16 border-b border-zinc-200 bg-white/95 backdrop-blur-sm">
@@ -35,24 +53,24 @@ export default function LandingPage() {
         />
 
         {/* Ghost stat — decorative */}
-        <div className="absolute bottom-16 right-6 md:right-10 text-right pointer-events-none select-none">
-          <div className="font-serif text-7xl md:text-9xl text-zinc-200 leading-none tracking-tight">
+        <div style={fadeUpDelay2} className="absolute bottom-16 right-6 md:right-10 text-right pointer-events-none select-none">
+          <div className="font-serif text-7xl md:text-9xl text-zinc-400 leading-none tracking-tight">
             $130K
           </div>
-          <div className="text-xs tracking-widest uppercase text-zinc-200 mt-1">
+          <div className="text-xs tracking-widest uppercase text-zinc-400 mt-1">
             missed per year
           </div>
         </div>
 
-        {/* Ghost phone mockup */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-64 md:w-80 opacity-30 pointer-events-none select-none hidden md:block">
-          <div className="bg-zinc-50 border border-zinc-300 rounded-[40px] p-5 mx-auto w-56">
+        {/* Phone mockup */}
+        <div style={fadeUpDelay} className="absolute right-4 md:right-16 top-1/2 -translate-y-1/2 w-56 md:w-64 pointer-events-none select-none hidden md:block">
+          <div className="bg-white border border-zinc-300 rounded-[40px] p-5 mx-auto w-52 shadow-xl">
             <div className="text-center text-zinc-400 text-xs tracking-widest uppercase mb-5">9:41</div>
-            <div className="bg-zinc-100 border border-zinc-300 rounded-xl p-3 flex items-center gap-3">
-              <div className="w-9 h-9 bg-zinc-300 rounded-lg flex items-center justify-center text-zinc-600 text-sm flex-shrink-0">↘</div>
+            <div className="bg-zinc-100 border border-zinc-200 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-9 h-9 bg-zinc-200 rounded-lg flex items-center justify-center text-zinc-700 text-sm flex-shrink-0 font-medium">↘</div>
               <div>
-                <div className="text-zinc-500 text-xs tracking-wider uppercase mb-0.5">Missed call</div>
-                <div className="text-zinc-800 text-sm font-medium">Unknown Caller</div>
+                <div className="text-zinc-600 text-xs tracking-wider uppercase mb-0.5 font-medium">Missed call</div>
+                <div className="text-zinc-900 text-sm font-semibold">Unknown Caller</div>
                 <div className="text-zinc-500 text-xs mt-0.5">Just now</div>
               </div>
             </div>
@@ -60,7 +78,7 @@ export default function LandingPage() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-3xl">
+        <div style={fadeUp} className="relative z-10 max-w-3xl">
           <p className="text-xs tracking-widest uppercase text-zinc-500 mb-8 font-sans">
             AI voicemail for contractors
           </p>
