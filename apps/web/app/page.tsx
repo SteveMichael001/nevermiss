@@ -15,7 +15,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/signup"
-            className="text-xs font-medium tracking-widest uppercase bg-black text-black px-5 py-2.5 hover:bg-zinc-200 transition-colors"
+            className="text-xs font-medium tracking-widest uppercase bg-black text-white px-5 py-2.5 hover:bg-zinc-800 transition-colors"
           >
             Free trial
           </Link>
@@ -36,7 +36,7 @@ export default function LandingPage() {
 
         {/* Ghost stat — decorative */}
         <div className="absolute bottom-16 right-6 md:right-10 text-right pointer-events-none select-none">
-          <div className="font-serif text-7xl md:text-9xl text-zinc-100 leading-none tracking-tight">
+          <div className="font-serif text-7xl md:text-9xl text-zinc-200 leading-none tracking-tight">
             $130K
           </div>
           <div className="text-xs tracking-widest uppercase text-zinc-200 mt-1">
@@ -45,14 +45,14 @@ export default function LandingPage() {
         </div>
 
         {/* Ghost phone mockup */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-64 md:w-80 opacity-10 pointer-events-none select-none hidden md:block">
-          <div className="bg-zinc-100 border border-zinc-200 rounded-[40px] p-5 mx-auto w-56">
-            <div className="text-center text-zinc-300 text-xs tracking-widest uppercase mb-5">9:41</div>
-            <div className="bg-zinc-200 border border-zinc-300 rounded-xl p-3 flex items-center gap-3">
-              <div className="w-9 h-9 bg-red-950 rounded-lg flex items-center justify-center text-red-400 text-sm flex-shrink-0">↘</div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-64 md:w-80 opacity-30 pointer-events-none select-none hidden md:block">
+          <div className="bg-zinc-50 border border-zinc-300 rounded-[40px] p-5 mx-auto w-56">
+            <div className="text-center text-zinc-400 text-xs tracking-widest uppercase mb-5">9:41</div>
+            <div className="bg-zinc-100 border border-zinc-300 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-9 h-9 bg-zinc-300 rounded-lg flex items-center justify-center text-zinc-600 text-sm flex-shrink-0">↘</div>
               <div>
-                <div className="text-red-400 text-xs tracking-wider uppercase mb-0.5">Missed call</div>
-                <div className="text-black text-sm font-medium">Unknown Caller</div>
+                <div className="text-zinc-500 text-xs tracking-wider uppercase mb-0.5">Missed call</div>
+                <div className="text-zinc-800 text-sm font-medium">Unknown Caller</div>
                 <div className="text-zinc-500 text-xs mt-0.5">Just now</div>
               </div>
             </div>
@@ -78,11 +78,11 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-3 bg-black text-black text-xs font-medium tracking-widest uppercase px-7 py-4 hover:bg-zinc-200 transition-colors"
+              className="inline-flex items-center gap-3 bg-black text-white text-xs font-medium tracking-widest uppercase px-7 py-4 hover:bg-zinc-800 transition-colors"
             >
               Start free trial <span>→</span>
             </Link>
-            <span className="text-xs text-zinc-300 tracking-wide">
+            <span className="text-xs text-zinc-400 tracking-wide">
               14 days free · No card required
             </span>
           </div>
@@ -225,11 +225,11 @@ export default function LandingPage() {
 
             <Link
               href="/signup"
-              className="block w-full text-center bg-black text-black text-xs font-medium tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors font-sans"
+              className="block w-full text-center bg-black text-white text-xs font-medium tracking-widest uppercase py-4 hover:bg-zinc-800 transition-colors font-sans"
             >
               Start free trial →
             </Link>
-            <p className="text-center text-xs text-zinc-300 mt-4 font-sans tracking-wide">
+            <p className="text-center text-xs text-zinc-400 mt-4 font-sans tracking-wide">
               Cancel anytime
             </p>
           </div>
@@ -241,8 +241,8 @@ export default function LandingPage() {
         <span className="uppercase tracking-widest font-medium text-zinc-500">NeverMiss</span>
         <span>© {new Date().getFullYear()}</span>
         <div className="flex gap-6">
-          <Link href="/login" className="hover:text-black transition-colors">Sign in</Link>
-          <Link href="/signup" className="hover:text-black transition-colors">Sign up</Link>
+          <Link href="/login" className="text-zinc-500 hover:text-black transition-colors">Sign in</Link>
+          <Link href="/signup" className="text-zinc-500 hover:text-black transition-colors">Sign up</Link>
         </div>
       </footer>
 
