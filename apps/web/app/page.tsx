@@ -54,10 +54,10 @@ export default function LandingPage() {
 
         {/* Ghost stat — decorative */}
         <div style={fadeUpDelay2} className="absolute bottom-16 right-6 md:right-10 text-right pointer-events-none select-none">
-          <div className="font-serif text-7xl md:text-9xl text-zinc-400 leading-none tracking-tight">
+          <div className="font-serif text-7xl md:text-9xl text-zinc-700 leading-none tracking-tight">
             $130K
           </div>
-          <div className="text-xs tracking-widest uppercase text-zinc-400 mt-1">
+          <div className="text-xs tracking-widest uppercase text-zinc-600 mt-1">
             missed per year
           </div>
         </div>
