@@ -86,7 +86,7 @@ export async function POST(request: Request) {
           if (businessId) {
             await supabase
               .from('businesses')
-              .update({ subscription_status: 'past_due' })
+              .update({ subscription_status: 'past_due', is_active: false })
               .eq('id', businessId)
           }
         }

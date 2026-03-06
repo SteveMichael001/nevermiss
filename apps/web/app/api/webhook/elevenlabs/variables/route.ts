@@ -20,6 +20,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import twilio from 'twilio'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -117,26 +118,39 @@ export async function POST(req: Request): Promise<NextResponse<VariablesResponse
       `[elevenlabs/variables] agentId=${agentId} callerPhone=${callerPhone} callSid=${twilioCallSid}`
     )
 
-    if (!agentId) {
-      // No agent_id to look up — return defaults
-      console.warn('[elevenlabs/variables] No agent_id in request — returning defaults')
+    if (!twilioCallSid) {
+      console.warn('[elevenlabs/variables] No twilio_call_sid in request — returning defaults')
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }
 
-    // 2. Look up business by elevenlabs_agent_id
+    // 2. Look up which Twilio number received this call, then find the business
+    // One shared ElevenLabs agent serves all businesses — we can't look up by agent_id.
+    // Instead: use Twilio API to get the "To" number from the call SID, then find the business.
+    const twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    )
+
+    let toNumber: string
+    try {
+      const call = await twilioClient.calls(twilioCallSid).fetch()
+      toNumber = call.to
+    } catch (twilioErr) {
+      console.error('[elevenlabs/variables] Twilio call fetch failed:', twilioErr)
+      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+    }
+
     const supabase = getSupabaseAdmin()
     const { data: business, error } = await supabase
       .from('businesses')
       .select('id, name, owner_name, trade')
-      .eq('elevenlabs_agent_id', agentId)
+      .eq('twilio_phone_number', toNumber)
+      .eq('is_active', true)
       .single<BusinessRecord>()
 
     if (error || !business) {
-      // Business not found — log and return graceful defaults
-      // This is normal in V1 if all businesses share one agent_id and
-      // the elevenlabs_agent_id column isn't populated per-business yet.
       console.warn(
-        `[elevenlabs/variables] Business not found for agentId=${agentId} — returning defaults`
+        `[elevenlabs/variables] Business not found for toNumber=${toNumber} — returning defaults`
       )
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }

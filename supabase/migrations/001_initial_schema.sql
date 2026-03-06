@@ -36,7 +36,13 @@ CREATE TABLE businesses (
   trial_ends_at TIMESTAMPTZ,
   
   -- Status
-  is_active BOOLEAN DEFAULT true
+  is_active BOOLEAN DEFAULT true,
+  
+  -- ElevenLabs
+  elevenlabs_agent_id TEXT,         -- Shared agent ID (one agent serves all businesses via dynamic variables)
+  
+  -- Timezone
+  timezone TEXT DEFAULT 'America/Los_Angeles'  -- IANA timezone for business hours routing
 );
 
 -- Calls table
