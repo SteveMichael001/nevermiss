@@ -8,15 +8,15 @@ const LOGOS = ['RIDGELINE HVAC', 'ATLAS PLUMBING', 'NORTHSTAR ROOFING', 'PRIME E
 const PILLARS = [
   {
     title: 'Always On',
-    body: 'Every call is answered day or night, including weekends and holidays.',
+    body: 'Nights. Weekends. Holidays. Covered.',
   },
   {
     title: 'Instant Response',
-    body: 'Callers hear your business greeting immediately and get help without waiting.',
+    body: 'Your name. Your voice. Every time.',
   },
   {
     title: 'Zero Effort',
-    body: 'You get the lead details by text so your team can call back fast.',
+    body: 'Lead lands in your pocket. Not your voicemail.',
   },
 ]
 
@@ -24,58 +24,58 @@ const STEPS = [
   {
     number: '01',
     icon: PhoneCall,
-    title: 'We answer every missed call',
-    body: "You're on the job. NeverMiss picks up right away with your business name.",
+    title: 'We pick up. You stay on the job.',
+    body: 'Miss a call? We answer it. With your business name.',
   },
   {
     number: '02',
     icon: MessageSquareText,
-    title: 'We capture what matters',
-    body: 'Caller name, number, service request, urgency, and the full transcript are logged.',
+    title: 'We get the details.',
+    body: 'Name. Number. What they need. How urgent. Done.',
   },
   {
     number: '03',
     icon: ClipboardList,
-    title: 'You get a clear next action',
-    body: 'Your team gets a text summary fast so the right person can follow up first.',
+    title: 'You get the lead. In 60 seconds.',
+    body: 'Text hits your phone. Call them back first.',
   },
 ]
 
 const SOCIAL_PROOF = [
   {
     name: 'Daniel Ortega',
-    title: 'Owner, Ortega Plumbing',
-    quote: 'We stopped losing evening calls the first week.',
+    title: 'Ortega Plumbing',
+    quote: 'First week. Evening calls stopped leaking.',
     image: 'https://i.pravatar.cc/400?img=12',
   },
   {
     name: 'Mia Patel',
-    title: 'Dispatcher, Harbor HVAC',
-    quote: 'The summaries are clear. We call back faster.',
+    title: 'Harbor HVAC',
+    quote: 'Clear summaries. Faster callbacks.',
     image: 'https://i.pravatar.cc/400?img=32',
   },
   {
     name: 'Chris Bowman',
-    title: 'Owner, Bowman Electric',
-    quote: 'It sounds professional and consistent every time.',
+    title: 'Bowman Electric',
+    quote: 'Sounds like us. Every single time.',
     image: 'https://i.pravatar.cc/400?img=15',
   },
   {
     name: 'Ariana Lewis',
-    title: 'Office Manager, Apex Roofing',
-    quote: 'No more voicemail cleanup every morning.',
+    title: 'Apex Roofing',
+    quote: 'Voicemail cleanup? Gone.',
     image: 'https://i.pravatar.cc/400?img=24',
   },
   {
     name: 'Jared Kim',
-    title: 'Owner, Kim Mechanical',
-    quote: 'After-hours jobs now turn into booked work.',
+    title: 'Kim Mechanical',
+    quote: 'After-hours leads. Booked jobs.',
     image: 'https://i.pravatar.cc/400?img=59',
   },
   {
     name: 'Sofia Martin',
-    title: 'Operations, Precision Drains',
-    quote: 'Our team finally has one clear call workflow.',
+    title: 'Precision Drains',
+    quote: 'One workflow. Zero chaos.',
     image: 'https://i.pravatar.cc/400?img=47',
   },
 ]
@@ -106,7 +106,7 @@ export default function LandingPage() {
             <div className="col-span-12">
               <h1 className="text-[clamp(52px,11vw,96px)] leading-[0.92] tracking-[-0.04em] font-semibold">That call just went<br />to your competitor.</h1>
               <p className="mt-8 max-w-2xl text-[18px] md:text-[20px] text-[var(--nm-gray)] leading-[1.5]">
-                You&apos;re on the job. NeverMiss answers every call and texts the details.
+                We answer. We capture. You close.
               </p>
               <div className="mt-10">
                 <Link href="/signup" className="nm-btn-primary">
@@ -126,7 +126,7 @@ export default function LandingPage() {
               <CounterStat end={130000} prefix="$" duration={2200} />
             </p>
             <p className="mt-6 text-[18px] md:text-[20px] text-[var(--nm-gray)] max-w-3xl mx-auto leading-[1.5]">
-              One missed call per day can cost a contractor up to $130,000 a year.
+              One missed call a day. That&apos;s what it costs you.
             </p>
           </ScrollReveal>
           <StaggerContainer className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto" delayChildren={0.15}>
@@ -178,7 +178,7 @@ export default function LandingPage() {
       <section className="nm-section">
         <div className="landing-container">
           <ScrollReveal>
-            <h2 className="text-[38px] md:text-[56px] tracking-[-0.03em] leading-[1.05] font-semibold">Built for speed and clarity.</h2>
+            <h2 className="text-[38px] md:text-[56px] tracking-[-0.03em] leading-[1.05] font-semibold">Speed. Clarity. Control.</h2>
           </ScrollReveal>
           <StaggerContainer className="mt-14 grid grid-cols-1 md:grid-cols-3 border border-[var(--nm-border)]" delayChildren={0.1}>
             {PILLARS.map((pillar) => (
@@ -218,7 +218,7 @@ export default function LandingPage() {
       <section className="nm-section">
         <div className="landing-container">
           <ScrollReveal>
-            <h2 className="text-[38px] md:text-[56px] tracking-[-0.03em] leading-[1.05] font-semibold">Contractors using NeverMiss</h2>
+            <h2 className="text-[38px] md:text-[56px] tracking-[-0.03em] leading-[1.05] font-semibold">Don&apos;t take our word for it.</h2>
           </ScrollReveal>
           <StaggerContainer className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {SOCIAL_PROOF.map((person) => (
@@ -243,7 +243,7 @@ export default function LandingPage() {
             <div className="max-w-2xl border border-[var(--nm-border)] p-8 md:p-10">
               <p className="text-sm tracking-[0.12em] uppercase text-[var(--nm-gray)]">Pricing</p>
               <h2 className="mt-4 text-[40px] md:text-[56px] tracking-[-0.03em] leading-[1.02] font-semibold">$297/month</h2>
-              <p className="mt-4 text-[18px] text-[var(--nm-gray)] leading-[1.5]">One plan. Everything you need to stop missed-call revenue loss.</p>
+              <p className="mt-4 text-[18px] text-[var(--nm-gray)] leading-[1.5]">One plan. No surprises. Cancel anytime.</p>
               <ul className="mt-8 space-y-3 text-[17px] text-[var(--nm-black)]">
                 {PRICING_FEATURES.map((feature) => (
                   <li key={feature}>{feature}</li>
