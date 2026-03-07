@@ -82,6 +82,8 @@ interface ElevenLabsPostCallData {
       caller_phone?: string
       twilio_call_sid?: string
       business_id?: string
+      system__called_number?: string
+      [key: string]: string | undefined
     }
   }
 }
@@ -215,6 +217,11 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     // ------------------------------------------------------------------
+    // 3b. Log full incoming payload for debugging
+    // ------------------------------------------------------------------
+    console.log('[elevenlabs-webhook] Incoming payload:', rawBody.slice(0, 4000))
+
+    // ------------------------------------------------------------------
     // 4. Ignore non-post_call_transcription events
     // ------------------------------------------------------------------
     if (payload.type !== 'post_call_transcription') {
@@ -294,6 +301,31 @@ export async function POST(req: Request): Promise<Response> {
 
       if (!error && biz) {
         business = biz
+      }
+    }
+
+    // Attempt 3: fall back to system__called_number → twilio_phone_number lookup
+    if (!business) {
+      const calledNumber = data.conversation_initiation_client_data
+        ?.dynamic_variables?.['system__called_number'] ?? ''
+
+      if (calledNumber) {
+        const { data: biz, error } = await supabase
+          .from('businesses')
+          .select('id, name, owner_phone, owner_email, owner_name, notification_phones, notification_emails')
+          .eq('twilio_phone_number', calledNumber)
+          .eq('is_active', true)
+          .single()
+
+        if (!error && biz) {
+          business = biz as Business
+          console.log(`[elevenlabs-webhook] Found business by called_number=${calledNumber}`)
+        } else {
+          console.warn(
+            `[elevenlabs-webhook] Business not found by called_number=${calledNumber}:`,
+            error?.message
+          )
+        }
       }
     }
 
