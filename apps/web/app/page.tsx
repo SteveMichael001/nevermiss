@@ -41,7 +41,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-10 lg:px-20 pb-20 pt-32 overflow-hidden border-b border-zinc-200">
+      <section className="relative min-h-screen flex flex-col justify-end lg:justify-center px-6 md:px-10 lg:px-20 pb-20 lg:pb-0 pt-32 overflow-hidden border-b border-zinc-200">
         
         {/* Grid texture */}
         <div
@@ -54,7 +54,7 @@ export default function LandingPage() {
 
         {/* Ghost stat — decorative */}
         <div style={fadeUpDelay2} className="absolute bottom-16 right-6 md:right-10 lg:right-20 text-right pointer-events-none select-none">
-          <div className="font-serif text-7xl md:text-9xl lg:text-[10rem] text-zinc-700 leading-none tracking-tight">
+          <div className="font-serif text-7xl md:text-9xl text-zinc-700 leading-none tracking-tight">
             $130K
           </div>
           <div className="text-xs tracking-widest uppercase text-zinc-600 mt-1">
@@ -83,7 +83,7 @@ export default function LandingPage() {
             AI voicemail for contractors
           </p>
 
-          <h1 className="font-serif italic text-5xl sm:text-6xl md:text-7xl lg:text-9xl xl:text-[10rem] leading-[0.92] tracking-tight text-black mb-10">
+          <h1 className="font-serif italic text-5xl sm:text-6xl md:text-6xl lg:text-7xl xl:text-8xl leading-[0.95] tracking-tight text-black mb-10">
             That call just went<br />
             to your competitor.
           </h1>
