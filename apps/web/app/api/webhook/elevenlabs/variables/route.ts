@@ -121,17 +121,11 @@ function defaultVariables(
 
 /** Build a 200 JSON response with required ElevenLabs format */
 function variablesResponse(variables: DynamicVariables): NextResponse<VariablesResponse> {
+  // Return minimal response - removed conversation_config_override to test if it was causing issues
   return NextResponse.json<VariablesResponse>(
     {
       type: 'conversation_initiation_client_data',
       dynamic_variables: variables,
-      // Fix for phone number digit collection - wait longer when user is spelling/saying digits
-      // NOTE: ElevenLabs only accepts 'auto' or 'off' for spelling_patience (not 'high')
-      conversation_config_override: {
-        turn: {
-          spelling_patience: 'auto',
-        },
-      },
     },
     { status: 200 }
   )
