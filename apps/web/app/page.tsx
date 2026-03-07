@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ClipboardList, MessageSquareText, PhoneCall } from 'lucide-react'
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/landing/ScrollReveal'
+import { CounterStat } from '@/components/landing/CounterStat'
 
 const LOGOS = ['RIDGELINE HVAC', 'ATLAS PLUMBING', 'NORTHSTAR ROOFING', 'PRIME ELECTRIC', 'FOUNDATION DRAINS', 'IRONWORK MECHANICAL']
 
@@ -200,11 +201,39 @@ export default function LandingPage() {
         <div className="landing-container text-center">
           <ScrollReveal>
             <p className="text-sm tracking-[0.12em] uppercase text-[var(--nm-gray)]">The math</p>
-            <p className="mt-6 text-[clamp(70px,14vw,180px)] tracking-[-0.05em] leading-[0.95] font-semibold">$130,000</p>
+            <p className="mt-6 text-[clamp(70px,14vw,180px)] tracking-[-0.05em] leading-[0.95] font-semibold">
+              <CounterStat end={130000} prefix="$" duration={2200} />
+            </p>
             <p className="mt-6 text-[18px] md:text-[20px] text-[var(--nm-gray)] max-w-3xl mx-auto leading-[1.5]">
               One missed call per day can cost a contractor up to $130,000 a year.
             </p>
           </ScrollReveal>
+          <StaggerContainer className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto" delayChildren={0.15}>
+            <StaggerItem>
+              <div className="border border-[var(--nm-border)] p-6 md:p-8">
+                <p className="text-[11px] tracking-[0.16em] uppercase text-[var(--nm-gray)]">Avg ticket value</p>
+                <p className="mt-3 text-[40px] md:text-[52px] tracking-[-0.03em] font-semibold">
+                  <CounterStat end={350} prefix="$" duration={1800} />
+                </p>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="border border-[var(--nm-border)] p-6 md:p-8">
+                <p className="text-[11px] tracking-[0.16em] uppercase text-[var(--nm-gray)]">Alert speed</p>
+                <p className="mt-3 text-[40px] md:text-[52px] tracking-[-0.03em] font-semibold">
+                  <CounterStat end={60} suffix="s" duration={1400} />
+                </p>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="border border-[var(--nm-border)] p-6 md:p-8">
+                <p className="text-[11px] tracking-[0.16em] uppercase text-[var(--nm-gray)]">Coverage</p>
+                <p className="mt-3 text-[40px] md:text-[52px] tracking-[-0.03em] font-semibold">
+                  24/<CounterStat end={7} duration={1000} />
+                </p>
+              </div>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
