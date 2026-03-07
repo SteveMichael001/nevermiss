@@ -3,27 +3,20 @@
 import React, { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 
-const easeOutExpo = [0.16, 1, 0.3, 1] as const
-
 interface ScrollRevealProps {
   children: ReactNode
   delay?: number
   className?: string
-  y?: number
 }
 
-export function ScrollReveal({ children, delay = 0, className, y = 24 }: ScrollRevealProps) {
+export function ScrollReveal({ children, delay = 0, className }: ScrollRevealProps) {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{
-        duration: 0.6,
-        ease: easeOutExpo,
-        delay,
-      }}
+      transition={{ duration: 0.6, ease: 'easeOut', delay }}
     >
       {children}
     </motion.div>
@@ -33,25 +26,21 @@ export function ScrollReveal({ children, delay = 0, className, y = 24 }: ScrollR
 interface StaggerContainerProps {
   children: ReactNode
   className?: string
-  style?: React.CSSProperties
-  staggerDelay?: number
   delayChildren?: number
 }
 
-export function StaggerContainer({ children, className, style, staggerDelay = 0.1, delayChildren = 0 }: StaggerContainerProps) {
+export function StaggerContainer({ children, className, delayChildren = 0 }: StaggerContainerProps) {
   return (
     <motion.div
       className={className}
-      style={style}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
       variants={{
-        hidden: { opacity: 0 },
+        hidden: {},
         show: {
-          opacity: 1,
           transition: {
-            staggerChildren: staggerDelay,
+            staggerChildren: 0.1,
             delayChildren,
           },
         },
@@ -71,7 +60,7 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
         show: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+          transition: { duration: 0.6, ease: 'easeOut' },
         },
       }}
     >
