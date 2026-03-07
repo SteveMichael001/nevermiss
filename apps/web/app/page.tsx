@@ -104,7 +104,7 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="landing-grid">
             <div className="col-span-12">
-              <h1 className="text-[clamp(52px,11vw,96px)] leading-[0.92] tracking-[-0.04em] font-semibold">Never miss another lead.</h1>
+              <h1 className="text-[clamp(52px,11vw,96px)] leading-[0.92] tracking-[-0.04em] font-semibold">That call just went<br />to your competitor.</h1>
               <p className="mt-8 max-w-2xl text-[18px] md:text-[20px] text-[var(--nm-gray)] leading-[1.5]">
                 You&apos;re on the job. NeverMiss answers every call and texts the details.
               </p>
