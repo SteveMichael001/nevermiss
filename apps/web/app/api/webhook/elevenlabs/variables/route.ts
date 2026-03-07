@@ -8,33 +8,50 @@
  * dedicated receptionist: business_name, owner_name, and trade are injected
  * into the system prompt at call start.
  *
+ * ElevenLabs Twilio personalization webhook spec:
+ *   Request payload (flat JSON):
+ *     { caller_id, agent_id, called_number, call_sid }
+ *
+ *   Response format (MUST include type field):
+ *     { type: "conversation_initiation_client_data", dynamic_variables: { ... } }
+ *
+ * Docs: https://elevenlabs.io/docs/eleven-agents/customization/personalization/twilio-personalization
+ *
  * Flow:
- *   1. Parse ElevenLabs POST body (JSON)
- *   2. Look up business in Supabase by elevenlabs_agent_id = agent_id
- *      Note: The `businesses` table needs an `elevenlabs_agent_id TEXT` column.
- *      For V1 with one shared agent, all businesses share the same agent_id
- *      (ELEVENLABS_AGENT_ID env var). Lookup falls through to defaults gracefully.
- *   3. Return { dynamic_variables: { ... } }
- *   4. Always return 200 — never crash. ElevenLabs will proceed regardless.
+ *   1. Log raw request body for debugging
+ *   2. Parse ElevenLabs POST body (JSON) — flat fields: caller_id, call_sid, called_number, agent_id
+ *   3. Use called_number directly to look up business in Supabase (no Twilio API needed!)
+ *   4. Return { type: "conversation_initiation_client_data", dynamic_variables: { ... } }
+ *   5. Always return 200 — never crash. ElevenLabs will proceed regardless.
+ *
+ * BUGS FIXED (2026-03-06):
+ *   - Was parsing body.caller.phone_number / body.call.twilio_call_sid (wrong nested structure)
+ *   - Should parse body.caller_id / body.call_sid / body.called_number (flat top-level fields)
+ *   - Was returning { dynamic_variables: {...} } — missing required "type" field
+ *   - Was calling Twilio API to get "To" number — now using called_number directly (faster, no external dep)
  */
 
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import twilio from 'twilio'
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-/** Request body ElevenLabs sends to this endpoint before each conversation */
+/**
+ * Request body ElevenLabs sends to this endpoint before each conversation.
+ * Fields are flat/top-level — NOT nested under caller.* or call.*
+ * Ref: https://elevenlabs.io/docs/eleven-agents/customization/personalization/twilio-personalization
+ */
 interface ElevenLabsVariablesRequest {
+  /** The phone number of the caller (e.g. "+14155551234") */
+  caller_id: string
+  /** The ID of the agent receiving the call */
   agent_id: string
-  caller: {
-    phone_number: string
-  }
-  call: {
-    twilio_call_sid: string
-  }
+  /** The Twilio number that was called (e.g. "+16196482491") */
+  called_number: string
+  /** Unique identifier for the Twilio call (e.g. "CA...") */
+  call_sid: string
 }
 
 /** Variables returned to ElevenLabs — injected into agent system prompt */
@@ -47,7 +64,12 @@ interface DynamicVariables {
   twilio_call_sid: string
 }
 
+/**
+ * Response format required by ElevenLabs.
+ * MUST include type: "conversation_initiation_client_data"
+ */
 interface VariablesResponse {
+  type: 'conversation_initiation_client_data'
   dynamic_variables: DynamicVariables
 }
 
@@ -90,10 +112,13 @@ function defaultVariables(
   }
 }
 
-/** Build a 200 JSON response with dynamic_variables */
+/** Build a 200 JSON response with required ElevenLabs format */
 function variablesResponse(variables: DynamicVariables): NextResponse<VariablesResponse> {
   return NextResponse.json<VariablesResponse>(
-    { dynamic_variables: variables },
+    {
+      type: 'conversation_initiation_client_data',
+      dynamic_variables: variables,
+    },
     { status: 200 }
   )
 }
@@ -103,61 +128,78 @@ function variablesResponse(variables: DynamicVariables): NextResponse<VariablesR
 // ---------------------------------------------------------------------------
 
 export async function POST(req: Request): Promise<NextResponse<VariablesResponse>> {
+  const startMs = Date.now()
   let callerPhone = ''
   let twilioCallSid = ''
 
   try {
-    // 1. Parse JSON body from ElevenLabs
-    const body = (await req.json()) as ElevenLabsVariablesRequest
+    // 1. Read and log the raw body — essential for debugging field name mismatches
+    const rawBody = await req.text()
+    console.log('[elevenlabs/variables] RAW REQUEST BODY:', rawBody)
+    console.log('[elevenlabs/variables] REQUEST HEADERS:', JSON.stringify({
+      'content-type': req.headers.get('content-type'),
+      'user-agent': req.headers.get('user-agent'),
+      'x-forwarded-for': req.headers.get('x-forwarded-for'),
+    }))
 
-    callerPhone = body?.caller?.phone_number ?? ''
-    twilioCallSid = body?.call?.twilio_call_sid ?? ''
+    // 2. Parse JSON body from ElevenLabs
+    //    ElevenLabs sends FLAT fields: caller_id, agent_id, called_number, call_sid
+    //    NOT nested: body.caller.phone_number or body.call.twilio_call_sid
+    let body: ElevenLabsVariablesRequest
+    try {
+      body = JSON.parse(rawBody) as ElevenLabsVariablesRequest
+    } catch (parseErr) {
+      console.error('[elevenlabs/variables] JSON parse error:', parseErr)
+      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+    }
+
+    // Extract flat top-level fields (per EL spec)
+    callerPhone = body?.caller_id ?? ''
+    twilioCallSid = body?.call_sid ?? ''
+    const calledNumber = body?.called_number ?? ''
     const agentId = body?.agent_id ?? ''
 
     console.log(
-      `[elevenlabs/variables] agentId=${agentId} callerPhone=${callerPhone} callSid=${twilioCallSid}`
+      `[elevenlabs/variables] PARSED: agentId=${agentId} callerPhone=${callerPhone}` +
+      ` callSid=${twilioCallSid} calledNumber=${calledNumber}` +
+      ` elapsed=${Date.now() - startMs}ms`
     )
 
-    if (!twilioCallSid) {
-      console.warn('[elevenlabs/variables] No twilio_call_sid in request — returning defaults')
-      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
-    }
-
-    // 2. Look up which Twilio number received this call, then find the business
-    // One shared ElevenLabs agent serves all businesses — we can't look up by agent_id.
-    // Instead: use Twilio API to get the "To" number from the call SID, then find the business.
-    const twilioClient = twilio(
-      process.env.TWILIO_ACCOUNT_SID,
-      process.env.TWILIO_AUTH_TOKEN
-    )
-
-    let toNumber: string
-    try {
-      const call = await twilioClient.calls(twilioCallSid).fetch()
-      toNumber = call.to
-    } catch (twilioErr) {
-      console.error('[elevenlabs/variables] Twilio call fetch failed:', twilioErr)
-      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
-    }
-
-    const supabase = getSupabaseAdmin()
-    const { data: business, error } = await supabase
-      .from('businesses')
-      .select('id, name, owner_name, trade')
-      .eq('twilio_phone_number', toNumber)
-      .eq('is_active', true)
-      .single<BusinessRecord>()
-
-    if (error || !business) {
+    // Warn about missing fields that would cause lookup failure
+    if (!calledNumber) {
       console.warn(
-        `[elevenlabs/variables] Business not found for toNumber=${toNumber} — returning defaults`
+        '[elevenlabs/variables] called_number is empty — cannot look up business.' +
+        ' Full body was: ' + rawBody
       )
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }
 
-    // 3. Found — return personalized variables
+    // 3. Look up business by the Twilio number that was called
+    //    called_number comes directly from EL payload — no Twilio API call needed!
+    const supabase = getSupabaseAdmin()
+    const { data: business, error } = await supabase
+      .from('businesses')
+      .select('id, name, owner_name, trade')
+      .eq('twilio_phone_number', calledNumber)
+      .eq('is_active', true)
+      .single<BusinessRecord>()
+
+    const dbElapsed = Date.now() - startMs
+    console.log(`[elevenlabs/variables] DB lookup elapsed=${dbElapsed}ms error=${error?.message ?? 'none'}`)
+
+    if (error || !business) {
+      console.warn(
+        `[elevenlabs/variables] Business not found for calledNumber=${calledNumber} — returning defaults.` +
+        ` DB error: ${error?.message ?? 'not found'}`
+      )
+      return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
+    }
+
+    // 4. Found — return personalized variables
+    const totalElapsed = Date.now() - startMs
     console.log(
-      `[elevenlabs/variables] Matched business="${business.name}" id=${business.id} trade=${business.trade}`
+      `[elevenlabs/variables] SUCCESS: business="${business.name}" id=${business.id}` +
+      ` trade=${business.trade} totalElapsed=${totalElapsed}ms`
     )
 
     return variablesResponse({
@@ -169,7 +211,7 @@ export async function POST(req: Request): Promise<NextResponse<VariablesResponse
       twilio_call_sid: twilioCallSid,
     })
   } catch (err) {
-    // 4. Never crash — always return 200 so ElevenLabs can proceed with defaults
+    // 5. Never crash — always return 200 so ElevenLabs can proceed with defaults
     console.error('[elevenlabs/variables] Unhandled error:', err)
     return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
   }
