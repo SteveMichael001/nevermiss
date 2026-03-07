@@ -441,3 +441,70 @@ audio {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ============================================================
+   Landing visual layers
+   ============================================================ */
+
+@keyframes blobDriftA {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(20px, -24px, 0) scale(1.08); }
+}
+
+@keyframes blobDriftB {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-24px, 18px, 0) scale(0.95); }
+}
+
+@keyframes blobDriftC {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(14px, 22px, 0) scale(1.06); }
+}
+
+.landing-grid-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.024) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at 50% 24%, rgba(0,0,0,0.9), transparent 80%);
+  z-index: 0;
+}
+
+.landing-blob {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.6;
+  z-index: 0;
+}
+
+.landing-blob-a {
+  width: 34rem;
+  height: 34rem;
+  top: -14rem;
+  left: -8rem;
+  background: radial-gradient(circle, rgba(14,168,255,0.26) 0%, rgba(14,168,255,0) 72%);
+  animation: blobDriftA 12s ease-in-out infinite;
+}
+
+.landing-blob-b {
+  width: 38rem;
+  height: 38rem;
+  top: -18rem;
+  right: -10rem;
+  background: radial-gradient(circle, rgba(30,239,176,0.22) 0%, rgba(30,239,176,0) 72%);
+  animation: blobDriftB 14s ease-in-out infinite;
+}
+
+.landing-blob-c {
+  width: 22rem;
+  height: 22rem;
+  top: 28%;
+  left: 32%;
+  background: radial-gradient(circle, rgba(14,168,255,0.16) 0%, rgba(14,168,255,0) 72%);
+  animation: blobDriftC 11s ease-in-out infinite;
+}
