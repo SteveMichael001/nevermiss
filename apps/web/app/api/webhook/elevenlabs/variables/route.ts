@@ -67,10 +67,17 @@ interface DynamicVariables {
 /**
  * Response format required by ElevenLabs.
  * MUST include type: "conversation_initiation_client_data"
+ * Can optionally include conversation_config_override for turn settings
  */
 interface VariablesResponse {
   type: 'conversation_initiation_client_data'
   dynamic_variables: DynamicVariables
+  conversation_config_override?: {
+    turn?: {
+      /** How long agent waits when user is spelling/saying digits. Values: auto, low, medium, high */
+      spelling_patience?: 'auto' | 'low' | 'medium' | 'high'
+    }
+  }
 }
 
 /** Subset of the businesses table we need for this endpoint */
@@ -118,6 +125,12 @@ function variablesResponse(variables: DynamicVariables): NextResponse<VariablesR
     {
       type: 'conversation_initiation_client_data',
       dynamic_variables: variables,
+      // Fix for phone number digit collection - wait longer when user is spelling/saying digits
+      conversation_config_override: {
+        turn: {
+          spelling_patience: 'high',
+        },
+      },
     },
     { status: 200 }
   )
