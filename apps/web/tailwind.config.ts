@@ -51,21 +51,35 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        brand: {
-          DEFAULT: '#FFFFFF',
-          dark: '#E4E4E7',
-          light: '#71717A',
+        // NeverMiss brand colors
+        nm: {
+          bg:          '#080808',
+          surface:     '#111214',
+          raised:      '#1a1d21',
+          border:      '#2a2d32',
+          'border-strong': '#3a3f48',
+          accent:      '#1EEFB0',
+          'accent-dim':'#15B882',
+          blue:        '#0EA8FF',
+          text:        '#F5F5F5',
+          secondary:   '#8A8F9A',
+          muted:       '#4A4F5A',
         },
         sidebar: {
-          DEFAULT: '#0A0A0A',
-          foreground: '#999999',
-          active: '#F59E0B',
+          DEFAULT: '#111214',
+          foreground: '#8A8F9A',
+          active: '#1EEFB0',
         },
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['var(--font-space)', 'var(--font-inter)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       keyframes: {
         'accordion-down': {
@@ -76,7 +90,15 @@ const config: Config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        'pulse-ring': {
+        'cta-breath': {
+          '0%, 100%': {
+            boxShadow: '0 0 20px rgba(30, 239, 176, 0.2), 0 0 40px rgba(30, 239, 176, 0.08)',
+          },
+          '50%': {
+            boxShadow: '0 0 32px rgba(30, 239, 176, 0.35), 0 0 64px rgba(30, 239, 176, 0.15)',
+          },
+        },
+        'live-pulse': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.3' },
         },
@@ -84,11 +106,8 @@ const config: Config = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'pulse-ring': 'pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      fontFamily: {
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        'cta-breath': 'cta-breath 2.8s ease-in-out infinite',
+        'live-pulse': 'live-pulse 2s ease-in-out infinite',
       },
     },
   },
