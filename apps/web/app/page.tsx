@@ -114,7 +114,7 @@ export default function LandingPage() {
           <div className="space-y-10">
             <div>
               <div className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black leading-tight">
-                1 missed call per day.
+                One missed call per day.
               </div>
             </div>
             <div>
@@ -204,7 +204,7 @@ export default function LandingPage() {
         <div className="max-w-2xl lg:max-w-4xl lg:mx-auto">
           <blockquote className="font-serif italic text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black leading-relaxed mb-8 lg:text-center">
             &ldquo;I used to lose 3 or 4 calls a week and not even know it.
-            First month with NeverMiss I picked up 6 jobs I would&apos;ve missed.&rdquo;
+            First month with NeverMiss, I picked up 6 jobs I would&apos;ve missed.&rdquo;
           </blockquote>
           <p className="text-xs tracking-widest uppercase text-zinc-500 font-sans lg:text-center">
             Mike T. — HVAC contractor, San Diego
