@@ -74,8 +74,8 @@ interface VariablesResponse {
   dynamic_variables: DynamicVariables
   conversation_config_override?: {
     turn?: {
-      /** How long agent waits when user is spelling/saying digits. Values: auto, low, medium, high */
-      spelling_patience?: 'auto' | 'low' | 'medium' | 'high'
+      /** How long agent waits when user is spelling/saying digits. Values: auto, off */
+      spelling_patience?: 'auto' | 'off'
     }
   }
 }
@@ -126,9 +126,10 @@ function variablesResponse(variables: DynamicVariables): NextResponse<VariablesR
       type: 'conversation_initiation_client_data',
       dynamic_variables: variables,
       // Fix for phone number digit collection - wait longer when user is spelling/saying digits
+      // NOTE: ElevenLabs only accepts 'auto' or 'off' for spelling_patience (not 'high')
       conversation_config_override: {
         turn: {
-          spelling_patience: 'high',
+          spelling_patience: 'auto',
         },
       },
     },
