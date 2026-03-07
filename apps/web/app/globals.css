@@ -18,11 +18,11 @@
   --color-border-strong: #3a3f48;
 
   /* === COLORS: Accent === */
-  --color-accent:        #72FF88;
-  --color-accent-dim:    #0ABB2D;
-  --color-accent-glow:   rgba(114, 255, 136, 0.15);
-  --color-accent-blue:   #72FF88;
-  --color-accent-gradient: linear-gradient(135deg, #72FF88 0%, #0ABB2D 100%);
+  --color-accent:        #000000;
+  --color-accent-dim:    #333333;
+  --color-accent-glow:   rgba(0, 0, 0, 0.08);
+  --color-accent-blue:   #000000;
+  --color-accent-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
 
   /* === COLORS: Text === */
   --color-text-primary:  #F5F5F5;
@@ -31,7 +31,7 @@
   --color-text-inverted: #080808;
 
   /* === COLORS: Status === */
-  --color-success:       #72FF88;
+  --color-success:       #000000;
   --color-error:         #FF4B4B;
   --color-warning:       #F5A623;
 
@@ -89,8 +89,8 @@
   /* === SHADOWS / GLOW === */
   --shadow-card:       0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
   --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
-  --glow-accent:       0 0 24px rgba(114, 255, 136, 0.25), 0 0 48px rgba(114, 255, 136, 0.1);
-  --glow-accent-hover: 0 0 40px rgba(114, 255, 136, 0.4), 0 0 80px rgba(114, 255, 136, 0.15);
+  --glow-accent:       0 0 24px rgba(0, 0, 0, 0.1), 0 0 48px rgba(0, 0, 0, 0.05);
+  --glow-accent-hover: 0 0 40px rgba(0, 0, 0, 0.15), 0 0 80px rgba(0, 0, 0, 0.08);
   --glow-hero:         radial-gradient(ellipse 800px 600px at 50% 0%, rgba(30,239,176,0.05) 0%, transparent 70%);
 
   /* === MOTION === */
@@ -117,7 +117,7 @@
   --secondary-foreground: 0 0% 96%;
   --muted: 0 0% 10%;
   --muted-foreground: 0 0% 54%;
-  --accent: 130 100% 72%;
+  --accent: 0 0% 0%;
   --accent-foreground: 0 0% 3%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
