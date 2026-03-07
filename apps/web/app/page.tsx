@@ -23,7 +23,7 @@ export default function LandingPage() {
       `}</style>
       
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 h-16 border-b border-zinc-200 bg-white/95 backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 lg:px-20 h-16 border-b border-zinc-200 bg-white/95 backdrop-blur-sm">
         <span className="font-sans font-medium text-sm tracking-widest uppercase text-black">
           NeverMiss
         </span>
@@ -41,7 +41,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-10 pb-20 pt-32 overflow-hidden border-b border-zinc-200">
+      <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-10 lg:px-20 pb-20 pt-32 overflow-hidden border-b border-zinc-200">
         
         {/* Grid texture */}
         <div
@@ -53,8 +53,8 @@ export default function LandingPage() {
         />
 
         {/* Ghost stat — decorative */}
-        <div style={fadeUpDelay2} className="absolute bottom-16 right-6 md:right-10 text-right pointer-events-none select-none">
-          <div className="font-serif text-7xl md:text-9xl text-zinc-700 leading-none tracking-tight">
+        <div style={fadeUpDelay2} className="absolute bottom-16 right-6 md:right-10 lg:right-20 text-right pointer-events-none select-none">
+          <div className="font-serif text-7xl md:text-9xl lg:text-[10rem] text-zinc-700 leading-none tracking-tight">
             $130K
           </div>
           <div className="text-xs tracking-widest uppercase text-zinc-600 mt-1">
@@ -63,8 +63,8 @@ export default function LandingPage() {
         </div>
 
         {/* Phone mockup */}
-        <div style={fadeUpDelay} className="absolute right-4 md:right-16 top-1/2 -translate-y-1/2 w-56 md:w-64 pointer-events-none select-none hidden md:block">
-          <div className="bg-white border border-zinc-300 rounded-[40px] p-5 mx-auto w-52 shadow-xl">
+        <div style={fadeUpDelay} className="absolute right-4 md:right-24 lg:right-40 top-1/2 -translate-y-1/2 w-56 md:w-64 lg:w-72 pointer-events-none select-none hidden md:block">
+          <div className="bg-white border border-zinc-300 rounded-[40px] p-5 mx-auto w-52 lg:w-64 shadow-xl">
             <div className="text-center text-zinc-400 text-xs tracking-widest uppercase mb-5">9:41</div>
             <div className="bg-zinc-100 border border-zinc-200 rounded-xl p-3 flex items-center gap-3">
               <div className="w-9 h-9 bg-zinc-200 rounded-lg flex items-center justify-center text-zinc-700 text-sm flex-shrink-0 font-medium">↘</div>
@@ -78,12 +78,12 @@ export default function LandingPage() {
         </div>
 
         {/* Content */}
-        <div style={fadeUp} className="relative z-10 max-w-3xl">
+        <div style={fadeUp} className="relative z-10 max-w-3xl lg:max-w-4xl">
           <p className="text-xs tracking-widest uppercase text-zinc-500 mb-8 font-sans">
             AI voicemail for contractors
           </p>
 
-          <h1 className="font-serif italic text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.92] tracking-tight text-black mb-10">
+          <h1 className="font-serif italic text-5xl sm:text-6xl md:text-7xl lg:text-9xl xl:text-[10rem] leading-[0.92] tracking-tight text-black mb-10">
             That call just went<br />
             to your competitor.
           </h1>
@@ -108,28 +108,28 @@ export default function LandingPage() {
       </section>
 
       {/* The Math */}
-      <section className="px-6 md:px-10 py-24 border-b border-zinc-200">
-        <div className="max-w-2xl">
+      <section className="px-6 md:px-10 lg:px-20 py-24 lg:py-32 border-b border-zinc-200">
+        <div className="max-w-2xl lg:max-w-5xl">
           <p className="text-xs tracking-widest uppercase text-zinc-500 mb-12 font-sans">The math</p>
           <div className="space-y-10">
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-black leading-tight">
+              <div className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black leading-tight">
                 1 missed call per day.
               </div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-zinc-500 leading-tight">
+              <div className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-zinc-500 leading-tight">
                 Average job: $500.
               </div>
             </div>
             <div>
-              <div className="font-serif text-4xl md:text-5xl text-black leading-tight">
+              <div className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-black leading-tight">
                 That&apos;s $130,000 a year<br />
                 walking out the door.
               </div>
             </div>
             <div className="pt-4">
-              <div className="font-serif italic text-2xl md:text-3xl text-zinc-600 leading-tight">
+              <div className="font-serif italic text-2xl md:text-3xl lg:text-4xl text-zinc-600 leading-tight">
                 NeverMiss costs $250/month.<br />
                 One job pays for the year.
               </div>
@@ -139,8 +139,8 @@ export default function LandingPage() {
       </section>
 
       {/* How it works — no header, just numbered */}
-      <section className="px-6 md:px-10 py-24 border-b border-zinc-200">
-        <div className="max-w-2xl space-y-16">
+      <section className="px-6 md:px-10 lg:px-20 py-24 lg:py-32 border-b border-zinc-200">
+        <div className="max-w-2xl lg:max-w-5xl space-y-16 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-16">
           {[
             {
               n: '01',
@@ -158,13 +158,13 @@ export default function LandingPage() {
               body: 'Within 60 seconds: caller name, number, job type, urgency. Tap to call back. Job won.',
             },
           ].map((step) => (
-            <div key={step.n} className="flex gap-8 md:gap-16">
-              <div className="font-serif text-5xl md:text-6xl text-zinc-200 leading-none w-16 flex-shrink-0 select-none">
+            <div key={step.n} className="flex gap-8 md:gap-16 lg:flex-col lg:gap-6">
+              <div className="font-serif text-5xl md:text-6xl lg:text-8xl text-zinc-200 leading-none w-16 lg:w-auto flex-shrink-0 lg:flex-shrink select-none">
                 {step.n}
               </div>
               <div>
                 <h3 className="font-sans font-medium text-lg text-black mb-3">{step.title}</h3>
-                <p className="font-sans text-sm text-zinc-500 leading-relaxed max-w-sm">{step.body}</p>
+                <p className="font-sans text-sm lg:text-base text-zinc-500 leading-relaxed max-w-sm">{step.body}</p>
               </div>
             </div>
           ))}
@@ -172,11 +172,11 @@ export default function LandingPage() {
       </section>
 
       {/* Without / With */}
-      <section className="px-6 md:px-10 py-24 border-b border-zinc-200">
-        <div className="grid md:grid-cols-2 gap-0 border border-zinc-200 max-w-3xl">
-          <div className="p-8 md:p-12 border-b md:border-b-0 md:border-r border-zinc-200">
+      <section className="px-6 md:px-10 lg:px-20 py-24 lg:py-32 border-b border-zinc-200">
+        <div className="grid md:grid-cols-2 gap-0 border border-zinc-200 max-w-3xl lg:max-w-5xl">
+          <div className="p-8 md:p-12 lg:p-16 border-b md:border-b-0 md:border-r border-zinc-200">
             <p className="text-xs tracking-widest uppercase text-zinc-500 mb-8">Without NeverMiss</p>
-            <ul className="space-y-5 text-sm text-zinc-500 leading-relaxed font-sans">
+            <ul className="space-y-5 text-sm lg:text-base text-zinc-500 leading-relaxed font-sans">
               <li>Phone rings while you&apos;re on the job</li>
               <li>Call goes to voicemail</li>
               <li>Caller hangs up</li>
@@ -185,9 +185,9 @@ export default function LandingPage() {
               <li className="text-zinc-300">— or never</li>
             </ul>
           </div>
-          <div className="p-8 md:p-12">
+          <div className="p-8 md:p-12 lg:p-16">
             <p className="text-xs tracking-widest uppercase text-zinc-600 mb-8">With NeverMiss</p>
-            <ul className="space-y-5 text-sm text-black leading-relaxed font-sans">
+            <ul className="space-y-5 text-sm lg:text-base text-black leading-relaxed font-sans">
               <li>Phone rings while you&apos;re on the job</li>
               <li>NeverMiss answers instantly</li>
               <li>Lead captured in 60 seconds</li>
@@ -200,21 +200,21 @@ export default function LandingPage() {
       </section>
 
       {/* Social proof — one quote, raw */}
-      <section className="px-6 md:px-10 py-24 border-b border-zinc-200">
-        <div className="max-w-2xl">
-          <blockquote className="font-serif italic text-2xl md:text-3xl text-black leading-relaxed mb-8">
+      <section className="px-6 md:px-10 lg:px-20 py-24 lg:py-32 border-b border-zinc-200">
+        <div className="max-w-2xl lg:max-w-4xl lg:mx-auto">
+          <blockquote className="font-serif italic text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-black leading-relaxed mb-8 lg:text-center">
             &ldquo;I used to lose 3 or 4 calls a week and not even know it.
             First month with NeverMiss I picked up 6 jobs I would&apos;ve missed.&rdquo;
           </blockquote>
-          <p className="text-xs tracking-widest uppercase text-zinc-500 font-sans">
+          <p className="text-xs tracking-widest uppercase text-zinc-500 font-sans lg:text-center">
             Mike T. — HVAC contractor, San Diego
           </p>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="px-6 md:px-10 py-24 border-b border-zinc-200">
-        <div className="max-w-md">
+      <section className="px-6 md:px-10 lg:px-20 py-24 lg:py-32 border-b border-zinc-200">
+        <div className="max-w-md lg:max-w-xl lg:mx-auto">
           <p className="text-xs tracking-widest uppercase text-zinc-500 mb-12 font-sans">Pricing</p>
           
           <div className="border border-zinc-200 p-8 md:p-10">
@@ -255,7 +255,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="px-6 md:px-10 py-8 flex items-center justify-between text-xs text-zinc-300 font-sans tracking-wide">
+      <footer className="px-6 md:px-10 lg:px-20 py-8 flex items-center justify-between text-xs text-zinc-300 font-sans tracking-wide">
         <span className="uppercase tracking-widest font-medium text-zinc-500">NeverMiss</span>
         <span>© {new Date().getFullYear()}</span>
         <div className="flex gap-6">
