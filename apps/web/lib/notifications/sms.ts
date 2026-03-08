@@ -3,6 +3,8 @@ import twilio from 'twilio'
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID?.trim()
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN?.trim()
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER?.trim()
+// Toll-free number for SMS (bypasses 10DLC requirements)
+const TWILIO_SMS_NUMBER = process.env.TWILIO_SMS_NUMBER?.trim() || TWILIO_PHONE_NUMBER
 
 export interface SendLeadSMSParams {
   ownerPhone: string
@@ -77,7 +79,7 @@ export async function sendLeadSMS(params: SendLeadSMSParams): Promise<SendLeadSM
     recipients.map(async (to) => {
       try {
         await client.messages.create({
-          from: TWILIO_PHONE_NUMBER!,
+          from: TWILIO_SMS_NUMBER!,
           to,
           body: message,
         })

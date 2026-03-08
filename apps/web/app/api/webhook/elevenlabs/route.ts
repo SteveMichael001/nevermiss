@@ -195,7 +195,10 @@ export async function POST(req: Request): Promise<Response> {
     // ------------------------------------------------------------------
     // 2. Validate ElevenLabs signature (production only)
     // ------------------------------------------------------------------
-    if (process.env.NODE_ENV === 'production') {
+    const url = new URL(req.url)
+    const skipHmac = url.searchParams.get('skip_hmac') === '1' && process.env.NODE_ENV !== 'production'
+
+    if (!skipHmac && process.env.NODE_ENV === 'production') {
       const signatureHeader = req.headers.get('ElevenLabs-Signature')
       // WEBHOOK_SECRET is guaranteed non-null in prod (startup validation above)
       const validationError = validateSignature(signatureHeader, rawBody, WEBHOOK_SECRET!)
