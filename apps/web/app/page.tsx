@@ -104,7 +104,7 @@ export default function LandingPage() {
         <div className="landing-container">
           <div className="landing-grid">
             <div className="col-span-12">
-              <h1 className="text-[clamp(36px,8vw,80px)] leading-[0.95] tracking-[-0.03em] font-semibold">That call just went<br />to your competitor.</h1>
+              <h1 className="text-[clamp(44px,9vw,88px)] leading-[0.94] tracking-[-0.03em] font-semibold">That call just went<br />to your competitor.</h1>
               <p className="mt-8 max-w-2xl text-[18px] md:text-[20px] text-[var(--nm-gray)] leading-[1.5]">
                 We answer. We capture. You close.
               </p>
