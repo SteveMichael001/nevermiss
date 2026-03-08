@@ -1,8 +1,8 @@
 import twilio from 'twilio'
 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN
-const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID?.trim()
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN?.trim()
+const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER?.trim()
 
 export interface SendLeadSMSParams {
   ownerPhone: string

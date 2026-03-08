@@ -110,8 +110,8 @@ interface Business {
 
 /** Supabase admin client — no cookie auth needed for webhook routes */
 function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
   if (!url || !key) {
     throw new Error(
       'Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY'
@@ -251,7 +251,9 @@ export async function POST(req: Request): Promise<Response> {
         ? urgencyRaw
         : 'routine'
     ) as 'emergency' | 'urgent' | 'routine'
-    const preferredCallback = dcr.preferred_callback?.value ?? 'unknown'
+    // preferred_callback is the field name in ElevenLabs data_collection.
+    // Fall back to dcr.caller_phone for backward compat (old agents used that field name).
+    const preferredCallback = dcr.preferred_callback?.value ?? (dcr as Record<string, DataCollectionResult | undefined>).caller_phone?.value ?? 'unknown'
 
     // Dynamic variables from conversation initiation
     const dynamicVars = data.conversation_initiation_client_data?.dynamic_variables
