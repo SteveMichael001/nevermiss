@@ -4,15 +4,6 @@ import { SetupForm } from './setup-form'
 
 export const dynamic = 'force-dynamic'
 
-const DEFAULT_GREETINGS: Record<string, string> = {
-  plumbing: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-  hvac: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-  electrical: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-  roofing: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-  pest_control: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-  general: "Hi, thanks for calling {business}. We can't get to the phone right now, but I'd love to help. Can I get your name and what you need help with?",
-}
-
 export default async function SetupPage() {
   const supabase = createClient()
   const {
@@ -35,7 +26,7 @@ export default async function SetupPage() {
       .from('businesses')
       .insert({
         owner_id: user.id,
-        name: meta.business_name ?? 'My Business',
+        name: meta.business_name ?? '',
         owner_name: meta.owner_name ?? '',
         owner_phone: meta.owner_phone ?? '',
         owner_email: user.email ?? '',
@@ -58,15 +49,15 @@ export default async function SetupPage() {
     )
   }
 
-  const defaultGreeting = DEFAULT_GREETINGS[business.trade] ?? DEFAULT_GREETINGS.general
-  const previewGreeting = defaultGreeting.replace('{business}', business.name)
-
   return (
     <SetupForm
       businessId={business.id}
-      businessName={business.name}
-      currentGreeting={business.greeting_text}
-      defaultGreeting={previewGreeting}
+      initialData={{
+        business_name: business.name ?? '',
+        owner_name: business.owner_name ?? '',
+        trade: business.trade ?? 'general',
+        owner_phone: business.owner_phone ?? '',
+      }}
     />
   )
 }

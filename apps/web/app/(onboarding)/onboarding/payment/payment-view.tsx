@@ -45,10 +45,10 @@ export function PaymentView({ businessId, businessName, trialEndDate }: PaymentV
 
   return (
     <div className="space-y-8">
-      <OnboardingSteps currentStep={5} />
+      <OnboardingSteps currentStep={3} />
 
       <div>
-        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 5</p>
+        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 3</p>
         <h1 className="font-serif italic text-3xl text-black mb-2">Start your free trial</h1>
         <p className="text-zinc-500 text-sm leading-relaxed">
           14 days free. First charge on{' '}

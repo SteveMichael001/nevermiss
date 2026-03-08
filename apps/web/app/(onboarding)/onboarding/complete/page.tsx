@@ -25,7 +25,7 @@ export default async function CompletePage() {
 
   return (
     <div className="space-y-8">
-      <OnboardingSteps currentStep={6} />
+      <OnboardingSteps currentStep={4} />
 
       {/* Success */}
       <div className="space-y-4">

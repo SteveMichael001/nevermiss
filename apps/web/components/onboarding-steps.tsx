@@ -2,12 +2,10 @@ import { cn } from '@/lib/utils'
 import { Check } from 'lucide-react'
 
 const STEPS = [
-  { id: 1, label: 'Sign Up' },
-  { id: 2, label: 'Setup' },
-  { id: 3, label: 'Your Number' },
-  { id: 4, label: 'Test Call' },
-  { id: 5, label: 'Payment' },
-  { id: 6, label: 'Live' },
+  { id: 1, label: 'Business Setup' },
+  { id: 2, label: 'Phone Number' },
+  { id: 3, label: 'Payment' },
+  { id: 4, label: 'Complete' },
 ]
 
 interface OnboardingStepsProps {

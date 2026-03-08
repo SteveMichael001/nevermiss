@@ -56,10 +56,10 @@ export function NumberView({ businessId, existingNumber, ownerPhone }: NumberVie
 
   return (
     <div className="space-y-8">
-      <OnboardingSteps currentStep={3} />
+      <OnboardingSteps currentStep={2} />
 
       <div>
-        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 3</p>
+        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 2</p>
         <h1 className="font-serif italic text-3xl text-black mb-2">Your AI phone number</h1>
         <p className="text-zinc-500 text-sm leading-relaxed">
           Forward your existing number to this number to activate AI answering.
@@ -164,11 +164,11 @@ export function NumberView({ businessId, existingNumber, ownerPhone }: NumberVie
       )}
 
       <button
-        onClick={() => router.push('/onboarding/test')}
+        onClick={() => router.push('/onboarding/payment')}
         disabled={!number}
         className="w-full bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-xs font-medium tracking-widest uppercase py-4 flex items-center justify-center gap-2 transition-colors"
       >
-        I&apos;ve set up call forwarding
+        Continue
         <ArrowRight className="w-4 h-4" />
       </button>
     </div>
