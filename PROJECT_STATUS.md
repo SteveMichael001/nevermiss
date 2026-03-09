@@ -1,120 +1,113 @@
 # NeverMiss — Project Status
 
-**Last updated:** 2026-03-06 7:23 PM PST
+**Last updated:** 2026-03-09 09:08 PDT  
+**Status:** MVP Live — SMS Pending Verification
 
 ---
 
-## What We Built Today (Mar 6)
+## What's Working ✅
 
-### Backend / Infrastructure ✅
-- **Supabase** — Schema deployed (`001_initial_schema.sql`), test business inserted ("Coconut Bangers Balls Home Services")
-- **Twilio** — Number purchased: +1 619-648-2491 (San Diego area code)
-- **ElevenLabs** — Native Twilio integration set up (not our custom TwiML → Stream approach)
-  - Agent ID: `agent_0201kk1w0yzsf6vv5aqnkcpmh6wm`
-  - Post-call webhook: `https://nevermiss-delta.vercel.app/api/webhook/elevenlabs`
-  - Variables webhook: `https://nevermiss-delta.vercel.app/api/webhook/elevenlabs/variables`
-- **Stripe** — Sandbox mode, recurring payments, flat rate, prebuilt checkout
-- **Resend** — API key configured for transactional email
-- **Vercel** — Deployed to `https://nevermiss-delta.vercel.app`
+### Voice / AI Answering
+- ElevenLabs agent answering calls on +16196482491
+- Dynamic variables webhook injecting business name/owner
+- Post-call webhook logging calls to Supabase
+- Full transcripts captured
 
-### Frontend ✅
-- **Landing page redesign** — DM Serif Display italic headlines, white/black/zinc palette
-- **Responsive polish** — Proper type scale (capped at `text-8xl`), centered hero on desktop, 3-column How It Works on lg screens
-- **Full frontend consistency** — 19 files updated: auth, onboarding, dashboard all match landing page aesthetic
-- **Copy QA** — "One missed call per day" (not "1"), comma fix in testimonial
+### Web App
+- Landing page live (Apple-style B&W design)
+- Google OAuth sign-in
+- Onboarding flow (4 steps)
+- Dashboard with call log, settings, billing pages
+- Deployed to https://nevermiss-delta.vercel.app
 
-### Env Vars (all in Vercel production + preview)
+### Database
+- Supabase PostgreSQL with businesses + calls tables
+- Auth working with proper redirect URLs
+
+---
+
+## What's Blocked ⏳
+
+### SMS Notifications
+- **Issue:** Toll-free number +18339015846 needs verification
+- **Action needed:** Complete Twilio Trust Hub verification
+  1. Create Customer Profile (Sole Proprietor)
+  2. Submit toll-free verification
+  3. Wait 1-3 business days
+- **Workaround:** None — SMS blocked until verified
+
+### Email Notifications
+- Resend API key configured but not fully wired
+- Low priority — SMS is primary notification channel
+
+---
+
+## Phone Numbers
+
+| Number | Purpose | Status |
+|--------|---------|--------|
+| +16196482491 | Voice (AI answering) | ✅ Active |
+| +18339015846 | SMS (toll-free) | ⏳ Pending verification |
+
+---
+
+## Key URLs
+
+- **Production:** https://nevermiss-delta.vercel.app
+- **GitHub:** https://github.com/SteveMichael001/nevermiss
+- **Supabase:** https://fibauzdvzkfevabxyhkt.supabase.co
+- **Twilio Console:** https://console.twilio.com
+- **ElevenLabs:** https://elevenlabs.io (agent config)
+
+---
+
+## Environment Variables (Vercel)
+
 ```
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
-TWILIO_PHONE_NUMBER
+TWILIO_PHONE_NUMBER        (+16196482491 - voice)
+TWILIO_SMS_NUMBER          (+18339015846 - SMS)
 ELEVENLABS_API_KEY
 ELEVENLABS_AGENT_ID
 ELEVENLABS_WEBHOOK_SECRET
-RESEND_API_KEY
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 STRIPE_SECRET_KEY
-NEXT_PUBLIC_APP_URL
-SKIP_TWILIO_VALIDATION=true
+NEXT_PUBLIC_APP_URL        (https://nevermiss-delta.vercel.app)
 ```
 
 ---
 
-## Known Bugs / Issues
+## Design System
 
-### 🔴 Call Drops — HIGH PRIORITY
-Two reported instances:
-1. **Steve's call** — Changed first message text to make parents laugh → call dropped early
-2. **Friend's call** — When agent asked for phone number and caller started saying digits → call dropped
+**Apple-style B&W. No accent colors.**
 
-**Suspected causes:**
-- First message customization with `{{business_name}}` placeholder caused immediate termination earlier (we hardcoded it to fix). Related issue may persist.
-- Phone number digit parsing might be triggering an error in ElevenLabs agent
-- Variables webhook returning fallback values ("the business", "the owner") — business lookup by Twilio number not working for native EL calls
-
-### 🟡 Dynamic Variables Not Injecting
-- Variables webhook (`/api/webhook/elevenlabs/variables`) returns fallback values during actual EL native calls
-- Suspected: payload format mismatch between what ElevenLabs sends and what endpoint expects (`caller_id`, `called_number` field names may differ)
-- Test curl works fine; live calls don't
-
-### 🟡 SKIP_TWILIO_VALIDATION Still Enabled
-- Should be turned off once variables injection is confirmed working
-- Currently `true` in Vercel env
-
-### 🟡 Vercel GitHub Auto-Deploy Broken
-- Root cause: Git commits authored as `steve@bridgesourceconsulting.com` but Vercel team tied to `stevenchranowski3@gmail.com`
-- Workaround: Manual `vercel --prod` CLI deploys
-- Fix: Change git config email to Gmail, or add BridgeSource email to Vercel team
+See `apps/web/app/globals.css`:
+- nm-black: #000000
+- nm-white: #ffffff
+- nm-gray: #858484
+- nm-border: #e5e5e5
+- nm-soft: #f7f7f7
 
 ---
 
-## Next Steps
+## Recent Commits
 
-### Immediate (before launch)
-1. **Debug call drops** — Check ElevenLabs logs, review agent configuration, test phone number collection flow
-2. **Fix variables injection** — Log actual EL payload, match field names, confirm business lookup works
-3. **Re-enable Twilio validation** — Once variables working
-
-### Before Paid Launch
-4. Stripe checkout flow end-to-end test
-5. Onboarding flow: user signs up → gets their own Twilio number → EL agent configured
-6. Dashboard: display real call data from Supabase
-7. Custom domain (nevermiss.ai or similar)
+- `74d0410` — feat: use toll-free number for SMS delivery
+- `6886b4e` — Simplify onboarding to 4-step flow
+- `ea87cc0` — fix: trim env vars for auth
+- `0681fa2` — Add wordmark logo
+- `b0e5431` — Rebuild in Apple-style B&W system
 
 ---
 
-## Key Files
+## Next Steps (When Resuming)
 
-| File | Purpose |
-|------|---------|
-| `apps/web/app/page.tsx` | Landing page |
-| `apps/web/app/api/webhook/twilio/voice/route.ts` | Twilio voice webhook (legacy, may not be used with native EL) |
-| `apps/web/app/api/webhook/elevenlabs/route.ts` | Post-call webhook |
-| `apps/web/app/api/webhook/elevenlabs/variables/route.ts` | Dynamic variables for EL agent |
-| `supabase/migrations/001_initial_schema.sql` | DB schema |
-
----
-
-## Test Data
-
-- **Test business UUID:** `3caac44c-4399-4d52-83a7-3a81ac48c39e`
-- **Business name:** Coconut Bangers Balls Home Services
-- **Twilio number:** `+16196482491`
-- **Owner phone:** `+16099771254` (Steve)
-
----
-
-## Architecture Decision: ElevenLabs Native Twilio
-
-We switched from custom TwiML `<Connect><Stream>` to ElevenLabs managing Twilio directly because:
-- Our WebSocket stream was being dropped by EL
-- Native integration handles call routing end-to-end
-- We just provide post-call + variables webhooks
-
-This means:
-- Twilio voice webhook URL is `https://api.us.elevenlabs.io/twilio/inbound_call` (set in Twilio console)
-- We don't control the TwiML anymore — EL does
-- Our code only handles callbacks, not call initiation
+1. Complete Twilio toll-free verification
+2. Test SMS delivery
+3. Full end-to-end onboarding test
+4. Stripe Checkout integration test
+5. Voice quality improvements (ElevenLabs settings)
