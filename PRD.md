@@ -1,188 +1,140 @@
 # Product Requirements Document — NeverMiss AI
 
-**Version:** 2.0  
-**Date:** March 9, 2026  
-**Status:** MVP Live — Iterating
+**Version:** 3.0  
+**Date:** March 10, 2026  
+**Status:** Code audited, operational launch items remaining
 
----
+## 1. Product Summary
 
-## 1. Product Overview
+NeverMiss AI is an AI-backed phone answering system for home service businesses. Missed or after-hours calls route into an AI receptionist, lead details are extracted, and the business owner receives an immediate notification with the transcript and callback context.
 
-NeverMiss AI is an AI-powered phone answering service for home service contractors (plumbers, HVAC, electricians, roofers). When a contractor can't answer the phone, the AI picks up, has a natural conversation with the caller, captures their information, and immediately texts the business owner with the lead details.
+Primary audience:
+- Plumbing
+- HVAC
+- Electrical
+- Roofing
+- General home services
 
-**Core loop:** Customer calls → AI answers → captures lead → texts owner → owner calls back → wins the job.
-
-**Live URL:** https://nevermiss-delta.vercel.app
-
----
+Primary outcome:
+- Capture revenue from calls the contractor would otherwise miss
 
 ## 2. Current Architecture
 
-```
-┌──────────────┐     ┌──────────────────────────────────────┐
-│  Customer     │────▶│  Twilio (Inbound Voice)               │
-│  Phone Call   │     │  +16196482491 (San Diego)             │
-└──────────────┘     └──────────────┬───────────────────────┘
-                                    │
-                     ┌──────────────▼───────────────────────┐
-                     │  ElevenLabs Conversational AI         │
-                     │  (Native Twilio Integration)          │
-                     │                                       │
-                     │  - Agent: Sarah (AI receptionist)     │
-                     │  - Dynamic variables via webhook      │
-                     │  - Business name, owner, trade        │
-                     │  - Captures: name, phone, service,    │
-                     │    urgency, callback preference       │
-                     └──────────────┬───────────────────────┘
-                                    │
-                     ┌──────────────▼───────────────────────┐
-                     │  Post-Call Webhook (Vercel)           │
-                     │  /api/webhook/elevenlabs              │
-                     │                                       │
-                     │  1. Parse transcript + extracted data │
-                     │  2. Insert call record (Supabase)     │
-                     │  3. Send SMS notification (Twilio)    │
-                     │  4. Send email notification (Resend)  │
-                     └──────────────┬───────────────────────┘
-                                    │
-                     ┌──────────────▼───────────────────────┐
-                     │  Web App (Next.js on Vercel)          │
-                     │                                       │
-                     │  - Landing page (B&W design)          │
-                     │  - Onboarding (4 steps)               │
-                     │  - Dashboard (call log, settings)     │
-                     │  - Billing (Stripe)                   │
-                     └──────────────────────────────────────┘
+```text
+Customer phone call
+  -> Twilio Voice number
+    -> /api/webhook/twilio/voice
+      -> In business hours: <Dial> owner phone
+        -> /api/webhook/twilio/dial-fallback if no answer
+      -> Out of hours or fallback: <Connect><Stream> to ElevenLabs
+        -> /api/webhook/elevenlabs/variables for business-specific prompt variables
+        -> ElevenLabs conversation
+        -> /api/webhook/elevenlabs post-call webhook
+          -> Supabase calls insert
+          -> Twilio SMS notification
+          -> Resend email notification
+          -> ElevenLabs recording fetch
+          -> Supabase Storage signed playback in dashboard
+
+Web app (Next.js on Vercel)
+  -> Marketing site
+  -> Supabase Auth login/signup
+  -> Onboarding: setup, number provisioning, test call, payment, completion
+  -> Dashboard: call log, call detail, recordings, settings, billing
+
+Billing
+  -> Stripe Checkout session
+  -> Stripe Customer Portal
+  -> /api/webhook/stripe updates subscription state in Supabase
 ```
 
----
-
-## 3. Tech Stack (Actual)
+## 3. Tech Stack
 
 | Layer | Technology | Notes |
-|-------|-----------|-------|
-| **Framework** | Next.js 14 (App Router) | Dashboard + API routes |
-| **Hosting** | Vercel | All-in-one deployment |
-| **Database** | Supabase (PostgreSQL) | Auth + data + storage |
-| **Auth** | Supabase Auth (Google OAuth) | OAuth preferred over magic link |
-| **Voice AI** | ElevenLabs Conversational AI | Native Twilio integration |
-| **Phone** | Twilio Voice | +16196482491 for inbound calls |
-| **SMS** | Twilio (Toll-Free) | +18339015846 (pending verification) |
-| **Payments** | Stripe | Subscriptions + checkout |
-| **Email** | Resend | Transactional (not yet wired) |
+| --- | --- | --- |
+| App framework | Next.js 14 App Router | Single app for marketing, dashboard, and API routes |
+| Hosting | Vercel | App + serverless route handlers |
+| Auth | Supabase Auth | Email/password plus OAuth callback flow |
+| Database | Supabase Postgres | Businesses, calls, billing state |
+| File storage | Supabase Storage | Private call recordings bucket |
+| Voice ingress | Twilio Voice | Inbound numbers, dial fallback, status callbacks |
+| Voice AI | ElevenLabs Conversational AI | Shared agent with per-business dynamic variables |
+| SMS | Twilio Messaging | Lead alerts and welcome SMS |
+| Email | Resend | Lead alert email delivery |
+| Billing | Stripe | Checkout, subscriptions, billing portal |
 
----
+## 4. Implemented Features
 
-## 4. Phone Numbers
+| Feature | Status | Notes |
+| --- | --- | --- |
+| Marketing landing page | Complete | Live in the main Next.js app |
+| Auth flow | Complete | Protected dashboard and onboarding routes |
+| Business onboarding | Complete | Setup, number provisioning, test, payment, completion screens |
+| Twilio number provisioning | Complete | Buys and stores a number per business |
+| Business-hours routing | Complete | Routes to owner first, AI fallback when configured |
+| ElevenLabs personalization | Complete | Business name, owner name, trade, business ID |
+| Post-call lead capture | Complete | Transcript, extracted fields, duration, call metadata |
+| SMS lead alerts | Complete | Runtime guarded; depends on valid Twilio sender |
+| Email lead alerts | Complete | Runtime guarded; requires Resend envs |
+| Dashboard call log | Complete | Paginated API-backed list |
+| Call detail + transcript | Complete | Includes lead status updates |
+| Recording playback | Complete | Recording fetched from ElevenLabs and served via signed URL |
+| Billing checkout | Complete | Stripe subscription checkout route |
+| Billing portal | Complete | Stripe customer portal route |
+| Webhook security hardening | Complete | Twilio prod validation, ElevenLabs HMAC, Stripe constructEvent |
+| Webhook idempotency safeguards | Complete | ElevenLabs duplicate conversation check, Stripe duplicate activation guard |
 
-| Number | Purpose | Status |
-|--------|---------|--------|
-| +16196482491 | Inbound voice (AI answering) | ✅ Active |
-| +18339015846 | Outbound SMS (lead alerts) | ⏳ Pending toll-free verification |
+## 5. Current Product Constraints
 
----
+- One business per authenticated owner account is assumed throughout the dashboard.
+- A shared ElevenLabs agent is used across businesses; personalization is prompt-variable based.
+- Call forwarding from the contractor's main line is still a manual user setup step.
+- Dashboard pagination exists for the main call log, but not every place that reads recent calls.
 
-## 5. Design System
+## 6. Launch Blockers
 
-**Apple-style B&W palette. No accent colors.**
+1. Pricing copy mismatch: landing page advertises `$297/month`, while Stripe checkout is configured for `$250/month`.
+2. SMS deliverability is only production-safe if the configured Twilio messaging sender is verified and approved.
+3. Monitoring, alerting, and rate limiting are not yet installed.
+4. Production env completeness still matters: Twilio, Stripe, Supabase service role, ElevenLabs, and Resend must all be set correctly in Vercel.
 
-```css
---nm-black: #000000   /* Primary text, CTAs */
---nm-white: #ffffff   /* Backgrounds */
---nm-gray: #858484    /* Secondary text */
---nm-border: #e5e5e5  /* Borders, dividers */
---nm-soft: #f7f7f7    /* Subtle backgrounds */
-```
+## 7. Roadmap
 
-Typography: Inter / SF Pro system stack.
+### Sprint 1 — Done
+- Marketing site
+- Auth flow
+- Onboarding setup flow
+- Number provisioning
+- Stripe checkout
+- Dashboard shell and call log
 
----
+### Sprint 2 — Done
+- Business settings management
+- Business-hours call routing
+- Owner dial fallback to AI
+- Call detail page
+- Recording retrieval and playback
+- Email notification wiring
 
-## 6. User Flows
+### Sprint 3 — Done
+- Production webhook validation
+- Dashboard API ownership checks
+- Runtime env guards
+- ElevenLabs duplicate processing protection
+- Stripe duplicate activation protection
+- Force-dynamic coverage on auth/DB server pages
 
-### Onboarding (4 steps)
-1. **Business Setup** — Name, owner, trade, phone for SMS
-2. **Phone Number** — Display assigned Twilio number
-3. **Payment** — Stripe Checkout ($250/mo)
-4. **Complete** — Success → Dashboard
+### Next Up
+- Monitoring and alerting
+- Request rate limiting
+- Per-business voice customization
+- Analytics and call quality metrics
+- Multi-user account model
+- Automated forwarding setup assistance by carrier
 
-### Dashboard
-- **Call Log** — Table with caller, time, urgency, status
-- **Call Detail** — Full transcript, extracted data
-- **Settings** — Update business info, notification prefs
-- **Billing** — Stripe Customer Portal
+## 8. Operational Notes
 
----
-
-## 7. ElevenLabs Agent Config
-
-**Agent ID:** `agent_0201kk1w0yzsf6vv5aqnkcpmh6wm`
-
-**Variables Webhook:** `/api/webhook/elevenlabs/variables`
-- Input: `caller_id`, `called_number`
-- Output: `business_name`, `owner_name`, `trade`
-
-**Post-Call Webhook:** `/api/webhook/elevenlabs`
-- Receives: full transcript, extracted data, call metadata
-- Actions: insert to Supabase, send SMS, send email
-
----
-
-## 8. Database Schema (Current)
-
-### businesses
-- id, owner_id, name, trade, owner_name, owner_phone
-- twilio_phone_number, subscription_status
-- created_at, updated_at
-
-### calls
-- id, business_id, caller_name, caller_phone
-- service_needed, urgency, preferred_callback
-- full_transcript, duration_seconds
-- lead_status (new, called_back, booked, lost)
-- sms_sent_at, email_sent_at
-- created_at
-
----
-
-## 9. Pricing
-
-**$250/month flat rate**
-- Unlimited AI-answered calls
-- Instant SMS + email notifications
-- Call transcripts + dashboard
-- 14-day free trial
-
----
-
-## 10. Current Blockers
-
-1. **SMS delivery blocked** — Toll-free number needs verification (1-3 business days)
-2. **Email notifications** — Resend not fully wired
-3. **Number provisioning** — Manual setup per customer (no self-serve yet)
-
----
-
-## 11. Roadmap
-
-### Phase 1: MVP Polish (Current)
-- [x] Landing page
-- [x] Onboarding flow
-- [x] Dashboard
-- [ ] SMS verification (blocked)
-- [ ] End-to-end onboarding test
-
-### Phase 2: Voice Quality
-- [ ] ElevenLabs settings optimization
-- [ ] ASR keyword injection (trade-specific vocabulary)
-- [ ] TTS pronunciation dictionary
-
-### Phase 3: Growth
-- [ ] FB ads launch ($500 test)
-- [ ] Landing page A/B testing
-- [ ] Customer testimonials (real photos)
-
-### Phase 4: Scale
-- [ ] Self-serve number provisioning
-- [ ] Multi-user dashboard
-- [ ] Analytics + call quality metrics
+- Primary marketing domain in code: `https://nevermissai.com`
+- Application and webhook base URL resolve from `VERCEL_URL` at runtime
+- Stripe plan config currently uses a 14-day trial
+- Business timezone support exists in schema and routing logic

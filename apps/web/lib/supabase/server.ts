@@ -1,12 +1,19 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { getRequiredEnv } from '@/lib/env'
 
 export function createClient() {
   const cookieStore = cookies()
+  const supabaseUrl = getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL', 'supabase/server')
+  const supabaseAnonKey = getRequiredEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'supabase/server')
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('[supabase/server] Missing Supabase server env vars')
+  }
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -28,10 +35,16 @@ export function createClient() {
 
 export function createAdminClient() {
   const cookieStore = cookies()
+  const supabaseUrl = getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL', 'supabase/server')
+  const serviceRoleKey = getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY', 'supabase/server')
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('[supabase/server] Missing Supabase admin env vars')
+  }
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    supabaseUrl,
+    serviceRoleKey,
     {
       cookies: {
         getAll() {

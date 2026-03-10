@@ -1,12 +1,17 @@
 import { Resend } from 'resend'
+import { getAppUrl, getRequiredEnv } from '@/lib/env'
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY
+const RESEND_API_KEY = process.env.RESEND_API_KEY?.trim()
 if (!RESEND_API_KEY) {
-  console.warn('[Email] RESEND_API_KEY not set — email notifications will fail at runtime')
+  console.warn('[notifications/email] RESEND_API_KEY not set')
 }
 
 const FROM_EMAIL = process.env.FROM_EMAIL ?? 'NeverMiss AI <notifications@nevermiss.ai>'
-const DASHBOARD_URL = process.env.DASHBOARD_URL ?? 'https://app.nevermiss.ai'
+
+function getDashboardUrl() {
+  const dashboardUrl = process.env.DASHBOARD_URL?.trim()
+  return dashboardUrl || getAppUrl()
+}
 
 export interface SendLeadEmailParams {
   ownerEmail: string
@@ -30,11 +35,12 @@ export interface SendLeadEmailResult {
 }
 
 export async function sendLeadEmail(params: SendLeadEmailParams): Promise<SendLeadEmailResult> {
-  if (!RESEND_API_KEY) {
-    throw new Error('RESEND_API_KEY env var is not set')
+  const resendApiKey = getRequiredEnv('RESEND_API_KEY', 'notifications/email')
+  if (!resendApiKey) {
+    throw new Error('[notifications/email] RESEND_API_KEY env var is not set')
   }
 
-  const resend = new Resend(RESEND_API_KEY)
+  const resend = new Resend(resendApiKey)
 
   const recipients = [params.ownerEmail]
   if (params.additionalEmails) {
@@ -57,14 +63,14 @@ export async function sendLeadEmail(params: SendLeadEmailParams): Promise<SendLe
     })
 
     if (error) {
-      console.error('[Email] Resend error:', error)
+      console.error('[notifications/email] Resend error:', error)
       return { success: false, error: error.message }
     }
 
     return { success: true, emailId: data?.id }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
-    console.error('[Email] Unexpected error:', msg)
+    console.error('[notifications/email] Unexpected error:', msg)
     return { success: false, error: msg }
   }
 }
@@ -84,9 +90,10 @@ function buildEmailHTML(params: SendLeadEmailParams): string {
 
   const isEmergency = urgency === 'emergency'
   const callbackDisplay = isEmergency ? 'ASAP' : preferredCallback
+  const dashboardUrl = getDashboardUrl()
   const dashboardLink = callId
-    ? `${DASHBOARD_URL}/dashboard?call=${callId}`
-    : `${DASHBOARD_URL}/dashboard`
+    ? `${dashboardUrl}/dashboard?call=${callId}`
+    : `${dashboardUrl}/dashboard`
 
   const urgencyColor =
     urgency === 'emergency' ? '#dc2626' : urgency === 'urgent' ? '#d97706' : '#16a34a'
@@ -175,7 +182,7 @@ function buildEmailHTML(params: SendLeadEmailParams): string {
 
     <p style="text-align:center;color:#9ca3af;font-size:12px;margin-top:16px;">
       NeverMiss AI — 24/7 AI phone answering for home service contractors<br>
-      <a href="${DASHBOARD_URL}/dashboard/settings" style="color:#6b7280;">Manage notification settings</a>
+      <a href="${dashboardUrl}/dashboard/settings" style="color:#6b7280;">Manage notification settings</a>
     </p>
 
   </div>

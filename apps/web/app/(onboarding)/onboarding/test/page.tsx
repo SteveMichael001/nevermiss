@@ -12,11 +12,16 @@ export default async function TestPage() {
 
   if (!user) redirect('/login')
 
-  const { data: business } = await supabase
+  const { data: business, error } = await supabase
     .from('businesses')
     .select('id, twilio_phone_number')
     .eq('owner_id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (error) {
+    console.error('[onboarding/test/page] Failed to load business:', error)
+    redirect('/onboarding/setup')
+  }
 
   if (!business) redirect('/onboarding/setup')
   if (!business.twilio_phone_number) redirect('/onboarding/number')

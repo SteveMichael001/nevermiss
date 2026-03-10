@@ -1,115 +1,127 @@
 import { NextResponse } from 'next/server'
 import twilio from 'twilio'
 import { createClient } from '@/lib/supabase/server'
+import { getAppUrl } from '@/lib/env'
 
-/**
- * POST /api/onboarding/provision
- *
- * Provisions a Twilio phone number for the business.
- *
- * V1 note: After purchasing the number, it must be manually imported into ElevenLabs:
- *   ElevenLabs Dashboard → Telephony → Phone Numbers → Import Number → "From Twilio"
- *   Then assign it to the NeverMiss agent for this business.
- *
- * Body params:
- *   areaCode         - desired area code (default: "619")
- *   elevenlabsAgentId - optional: save the ElevenLabs agent ID for this business
- */
-export async function POST(request: Request) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+const FALLBACK_AREA_CODES = ['415', '212']
+const TOLL_FREE_AREA_CODE = '800'
 
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const body = await request.json()
-  const areaCode: string = body.areaCode ?? '619'
-  const elevenlabsAgentId: string | null = body.elevenlabsAgentId ?? null
-
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('id, twilio_phone_number')
-    .eq('owner_id', user.id)
-    .single()
-
-  if (!business) return NextResponse.json({ error: 'Business not found' }, { status: 404 })
-
-  // Save elevenlabs_agent_id if provided (can be set independently of number provisioning)
-  if (elevenlabsAgentId) {
-    await supabase
-      .from('businesses')
-      .update({ elevenlabs_agent_id: elevenlabsAgentId })
-      .eq('id', business.id)
-  }
-
-  // Return existing number if already provisioned
-  if (business.twilio_phone_number) {
-    return NextResponse.json({
-      phoneNumber: business.twilio_phone_number,
-      elevenlabsSetupRequired: !elevenlabsAgentId,
-      message: 'Number already provisioned. If not yet imported into ElevenLabs, do so via: ElevenLabs Dashboard → Telephony → Phone Numbers → Import Number → From Twilio.',
+async function findAvailableNumber(
+  client: ReturnType<typeof twilio>,
+  areaCodes: string[]
+) {
+  for (const areaCode of areaCodes) {
+    const available = await client.availablePhoneNumbers('US').local.list({
+      areaCode: parseInt(areaCode, 10),
+      limit: 1,
+      voiceEnabled: true,
+      smsEnabled: true,
     })
+
+    if (available.length > 0) {
+      return available[0]
+    }
   }
 
-  const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID
-  const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN
-  if (!twilioAccountSid || !twilioAuthToken) {
-    throw new Error('TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN env vars are not set')
-  }
-
-  const client = twilio(twilioAccountSid, twilioAuthToken)
-
-  // Search for an available local number in the desired area code
-  const available = await client.availablePhoneNumbers('US').local.list({
-    areaCode: parseInt(areaCode, 10),
+  const tollFree = await client.availablePhoneNumbers('US').tollFree.list({
+    areaCode: parseInt(TOLL_FREE_AREA_CODE, 10),
     limit: 1,
     voiceEnabled: true,
     smsEnabled: true,
   })
 
-  if (!available.length) {
-    return NextResponse.json(
-      { error: `No available numbers in area code ${areaCode}. Try a different area code.` },
-      { status: 422 }
+  return tollFree[0] ?? null
+}
+
+export async function POST(request: Request) {
+  try {
+    const supabase = createClient()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    const body = await request.json()
+    const areaCode: string = body.areaCode ?? '619'
+
+    const { data: business, error: businessError } = await supabase
+      .from('businesses')
+      .select('id, twilio_phone_number, twilio_phone_sid')
+      .eq('owner_id', user.id)
+      .maybeSingle()
+
+    if (businessError) {
+      console.error('[onboarding/provision] Failed to load business:', businessError)
+      return NextResponse.json({ error: 'Failed to load business' }, { status: 500 })
+    }
+
+    if (!business) return NextResponse.json({ error: 'Business not found' }, { status: 404 })
+
+    if (business.twilio_phone_number) {
+      return NextResponse.json({
+        phoneNumber: business.twilio_phone_number,
+        phoneSid: business.twilio_phone_sid,
+      })
+    }
+
+    const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID?.trim()
+    const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN?.trim()
+    if (!twilioAccountSid || !twilioAuthToken) {
+      console.error('[onboarding/provision] Twilio credentials are not configured')
+      return NextResponse.json({ error: 'Phone provisioning is not configured' }, { status: 500 })
+    }
+
+    const client = twilio(twilioAccountSid, twilioAuthToken)
+    const areaCodePriority = [areaCode, ...FALLBACK_AREA_CODES].filter(
+      (code, index, codes) => /^\d{3}$/.test(code) && codes.indexOf(code) === index
     )
-  }
 
-  // Purchase the number and point voiceUrl at OUR routing handler.
-  // NeverMiss owns the webhook for business-hours routing; ElevenLabs is called
-  // downstream by our handler (out-of-hours path).
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL
-  const purchased = await client.incomingPhoneNumbers.create({
-    phoneNumber: available[0].phoneNumber,
-    friendlyName: `NeverMiss — Business ${business.id}`,
-    voiceUrl: `${appUrl}/api/webhook/twilio/voice`,
-    voiceMethod: 'POST',
-    statusCallback: `${appUrl}/api/webhook/twilio/status`,
-    statusCallbackMethod: 'POST',
-  })
+    const available = await findAvailableNumber(client, areaCodePriority)
 
-  // Persist to DB (include elevenlabs_agent_id if provided in this request)
-  await supabase
-    .from('businesses')
-    .update({
-      twilio_phone_number: purchased.phoneNumber,
-      twilio_phone_sid: purchased.sid,
-      ...(elevenlabsAgentId ? { elevenlabs_agent_id: elevenlabsAgentId } : {}),
+    if (!available) {
+      return NextResponse.json(
+        { error: 'No available phone numbers right now. Please try again in a few minutes.' },
+        { status: 422 }
+      )
+    }
+
+    const appUrl = getAppUrl(request)
+    let purchased
+
+    try {
+      purchased = await client.incomingPhoneNumbers.create({
+        phoneNumber: available.phoneNumber,
+        friendlyName: `NeverMiss — Business ${business.id}`,
+        voiceUrl: `${appUrl}/api/webhook/twilio/voice`,
+        voiceMethod: 'POST',
+        statusCallback: `${appUrl}/api/webhook/twilio/status`,
+        statusCallbackMethod: 'POST',
+      })
+    } catch (error) {
+      console.error('[onboarding/provision] Failed to provision Twilio number:', error)
+      return NextResponse.json({ error: 'Failed to provision phone number' }, { status: 502 })
+    }
+
+    const { error: updateError } = await supabase
+      .from('businesses')
+      .update({
+        twilio_phone_number: purchased.phoneNumber,
+        twilio_phone_sid: purchased.sid,
+      })
+      .eq('id', business.id)
+
+    if (updateError) {
+      console.error('[onboarding/provision] Failed to save provisioned number:', updateError)
+      return NextResponse.json({ error: 'Failed to save phone number' }, { status: 500 })
+    }
+
+    return NextResponse.json({
+      phoneNumber: purchased.phoneNumber,
+      phoneSid: purchased.sid,
     })
-    .eq('id', business.id)
-
-  return NextResponse.json({
-    phoneNumber: purchased.phoneNumber,
-    phoneSid: purchased.sid,
-    elevenlabsSetupRequired: true,
-    manualStep: 'Import this number in ElevenLabs dashboard: Telephony → Phone Numbers → Import from Twilio',
-    nextStep: [
-      'Your Twilio number is ready. To activate AI answering:',
-      '1. Go to ElevenLabs Dashboard → Telephony → Phone Numbers',
-      '2. Click "Import Number" → "From Twilio"',
-      '3. Enter your Twilio Account SID and Auth Token',
-      `4. Select the number: ${purchased.phoneNumber}`,
-      '5. Assign it to your NeverMiss AI agent',
-    ].join('\n'),
-  })
+  } catch (error) {
+    console.error('[onboarding/provision] Unhandled error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
 }

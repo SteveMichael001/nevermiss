@@ -14,9 +14,6 @@ interface Call {
   service_needed: string | null
   urgency: string
   lead_status: string
-  full_transcript: string | null
-  duration_seconds: number | null
-  recording_url: string | null
 }
 
 interface CallLogViewProps {
@@ -44,18 +41,10 @@ export function CallLogView({
     return true
   })
 
-  const handleStatusChange = useCallback(async (callId: string, status: string) => {
-    const res = await fetch(`/api/calls/${callId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lead_status: status }),
-    })
-
-    if (res.ok) {
-      setCalls((prev) =>
-        prev.map((c) => (c.id === callId ? { ...c, lead_status: status } : c))
-      )
-    }
+  const handleStatusChange = useCallback((callId: string, status: string) => {
+    setCalls((prev) =>
+      prev.map((c) => (c.id === callId ? { ...c, lead_status: status } : c))
+    )
   }, [])
 
   const todayCount = calls.filter((c) => {

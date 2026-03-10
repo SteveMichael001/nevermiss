@@ -4,8 +4,9 @@ import { Check } from 'lucide-react'
 const STEPS = [
   { id: 1, label: 'Business Setup' },
   { id: 2, label: 'Phone Number' },
-  { id: 3, label: 'Payment' },
-  { id: 4, label: 'Complete' },
+  { id: 3, label: 'Test' },
+  { id: 4, label: 'Payment' },
+  { id: 5, label: 'Complete' },
 ]
 
 interface OnboardingStepsProps {

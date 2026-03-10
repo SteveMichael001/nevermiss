@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Phone, Save, Check, Copy } from 'lucide-react'
 import { formatPhone, TRADE_LABELS } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -17,6 +16,7 @@ interface Business {
   owner_email: string
   twilio_phone_number: string | null
   greeting_text: string | null
+  dial_timeout_seconds: number | null
   notification_phones: string[] | null
   notification_emails: string[] | null
 }
@@ -36,14 +36,23 @@ export function SettingsForm({ business }: SettingsFormProps) {
     owner_phone: business.owner_phone,
     owner_email: business.owner_email,
     greeting_text: business.greeting_text ?? '',
+    dial_timeout_seconds: business.dial_timeout_seconds ?? 20,
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [testCalling, setTestCalling] = useState(false)
+  const [testCallMessage, setTestCallMessage] = useState('')
+  const [testCallError, setTestCallError] = useState('')
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const value =
+      e.target.name === 'dial_timeout_seconds'
+        ? parseInt(e.target.value, 10)
+        : e.target.value
+
+    setForm((prev) => ({ ...prev, [e.target.name]: value }))
     setSaved(false)
   }
 
@@ -67,6 +76,32 @@ export function SettingsForm({ business }: SettingsFormProps) {
     }
 
     setSaving(false)
+  }
+
+  async function handleTriggerTestCall() {
+    setTestCalling(true)
+    setTestCallMessage('')
+    setTestCallError('')
+
+    try {
+      const res = await fetch('/api/test/trigger-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessId: business.id }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error ?? 'Failed to trigger test call')
+      }
+
+      setTestCallMessage('Test call triggered — check your call log in ~60 seconds')
+    } catch (err) {
+      setTestCallError(err instanceof Error ? err.message : 'Failed to trigger test call')
+    } finally {
+      setTestCalling(false)
+    }
   }
 
   async function copyNumber() {
@@ -218,6 +253,24 @@ export function SettingsForm({ business }: SettingsFormProps) {
             </p>
           </div>
 
+          <div>
+            <Label htmlFor="dial_timeout_seconds" className={labelClass}>
+              When should AI answer?
+            </Label>
+            <select
+              id="dial_timeout_seconds"
+              name="dial_timeout_seconds"
+              value={String(form.dial_timeout_seconds)}
+              onChange={handleChange}
+              className={`${inputClass} w-full px-3 py-2 border rounded-none text-sm focus:outline-none cursor-pointer`}
+            >
+              <option value="0">AI always answers (0s) — every call goes straight to AI</option>
+              <option value="6">After 1 ring (6s) — try your phone for one ring first</option>
+              <option value="12">After 2 rings (12s)</option>
+              <option value="20">After 4 rings (20s) — standard voicemail timing</option>
+            </select>
+          </div>
+
           {error && (
             <p className="text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">{error}</p>
           )}
@@ -240,6 +293,36 @@ export function SettingsForm({ business }: SettingsFormProps) {
             )}
           </button>
         </form>
+      </div>
+
+      <div className="border border-zinc-200 p-6">
+        <h2 className="font-medium text-black text-sm">Run test call</h2>
+        <p className="mt-2 text-sm text-zinc-500">
+          Triggers a simulated inbound call to verify your setup is working.
+        </p>
+        <button
+          type="button"
+          onClick={handleTriggerTestCall}
+          disabled={testCalling}
+          className="mt-5 inline-flex items-center gap-2 bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-xs font-medium tracking-widest uppercase px-6 py-3 transition-colors"
+        >
+          {testCalling ? (
+            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : null}
+          Send a test call to my AI number
+        </button>
+
+        {testCallMessage && (
+          <p className="mt-4 text-sm text-zinc-700 border border-zinc-200 bg-zinc-50 px-3 py-2">
+            {testCallMessage}
+          </p>
+        )}
+
+        {testCallError && (
+          <p className="mt-4 text-sm text-red-600 border border-red-200 bg-red-50 px-3 py-2">
+            {testCallError}
+          </p>
+        )}
       </div>
     </div>
   )

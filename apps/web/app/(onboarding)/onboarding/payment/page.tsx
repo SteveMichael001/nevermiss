@@ -13,16 +13,24 @@ export default async function PaymentPage() {
 
   if (!user) redirect('/login')
 
-  const { data: business } = await supabase
+  const { data: business, error } = await supabase
     .from('businesses')
-    .select('id, name, subscription_status')
+    .select('id, name, subscription_status, stripe_subscription_id')
     .eq('owner_id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (error) {
+    console.error('[onboarding/payment/page] Failed to load business:', error)
+    redirect('/onboarding/setup')
+  }
 
   if (!business) redirect('/onboarding/setup')
 
   // Already active, go straight to complete
-  if (business.subscription_status === 'active') {
+  if (
+    business.subscription_status === 'active' ||
+    (business.subscription_status === 'trialing' && business.stripe_subscription_id)
+  ) {
     redirect('/onboarding/complete')
   }
 

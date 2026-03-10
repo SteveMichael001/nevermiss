@@ -13,11 +13,15 @@ export default async function SetupPage() {
   if (!user) redirect('/login')
 
   // Check if business exists
-  let { data: business } = await supabase
+  let { data: business, error: businessError } = await supabase
     .from('businesses')
     .select('*')
     .eq('owner_id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (businessError) {
+    console.error('[onboarding/setup/page] Failed to load business:', businessError)
+  }
 
   // Create business record from user metadata if it doesn't exist
   if (!business) {
@@ -33,10 +37,10 @@ export default async function SetupPage() {
         trade: meta.trade ?? 'general',
       })
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) {
-      console.error('Failed to create business:', error)
+      console.error('[onboarding/setup/page] Failed to create business:', error)
     }
     business = newBusiness
   }

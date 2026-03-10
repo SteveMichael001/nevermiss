@@ -1,10 +1,7 @@
 import twilio from 'twilio'
-
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID?.trim()
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN?.trim()
-const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER?.trim()
-// Toll-free number for SMS (bypasses 10DLC requirements)
-const TWILIO_SMS_NUMBER = process.env.TWILIO_SMS_NUMBER?.trim() || TWILIO_PHONE_NUMBER
+import { formatPhone } from '@/lib/utils'
+import { getRequiredEnv } from '@/lib/env'
+import { redactPhone } from '@/lib/utils'
 
 export interface SendLeadSMSParams {
   ownerPhone: string
@@ -22,6 +19,12 @@ export interface SendLeadSMSResult {
   sentAt: Date | null
   recipients: string[]
   errors: string[]
+}
+
+export interface SendWelcomeSMSParams {
+  ownerPhone: string
+  ownerName: string
+  twilioPhoneNumber: string
 }
 
 function formatMessage(params: SendLeadSMSParams): string {
@@ -54,12 +57,24 @@ function formatMessage(params: SendLeadSMSParams): string {
   ].join('\n')
 }
 
-export async function sendLeadSMS(params: SendLeadSMSParams): Promise<SendLeadSMSResult> {
-  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
-    throw new Error('Twilio env vars not configured (TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER)')
+function getTwilioMessagingConfig() {
+  const accountSid = getRequiredEnv('TWILIO_ACCOUNT_SID', 'notifications/sms')
+  const authToken = getRequiredEnv('TWILIO_AUTH_TOKEN', 'notifications/sms')
+  const defaultPhoneNumber = getRequiredEnv('TWILIO_PHONE_NUMBER', 'notifications/sms')
+  const smsPhoneNumber = process.env.TWILIO_SMS_NUMBER?.trim() || defaultPhoneNumber
+
+  if (!accountSid || !authToken || !defaultPhoneNumber || !smsPhoneNumber) {
+    throw new Error('[notifications/sms] Twilio env vars not configured')
   }
 
-  const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+  return {
+    client: twilio(accountSid, authToken),
+    fromNumber: smsPhoneNumber,
+  }
+}
+
+export async function sendLeadSMS(params: SendLeadSMSParams): Promise<SendLeadSMSResult> {
+  const { client, fromNumber } = getTwilioMessagingConfig()
   const message = formatMessage(params)
 
   const recipients = [params.ownerPhone]
@@ -79,15 +94,15 @@ export async function sendLeadSMS(params: SendLeadSMSParams): Promise<SendLeadSM
     recipients.map(async (to) => {
       try {
         await client.messages.create({
-          from: TWILIO_SMS_NUMBER!,
+          from: fromNumber,
           to,
           body: message,
         })
         anySucceeded = true
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err)
-        console.error(`[SMS] Failed to send to ${to}:`, msg)
-        errors.push(`${to}: ${msg}`)
+        console.error(`[notifications/sms] Failed to send to ${redactPhone(to)}:`, msg)
+        errors.push(`${redactPhone(to)}: ${msg}`)
       }
     })
   )
@@ -97,5 +112,51 @@ export async function sendLeadSMS(params: SendLeadSMSParams): Promise<SendLeadSM
     sentAt: anySucceeded ? sentAt : null,
     recipients,
     errors,
+  }
+}
+
+export async function sendWelcomeSMS(
+  params: SendWelcomeSMSParams
+): Promise<SendLeadSMSResult> {
+  const { client, fromNumber } = getTwilioMessagingConfig()
+  const message = [
+    `Welcome to NeverMiss, ${params.ownerName}! 🎉`,
+    '',
+    `Your AI number is ready: ${formatPhone(params.twilioPhoneNumber)}`,
+    '',
+    "Book your free 10-min setup call with Steve and you'll be live same day:",
+    'https://calendly.com/stevenchranowski3/nevermissonboarding',
+    '',
+    '- The NeverMiss Team',
+  ].join('\n')
+
+  const sentAt = new Date()
+
+  try {
+    await client.messages.create({
+      from: fromNumber,
+      to: params.ownerPhone,
+      body: message,
+    })
+
+    return {
+      success: true,
+      sentAt,
+      recipients: [params.ownerPhone],
+      errors: [],
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error(
+      `[notifications/sms] Failed to send welcome SMS to ${redactPhone(params.ownerPhone)}:`,
+      msg
+    )
+
+    return {
+      success: false,
+      sentAt: null,
+      recipients: [params.ownerPhone],
+      errors: [`${redactPhone(params.ownerPhone)}: ${msg}`],
+    }
   }
 }

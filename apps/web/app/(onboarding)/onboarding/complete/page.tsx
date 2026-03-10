@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowRight, Settings, LayoutDashboard } from 'lucide-react'
+import { ArrowRight, Settings, LayoutDashboard, Calendar } from 'lucide-react'
 import { formatPhone } from '@/lib/utils'
 import { OnboardingSteps } from '@/components/onboarding-steps'
 
@@ -15,17 +15,22 @@ export default async function CompletePage() {
 
   if (!user) redirect('/login')
 
-  const { data: business } = await supabase
+  const { data: business, error } = await supabase
     .from('businesses')
     .select('name, twilio_phone_number')
     .eq('owner_id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (error) {
+    console.error('[onboarding/complete/page] Failed to load business:', error)
+    redirect('/onboarding/setup')
+  }
 
   if (!business) redirect('/onboarding/setup')
 
   return (
     <div className="space-y-8">
-      <OnboardingSteps currentStep={4} />
+      <OnboardingSteps currentStep={5} />
 
       {/* Success */}
       <div className="space-y-4">
@@ -75,6 +80,27 @@ export default async function CompletePage() {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="border border-zinc-200 p-6 md:p-8 space-y-4">
+        <div className="space-y-2">
+          <h2 className="font-serif italic text-2xl text-black">
+            One last step - book your setup call
+          </h2>
+          <p className="text-zinc-500 max-w-lg text-sm leading-relaxed">
+            Steve will walk you through the 2-minute forwarding setup. You&apos;ll be live same day.
+          </p>
+        </div>
+        <Link
+          href="https://calendly.com/stevenchranowski3/nevermissonboarding"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-3 w-full bg-black hover:bg-zinc-800 text-white text-xs font-medium tracking-widest uppercase py-4 transition-colors"
+        >
+          <Calendar className="w-4 h-4" />
+          Book Your Setup Call
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
 
       {/* CTAs */}

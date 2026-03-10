@@ -77,10 +77,10 @@ export function TestView({ businessId, aiPhone }: TestViewProps) {
 
   return (
     <div className="space-y-8">
-      <OnboardingSteps currentStep={4} />
+      <OnboardingSteps currentStep={3} />
 
       <div>
-        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 4</p>
+        <p className="text-xs tracking-widest uppercase text-zinc-500 mb-3 font-sans">Step 3</p>
         <h1 className="font-serif italic text-3xl text-black mb-2">Test your AI number</h1>
         <p className="text-zinc-500 text-sm leading-relaxed">
           Call your AI number from your phone to hear it in action.

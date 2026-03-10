@@ -164,7 +164,7 @@ export function NumberView({ businessId, existingNumber, ownerPhone }: NumberVie
       )}
 
       <button
-        onClick={() => router.push('/onboarding/payment')}
+        onClick={() => router.push('/onboarding/test')}
         disabled={!number}
         className="w-full bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-xs font-medium tracking-widest uppercase py-4 flex items-center justify-center gap-2 transition-colors"
       >

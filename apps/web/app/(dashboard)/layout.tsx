@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Sidebar, MobileTopBar } from '@/components/sidebar'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
   const {
@@ -13,11 +15,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   // Get business info
-  const { data: business } = await supabase
+  const { data: business, error } = await supabase
     .from('businesses')
     .select('name')
     .eq('owner_id', user.id)
-    .single()
+    .maybeSingle()
+
+  if (error) {
+    console.error('[dashboard/layout] Failed to load business:', error)
+  }
 
   return (
     <div className="min-h-screen bg-white">

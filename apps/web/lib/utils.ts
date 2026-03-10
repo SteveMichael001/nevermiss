@@ -17,6 +17,15 @@ export function formatPhone(phone: string): string {
   return phone
 }
 
+export function redactPhone(phone: string | null | undefined): string {
+  if (!phone) return 'unknown'
+
+  const cleaned = phone.replace(/\D/g, '')
+  if (cleaned.length < 4) return 'redacted'
+
+  return `***${cleaned.slice(-4)}`
+}
+
 export function formatDate(date: string | Date): string {
   const d = typeof date === 'string' ? new Date(date) : date
   return d.toLocaleDateString('en-US', {
@@ -35,6 +44,33 @@ export function formatDateTime(date: string | Date): string {
     minute: '2-digit',
     hour12: true,
   })
+}
+
+export function formatTimeAgo(date: string | Date): string {
+  const d = typeof date === 'string' ? new Date(date) : date
+  const diffSeconds = Math.round((d.getTime() - Date.now()) / 1000)
+  const absSeconds = Math.abs(diffSeconds)
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
+
+  if (absSeconds < 60) return rtf.format(diffSeconds, 'second')
+
+  const diffMinutes = Math.round(diffSeconds / 60)
+  if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, 'minute')
+
+  const diffHours = Math.round(diffMinutes / 60)
+  if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour')
+
+  const diffDays = Math.round(diffHours / 24)
+  if (Math.abs(diffDays) < 7) return rtf.format(diffDays, 'day')
+
+  const diffWeeks = Math.round(diffDays / 7)
+  if (Math.abs(diffWeeks) < 5) return rtf.format(diffWeeks, 'week')
+
+  const diffMonths = Math.round(diffDays / 30)
+  if (Math.abs(diffMonths) < 12) return rtf.format(diffMonths, 'month')
+
+  const diffYears = Math.round(diffDays / 365)
+  return rtf.format(diffYears, 'year')
 }
 
 export function formatDuration(seconds: number): string {
