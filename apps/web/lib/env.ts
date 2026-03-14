@@ -10,6 +10,13 @@ export function getRequiredEnv(name: string, logPrefix: string): string | null {
 }
 
 export function getAppUrl(request?: Request): string {
+  // Prefer explicit app URL (e.g. https://nevermiss-delta.vercel.app) over
+  // VERCEL_URL which is the deployment-specific URL and won't match Twilio signatures.
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim()
+  if (appUrl) {
+    return appUrl
+  }
+
   const vercelUrl = process.env.VERCEL_URL?.trim()
   if (vercelUrl) {
     return `https://${vercelUrl}`

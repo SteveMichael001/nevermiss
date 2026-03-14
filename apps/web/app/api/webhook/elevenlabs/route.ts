@@ -34,6 +34,7 @@ interface ElevenLabsPostCallData {
     data_collection_results: {
       caller_name?: DataCollectionResult
       service_needed?: DataCollectionResult
+      service_address?: DataCollectionResult
       urgency?: { value: 'emergency' | 'urgent' | 'routine' }
       preferred_callback?: DataCollectionResult
     }
@@ -258,6 +259,7 @@ export async function POST(request: Request): Promise<Response> {
     const results = data.analysis.data_collection_results
     const callerName = results.caller_name?.value ?? 'unknown'
     const serviceNeeded = results.service_needed?.value ?? 'unknown'
+    const serviceAddress = results.service_address?.value ?? null
     const urgency = results.urgency?.value ?? 'routine'
     const preferredCallback =
       results.preferred_callback?.value ??
@@ -273,6 +275,7 @@ export async function POST(request: Request): Promise<Response> {
         caller_phone: callerPhone,
         caller_name: callerName,
         service_needed: serviceNeeded,
+        service_address: serviceAddress,
         urgency,
         preferred_callback: preferredCallback,
         full_transcript: fullTranscript,

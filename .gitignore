@@ -5,3 +5,14 @@ dist/
 .DS_Store
 .vercel
 .env*.local
+
+# Build output
+apps/web/.next/
+.next/
+
+# Logs
+*.log
+overnight.log
+
+# Backup files
+*.bak

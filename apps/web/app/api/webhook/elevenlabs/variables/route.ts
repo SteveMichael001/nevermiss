@@ -31,6 +31,41 @@ interface BusinessRecord {
   trade: string
 }
 
+function normalizePhoneNumber(value: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+
+  const hasLeadingPlus = trimmed.startsWith('+')
+  const digits = trimmed.replace(/\D/g, '')
+  if (!digits) return ''
+
+  return hasLeadingPlus ? `+${digits}` : digits
+}
+
+function buildPhoneLookupCandidates(value: string): string[] {
+  const candidates = new Set<string>()
+  const trimmed = value.trim()
+
+  if (trimmed) {
+    candidates.add(trimmed)
+  }
+
+  const normalized = normalizePhoneNumber(value)
+  if (!normalized) {
+    return [...candidates]
+  }
+
+  candidates.add(normalized)
+
+  if (normalized.startsWith('+')) {
+    candidates.add(normalized.slice(1))
+  } else {
+    candidates.add(`+${normalized}`)
+  }
+
+  return [...candidates]
+}
+
 function getSupabaseAdmin() {
   const url = getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL', 'elevenlabs/variables')
   const key = getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY', 'elevenlabs/variables')
@@ -63,13 +98,41 @@ function variablesResponse(variables: DynamicVariables): NextResponse<VariablesR
   )
 }
 
+async function findBusinessByCalledNumber(
+  calledNumber: string
+): Promise<{ business: BusinessRecord | null; lookupNumber: string }> {
+  const lookupCandidates = buildPhoneLookupCandidates(calledNumber)
+  const lookupNumber = lookupCandidates[0] ?? ''
+
+  if (lookupCandidates.length === 0) {
+    return { business: null, lookupNumber }
+  }
+
+  const supabase = getSupabaseAdmin()
+  const { data: businesses, error } = await supabase
+    .from('businesses')
+    .select('id, name, owner_name, trade')
+    .in('twilio_phone_number', lookupCandidates)
+    .eq('is_active', true)
+    .limit(1)
+
+  if (error) {
+    throw error
+  }
+
+  return {
+    business: (businesses?.[0] as BusinessRecord | undefined) ?? null,
+    lookupNumber,
+  }
+}
+
 export async function POST(request: Request): Promise<NextResponse<VariablesResponse>> {
   let callerPhone = ''
   let twilioCallSid = ''
 
   try {
     const rawBody = await request.text()
-    const body = JSON.parse(rawBody) as ElevenLabsVariablesRequest
+    const body = JSON.parse(rawBody) as Partial<ElevenLabsVariablesRequest>
 
     callerPhone = body.caller_id ?? ''
     twilioCallSid = body.call_sid ?? ''
@@ -82,22 +145,21 @@ export async function POST(request: Request): Promise<NextResponse<VariablesResp
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }
 
-    const supabase = getSupabaseAdmin()
-    const { data: business, error } = await supabase
-      .from('businesses')
-      .select('id, name, owner_name, trade')
-      .eq('twilio_phone_number', calledNumber)
-      .eq('is_active', true)
-      .maybeSingle<BusinessRecord>()
+    let business: BusinessRecord | null
+    let lookupNumber = calledNumber
 
-    if (error) {
+    try {
+      const result = await findBusinessByCalledNumber(calledNumber)
+      business = result.business
+      lookupNumber = result.lookupNumber
+    } catch (error) {
       console.error('[elevenlabs/variables] Failed to load business:', error)
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }
 
     if (!business) {
       console.warn(
-        `[elevenlabs/variables] Business not found for number=${redactPhone(calledNumber)}`
+        `[elevenlabs/variables] Business not found for number=${redactPhone(lookupNumber || calledNumber)}`
       )
       return variablesResponse(defaultVariables(callerPhone, twilioCallSid))
     }

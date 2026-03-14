@@ -1,0 +1,4 @@
+twilio
+flask
+supabase
+python-dotenv

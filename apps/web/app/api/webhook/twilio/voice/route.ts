@@ -10,6 +10,14 @@ import {
 } from '@/lib/twilio/webhook'
 import { redactPhone } from '@/lib/utils'
 
+// Architecture note:
+// 1. Active production routing: Twilio points directly to ElevenLabs native inbound handling at
+//    https://api.us.elevenlabs.io/twilio/inbound_call. ElevenLabs then calls our variables webhook
+//    before the conversation and our post-call webhook after the conversation.
+// 2. Standby fallback routing: if the Twilio voice URL is ever pointed back at Vercel, this route
+//    handles business-hours owner forwarding first, then falls back to the legacy ElevenLabs
+//    WebSocket TwiML flow. Native ElevenLabs is preferred today because it is the live path.
+
 type DayKey = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat'
 
 interface DayHours {

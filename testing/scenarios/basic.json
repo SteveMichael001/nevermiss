@@ -1,0 +1,20 @@
+{
+  "lines": [
+    {
+      "text": "Hi, this is Michael Turner. My furnace stopped blowing hot air about an hour ago.",
+      "pause_before": 2.5
+    },
+    {
+      "text": "I'm at 4821 Maple Ridge Drive in El Cajon.",
+      "pause_before": 3.0
+    },
+    {
+      "text": "It keeps clicking on and off, and the house is getting cold.",
+      "pause_before": 2.0
+    },
+    {
+      "text": "Please have someone call me back as soon as you can at this number.",
+      "pause_before": 2.5
+    }
+  ]
+}

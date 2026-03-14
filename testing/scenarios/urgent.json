@@ -1,0 +1,20 @@
+{
+  "lines": [
+    {
+      "text": "Hello? I need help right now. Our heat just died and it's freezing in here.",
+      "pause_before": 1.5
+    },
+    {
+      "text": "There are two little kids in the house and the thermostat is dropping fast.",
+      "pause_before": 2.0
+    },
+    {
+      "text": "My name is Denise Carter. We're at 1179 Winter Creek Lane in Poway.",
+      "pause_before": 2.5
+    },
+    {
+      "text": "Please send someone now or call me back immediately. This is an emergency.",
+      "pause_before": 1.5
+    }
+  ]
+}

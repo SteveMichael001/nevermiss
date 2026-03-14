@@ -1,0 +1,16 @@
+{
+  "lines": [
+    {
+      "text": "Uh, hi, I think my heater is...",
+      "pause_before": 3.0
+    },
+    {
+      "text": "Sorry, bad connection...",
+      "pause_before": 6.0
+    },
+    {
+      "text": "I'll call back.",
+      "pause_before": 4.0
+    }
+  ]
+}

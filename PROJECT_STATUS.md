@@ -1,17 +1,18 @@
 # NeverMiss — Project Status
 
-**Last updated:** 2026-03-09 09:08 PDT  
-**Status:** MVP Live — SMS Pending Verification
+**Last updated:** 2026-03-12
+**Status:** MVP Live — ElevenLabs Native Voice Routing Active
 
 ---
 
 ## What's Working ✅
 
 ### Voice / AI Answering
-- ElevenLabs agent answering calls on +16196482491
-- Dynamic variables webhook injecting business name/owner
-- Post-call webhook logging calls to Supabase
-- Full transcripts captured
+- Twilio voice routing is live through ElevenLabs native inbound handling: `https://api.us.elevenlabs.io/twilio/inbound_call`
+- ElevenLabs variables webhook is live at `/api/webhook/elevenlabs/variables`
+- ElevenLabs post-call webhook is live at `/api/webhook/elevenlabs`
+- Calls are being logged to Supabase with transcripts and follow-up SMS delivery
+- First real call logged: March 11, 2026 — James, leaky pipe, 69 seconds
 
 ### Web App
 - Landing page live (Apple-style B&W design)
@@ -27,6 +28,11 @@
 ---
 
 ## What's Blocked ⏳
+
+### Voice Recording Capture
+- **Known issue:** `recording_url` is currently `null` on logged calls
+- **Impact:** Call records and transcripts are saved, but recording ingestion may still need pipeline work
+- **Next step:** Audit the recording pipeline between ElevenLabs post-call data and Supabase storage
 
 ### SMS Notifications
 - **Issue:** Toll-free number +18339015846 needs verification
@@ -46,7 +52,7 @@
 
 | Number | Purpose | Status |
 |--------|---------|--------|
-| +16196482491 | Voice (AI answering) | ✅ Active |
+| +16196482491 | Voice (ElevenLabs native inbound) | ✅ Active |
 | +18339015846 | SMS (toll-free) | ⏳ Pending verification |
 
 ---
@@ -108,6 +114,6 @@ See `apps/web/app/globals.css`:
 
 1. Complete Twilio toll-free verification
 2. Test SMS delivery
-3. Full end-to-end onboarding test
-4. Stripe Checkout integration test
-5. Voice quality improvements (ElevenLabs settings)
+3. Investigate why `recording_url` remains `null`
+4. Full end-to-end onboarding test
+5. Stripe Checkout integration test
