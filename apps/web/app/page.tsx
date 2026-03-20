@@ -93,7 +93,7 @@ export default function LandingPage() {
     <main className="bg-[var(--nm-white)] text-[var(--nm-black)]">
       <header className="border-b border-[var(--nm-border)]">
         <div className="landing-container h-16 flex items-center justify-between">
-          <img src="/logo.png" alt="NeverMiss" className="h-5" />
+          <span className="text-sm font-semibold tracking-tight text-[var(--nm-black)]">NeverMiss</span>
           <Link href="/login" className="text-sm text-[var(--nm-gray)] hover:text-[var(--nm-black)] transition-colors">
             Sign in
           </Link>
@@ -259,7 +259,7 @@ export default function LandingPage() {
 
       <footer className="border-t border-[var(--nm-border)] py-10">
         <div className="landing-container flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-          <img src="/logo.png" alt="NeverMiss" className="h-4" />
+          <span className="text-sm font-semibold tracking-tight text-[var(--nm-black)]">NeverMiss</span>
           <div className="flex items-center gap-6 text-sm text-[var(--nm-gray)]">
             <Link href="/login" className="hover:text-[var(--nm-black)] transition-colors">Sign in</Link>
             <Link href="/signup" className="hover:text-[var(--nm-black)] transition-colors">Start now</Link>
